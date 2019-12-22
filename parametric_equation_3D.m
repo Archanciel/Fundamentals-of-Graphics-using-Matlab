@@ -27,4 +27,7 @@ set(gca,'YLim',lim);
 set(gca,'YTick',tick);
 set(gca,'ZLim',lim);
 set(gca,'ZTick',tick);
+%not working !
+%view(2) %?
+%view([0,45])
 grid
