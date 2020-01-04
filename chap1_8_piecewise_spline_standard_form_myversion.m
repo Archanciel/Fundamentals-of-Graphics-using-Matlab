@@ -1,4 +1,4 @@
-DO_SUBPLOT = 1
+DO_SUBPLOT = 1 %if set to 0, only plots the full curve graph
 p1 = [0 1]
 p2 = [2 2]
 p3 = [5 0]

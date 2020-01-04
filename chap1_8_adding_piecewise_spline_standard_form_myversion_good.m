@@ -1,4 +1,14 @@
-DO_SUBPLOT = 1
+%{
+In this version, I am trying to add a new cubic spline to the existing
+3 piecewise cubic splines. My solution is not ok since, in order to smooth the 
+connection between the last piecewise spline and the new spline, I set the
+slope of the lend of the last spline to the slope of the start of the new spline.
+I do this because I do not know how to force the starting slope of the new spline
+since adding a line to the new cubic spline matrix would cause the matrix to be
+no longer square and so to be no longer invertible.
+%}
+
+DO_SUBPLOT = 1 %if set to 0, only plots the full curve graph
 p1 = [0 1]
 p2 = [2 2]
 p3 = [5 0]
@@ -26,7 +36,9 @@ C = [p1(1,1)^3 p1(1,1)^2 p1(1,1) 1 0 0 0 0 0 0 0 0;
      0 0 0 0 0 0 0 0 3 * p4(1,1)^2 2 * p4(1,1) 1 0]
 C_i = inv(C)
 
-%adding a new cubic spline
+%adding a new cubic spline. This code is located here since the slope
+%of the new spline must be calculated before computing the piecewise
+%splines (see introduction comment)
 CD = [p3(1,1)^3 p3(1,1)^2 p3(1,1) 1 0 0 0 0;
       p4(1,1)^3 p4(1,1)^2 p4(1,1) 1 0 0 0 0;
       0 0 0 0 pa(1,1)^3 pa(1,1)^2 pa(1,1) 1;
@@ -197,7 +209,3 @@ scatter(PD(:,1),PD(:,2),50,'filled')
 text(pb(1,1)+0.1, pb(1,2)-0.1, 'P_b');
 text(pc(1,1)+0.1, pc(1,2)-0.1, 'P_c');
 text(pd(1,1)+0.1, pd(1,2)-0.1, 'P_d');
-
-
-
-
