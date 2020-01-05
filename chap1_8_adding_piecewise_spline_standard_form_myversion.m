@@ -1,3 +1,5 @@
+DO_SUBPLOT = 0 %if set to 0, only plots the full curve graph
+
 p1 = [0 1]
 p2 = [2 2]
 p3 = [5 0]
@@ -54,7 +56,9 @@ close all
 figure
 
 %plotting full piecewise curves
-%subplot(121)
+if DO_SUBPLOT == 1
+    subplot(121)
+end
 xx_lim = [p1(1,1) - 1 pd(1,1) + 1]
 xx_all = linspace(xx_lim(1,1),xx_lim(1,2));
 yy_a = subs(y_a, x, xx_all);
@@ -73,7 +77,7 @@ text(p4(1,1)+0.1, p4(1,2)-0.1, 'P_4');
 
 xlabel('x')
 ylabel('y')
-title(["Piecewise spline" "standard form -" "full curves"])
+title(["Piecewise spline + 1" "standard form -" "full curves"])
 
 set(gca,'ylim',[-5 10],'xlim',[xx_lim(1,1) xx_lim(1,2)],'xtick',xx_lim(1,1):xx_lim(1,2),'ytick',-5:10)
 opt.fontname = 'helvetica';
@@ -82,10 +86,14 @@ opt.fontsize = 8;
 centeraxes(gca,opt);
 
 %plotting partial piecewise curves
-%{
-subplot(122)
+if DO_SUBPLOT == 1
+    subplot(122)
+end
+
 clear yy_a, yy_b, yy_c
-xx_lim = [p1(1,1) - 1 p4(1,1)]
+%xx_lim = [p1(1,1) - 1 p4(1,1)]
+xx_lim = [p1(1,1) - 1 pd(1,1) + 1]
+
 xx_lim_a = [p1(1,1) - 1 p2(1,1)]
 
 xx_a = linspace(xx_lim(1,1),xx_lim_a(1,2));
@@ -110,14 +118,14 @@ text(p4(1,1)+0.1, p4(1,2)-0.1, 'P_4');
 
 xlabel('x')
 ylabel('y')
-title(["Piecewise spline" "standard form - " "partial curves"])
+title(["Piecewise spline + 1" "standard form - " "partial curves"])
 
 set(gca,'ylim',[-5 10],'xlim',[xx_lim(1,1) xx_lim(1,2)],'xtick',xx_lim(1,1):xx_lim(1,2),'ytick',-5:10)
 opt.fontname = 'helvetica';
 opt.fontsize = 8;
 
 centeraxes(gca,opt);
-%}
+
 
 %adding cubic spline
 CD = [p3(1,1)^3 p3(1,1)^2 p3(1,1) 1 0 0 0 0;
@@ -150,7 +158,10 @@ vpa(yD_c)
 vpa(yD_d)
 
 %plotting added piecewise curves
-%subplot(121)
+if DO_SUBPLOT == 1
+    subplot(121)
+end
+
 xx_lim_D = [pa(1,1) pd(1,1) + 1]
 xx_D = linspace(xx_lim_D(1,1),xx_lim_D(1,2));
 yy_d = subs(yD_d, x, xx_D);
@@ -162,11 +173,15 @@ text(pb(1,1)+0.1, pb(1,2)-0.1, 'P_b');
 text(pc(1,1)+0.1, pc(1,2)-0.1, 'P_c');
 text(pd(1,1)+0.1, pd(1,2)-0.1, 'P_d');
 
-%{
+
 %plotting partial piecewise curves
-subplot(122)
+if DO_SUBPLOT == 1
+    subplot(122)
+end
+
 clear yy_a, yy_b, yy_c
-xx_lim = [p1(1,1) - 1 p4(1,1)]
+
+xx_lim = [p1(1,1) - 1 pd(1,1)]
 xx_lim_a = [p1(1,1) - 1 p2(1,1)]
 
 xx_a = linspace(xx_lim(1,1),xx_lim_a(1,2));
@@ -188,7 +203,13 @@ text(p1(1,1)+0.1, p1(1,2)-0.1, 'P_1');
 text(p2(1,1)+0.1, p2(1,2)-0.1, 'P_2');
 text(p3(1,1)+0.1, p3(1,2)-0.1, 'P_3');
 text(p4(1,1)+0.1, p4(1,2)-0.1, 'P_4');
-%}
+
+xx_lim_D = [pa(1,1) pd(1,1) + 1]
+xx_D = linspace(xx_lim_D(1,1),xx_lim_D(1,2));
+yy_d = subs(yD_d, x, xx_D);
+plot(xx_d, yy_d, 'k')
+
+
 
 
 
