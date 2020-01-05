@@ -135,7 +135,6 @@ if DO_SUBPLOT == 1
 end
 clear yy_a, yy_b, yy_c
 xx_lim = [p1(1,1) - 1 pd(1,1) + 1]
-%xx_lim = [p1(1,1) - 1 p4(1,1)]
 xx_lim_a = [p1(1,1) - 1 p2(1,1)]
 
 xx_a = linspace(xx_lim(1,1),xx_lim_a(1,2));
@@ -195,11 +194,9 @@ if DO_SUBPLOT == 1
     subplot(122)
 end
 clear yy_d
-xx_lim = [pa(1,1) pd(1,1) + 1]
 xx_lim_D = [pa(1,1) pd(1,1) + 1]
-
-xx_d = linspace(xx_lim_D(1,1),xx_lim_D(1,2));
-yy_d = subs(yD_d, x, xx_d);
+xx_D = linspace(xx_lim_D(1,1),xx_lim_D(1,2));
+yy_d = subs(yD_d, x, xx_D);
 plot(xx_d, yy_d, 'k')
 hold on
 
