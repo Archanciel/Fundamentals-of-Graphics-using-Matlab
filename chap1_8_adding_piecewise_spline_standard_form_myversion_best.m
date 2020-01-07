@@ -1,5 +1,5 @@
 clear all
-DO_SUBPLOT = 1 %if set to 1, only plots the full curves graph
+DO_SUBPLOT = 2 %if set to 1, only plots the full curves graph
                %if set to 2, only plots the partial curves graph
                %if set to 3, plots both graphs
 
@@ -76,36 +76,33 @@ xx_all = linspace(xx_lim(1,1),xx_lim(1,2));
 if DO_SUBPLOT ~= 2 %if set to 1, only plots the full curves graph
                    %if set to 2, only plots the partial curves graph
                    %if set to 3, plots both graphs
+    clear yy_A
+    clear yy_B
+    clear yy_C
 
+    yy_A = subs(y_A, x, xx_all);
+    plot(xx_all, yy_A, 'b');
+    hold on
+    yy_B = subs(y_B, x, xx_all);
+    plot(xx_all, yy_B, 'r');
+    yy_C = subs(y_C, x, xx_all);
+    plot(xx_all, yy_C, 'm');
 
+    scatter(Pn(:,1),Pn(:,2),50,'filled')
+    text(Pn(1,1)+0.1, Pn(1,2)-0.1, 'P_1');
+    text(Pn(2,1)+0.1, Pn(2,2)-0.1, 'P_2');
+    text(Pn(3,1)+0.1, Pn(3,2)-0.1, 'P_3');
+    text(Pn(4,1)+0.1, Pn(4,2)-0.1, 'P_4');
 
-clear yy_A
-clear yy_B
-clear yy_C
+    xlabel('x')
+    ylabel('y')
+    title(["Piecewise spline + 1" "standard form -" "full curves"])
 
-yy_A = subs(y_A, x, xx_all);
-plot(xx_all, yy_A, 'b');
-hold on
-yy_B = subs(y_B, x, xx_all);
-plot(xx_all, yy_B, 'r');
-yy_C = subs(y_C, x, xx_all);
-plot(xx_all, yy_C, 'm');
+    set(gca,'ylim',[-5 10],'xlim',[xx_lim(1,1) xx_lim(1,2)],'xtick',xx_lim(1,1):xx_lim(1,2),'ytick',-5:10)
+    opt.fontname = 'helvetica';
+    opt.fontsize = 8;
 
-scatter(Pn(:,1),Pn(:,2),50,'filled')
-text(Pn(1,1)+0.1, Pn(1,2)-0.1, 'P_1');
-text(Pn(2,1)+0.1, Pn(2,2)-0.1, 'P_2');
-text(Pn(3,1)+0.1, Pn(3,2)-0.1, 'P_3');
-text(Pn(4,1)+0.1, Pn(4,2)-0.1, 'P_4');
-
-xlabel('x')
-ylabel('y')
-title(["Piecewise spline + 1" "standard form -" "full curves"])
-
-set(gca,'ylim',[-5 10],'xlim',[xx_lim(1,1) xx_lim(1,2)],'xtick',xx_lim(1,1):xx_lim(1,2),'ytick',-5:10)
-opt.fontname = 'helvetica';
-opt.fontsize = 8;
-
-centeraxes(gca,opt);
+    centeraxes(gca,opt);
 end
 
 %plotting partial initial piecewise curves
@@ -201,23 +198,22 @@ end
 if DO_SUBPLOT ~= 2 %if set to 1, only plots the full curves graph
                    %if set to 2, only plots the partial curves graph
                    %if set to 3, plots both graphs
+    clear yy_D
+    clear yy_E
+    clear yy_F
 
-clear yy_D
-clear yy_E
-clear yy_F
+    yy_D = subs(y_D, x, xx_all);
+    plot(xx_all, yy_D, 'k');
+    yy_E = subs(y_E, x, xx_all);
+    plot(xx_all, yy_E, 'r');
+    yy_F = subs(y_F, x, xx_all);
+    plot(xx_all, yy_F, 'g');
 
-yy_D = subs(y_D, x, xx_all);
-plot(xx_all, yy_D, 'k');
-yy_E = subs(y_E, x, xx_all);
-plot(xx_all, yy_E, 'r');
-yy_F = subs(y_F, x, xx_all);
-plot(xx_all, yy_F, 'g');
-
-scatter(Pn(:,1),Pn(:,2),50,'filled')
-text(Pn(1,1)-0.3, Pn(1,2)-0.3, 'P_5');
-text(Pn(2,1)+0.1, Pn(2,2)-0.1, 'P_6');
-text(Pn(3,1)+0.1, Pn(3,2)-0.1, 'P_7');
-text(Pn(4,1)+0.1, Pn(4,2)-0.1, 'P_8');
+    scatter(Pn(:,1),Pn(:,2),50,'filled')
+    text(Pn(1,1)-0.3, Pn(1,2)-0.3, 'P_5');
+    text(Pn(2,1)+0.1, Pn(2,2)-0.1, 'P_6');
+    text(Pn(3,1)+0.1, Pn(3,2)-0.1, 'P_7');
+    text(Pn(4,1)+0.1, Pn(4,2)-0.1, 'P_8');
 end
 
 %plotting partial added piecewise curves
@@ -244,3 +240,9 @@ xx_lim_F = [Pn(3,1) Pn(4,1) + 1]
 xx_F = linspace(xx_lim_F(1,1),xx_lim_F(1,2));
 yy_F = subs(y_F, x, xx_F);
 plot(xx_F, yy_F, 'g');
+
+scatter(Pn(:,1),Pn(:,2),50,'filled')
+text(Pn(1,1)-0.3, Pn(1,2)-0.3, 'P_5');
+text(Pn(2,1)+0.1, Pn(2,2)-0.1, 'P_6');
+text(Pn(3,1)+0.1, Pn(3,2)-0.1, 'P_7');
+text(Pn(4,1)+0.1, Pn(4,2)-0.1, 'P_8');
