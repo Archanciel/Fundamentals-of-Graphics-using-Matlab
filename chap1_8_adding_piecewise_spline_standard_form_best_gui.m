@@ -1,5 +1,6 @@
 clear all
 
+global SCATTER_POINT_SIZE
 SCATTER_POINT_SIZE = 15
 
 global global_splines_data
@@ -25,6 +26,46 @@ P_5_8 = [p5;p6;p7;p8]
 global_splines_data{1} = [P_1_4(:,1)' P_5_8(:,1)']; % points x coordinates
 global_splines_data{2} = [P_1_4(:,2)' P_5_8(:,2)']; % points y coordinates
 global_splines_data{3} = 'p1';   % initial value of menu 
+
+computePlotFirstPiecewiseSpline()
+computePlotAdditionalPiecewiseSpline
+addUI()
+
+function addUI()
+global global_splines_data
+
+SLIDER_POS_X = 150
+MENU_POS_X = 70
+
+xMin = -10
+xMax = 10
+yMin = -10
+yMax = 10
+
+xSlider = uicontrol('style','slider','units','pixel','position',[SLIDER_POS_X 20 300 20],...
+    'sliderstep',[1/(xMax-xMin), 2/(xMax-xMin)],'max',xMax,'min',xMin, 'value',global_splines_data{1}(1,1));
+addlistener(xSlider,'ContinuousValueChange',@(hObject, event) sliderPlot_x(hObject, event,hplot));
+global_splines_data{4} = xSlider % required so that menu selection can update slider values
+uicontrol('style','text',...
+    'position',[SLIDER_POS_X - 10 30 10 10],'string', 'X');
+
+% slider controlling y coordinates
+ySlider = uicontrol('style','slider','units','pixel','position',[SLIDER_POS_X 0 300 20],...
+    'sliderstep',[1/(xMax-xMin), 2/(xMax-xMin)],'max',xMax,'min',xMin, 'value',global_splines_data{2}(1,1));
+global_splines_data{5} = ySlider
+addlistener(ySlider,'ContinuousValueChange',@(hObject, event) sliderPlot_y(hObject, event,hplot));
+uicontrol('style','text',...
+    'position',[SLIDER_POS_X - 10 10 10 10],'string', 'Y');
+
+% drop down menu to select which point is modified by the sliders 
+menu = uicontrol('Style','popupmenu',...
+    'position', [MENU_POS_X 20 60 20], 'string', {'p1','p2'});
+menu.Callback = @menuSelection;
+end
+
+function computePlotFirstPiecewiseSpline()
+global SCATTER_POINT_SIZE
+global global_splines_data
 
 Pn = [global_splines_data{1}(1,1:4)' global_splines_data{2}(1,1:4)']
 
@@ -73,7 +114,7 @@ vpa(y_C);
 close all
 figure
 
-xx_lim = [p1(1,1) - 1 p8(1,1) + 1]
+xx_lim = [global_splines_data{1}(1,1) - 1 global_splines_data{1}(1,8) + 1]
 xx_all = linspace(xx_lim(1,1),xx_lim(1,2));
 
 %plotting partial initial piecewise curves
@@ -113,9 +154,13 @@ opt.fontname = 'helvetica';
 opt.fontsize = 8;
 
 centeraxes(gca,opt);
+end
 
+function computePlotAdditionalPiecewiseSpline()
 %adding new 4 points piecewise spline
-clear Pn, C, C_i, Y, A
+global SCATTER_POINT_SIZE
+global global_splines_data
+
 Pn = [global_splines_data{1}(1,5:8)' global_splines_data{2}(1,5:8)']
 
 C = [Pn(1,1)^3 Pn(1,1)^2 Pn(1,1) 1 0 0 0 0 0 0 0 0;
@@ -186,36 +231,9 @@ text(Pn(1,1)-0.3, Pn(1,2)-0.3, 'P_5');
 text(Pn(2,1)+0.1, Pn(2,2)-0.1, 'P_6');
 text(Pn(3,1)+0.1, Pn(3,2)-0.1, 'P_7');
 text(Pn(4,1)+0.1, Pn(4,2)-0.1, 'P_8');
+end
 
-SLIDER_POS_X = 150
-MENU_POS_X = 70
-
-xMin = -10
-xMax = 10
-yMin = -10
-yMax = 10
-
-xSlider = uicontrol('style','slider','units','pixel','position',[SLIDER_POS_X 20 300 20],...
-    'sliderstep',[1/(xMax-xMin), 2/(xMax-xMin)],'max',xMax,'min',xMin, 'value',global_splines_data{1}(1,1));
-addlistener(xSlider,'ContinuousValueChange',@(hObject, event) sliderPlot_x(hObject, event,hplot));
-global_splines_data{4} = xSlider % required so that menu selection can update slider values
-uicontrol('style','text',...
-    'position',[SLIDER_POS_X - 10 30 10 10],'string', 'X');
-
-% slider controlling y coordinates
-ySlider = uicontrol('style','slider','units','pixel','position',[SLIDER_POS_X 0 300 20],...
-    'sliderstep',[1/(xMax-xMin), 2/(xMax-xMin)],'max',xMax,'min',xMin, 'value',global_splines_data{2}(1,1));
-global_splines_data{5} = ySlider
-addlistener(ySlider,'ContinuousValueChange',@(hObject, event) sliderPlot_y(hObject, event,hplot));
-uicontrol('style','text',...
-    'position',[SLIDER_POS_X - 10 10 10 10],'string', 'Y');
-
-% drop down menu to select which point is modified by the sliders 
-menu = uicontrol('Style','popupmenu',...
-    'position', [MENU_POS_X 20 60 20], 'string', {'p1','p2'});
-menu.Callback = @menuSelection;
-
-% callback functions
+% ui callback functions
 
 function sliderPlot_x(hObject,event,hplot)
     global global_splines_data
