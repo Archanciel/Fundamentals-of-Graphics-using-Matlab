@@ -260,27 +260,65 @@ function sliderPlot_x(hObject,event,hplot)
     else
         global_splines_data{1}(1,2) = n;
     end
+
+    switch global_splines_data{3}
+        case 'P1'
+            global_splines_data{1}(1,1) = n;
+        case 'P2'
+            global_splines_data{1}(1,2) = n;
+        case 'P3'
+            global_splines_data{1}(1,3) = n;
+        case 'P4'
+            global_splines_data{1}(1,4) = n;
+        case 'P5'
+            global_splines_data{1}(1,5) = n;
+        case 'P6'
+            global_splines_data{1}(1,6) = n;
+        case 'P7'
+            global_splines_data{1}(1,7) = n;
+        case 'P8'
+            global_splines_data{1}(1,8) = n;
+      otherwise
+            error('Invalid selection %s', global_splines_data{3})
+    end
     
     xSliderValueTextUI = global_splines_data{6};
     xSliderValueTextUI.String = n;
  %   set(hplot,'xdata',global_splines_data{1});
-    drawnow;
+ %   drawnow;
+%    computePlotFirstPiecewiseSpline()
+%    computePlotAdditionalPiecewiseSpline()
 end
 
 function sliderPlot_y(hObject,event,hplot)
     global global_splines_data
     n = get(hObject,'Value');
     
-    if global_splines_data{3} == 'p1'
-        global_splines_data{2}(1,1) = n;
-    else
-        global_splines_data{2}(1,2) = n;
+    switch global_splines_data{3}
+        case 'P1'
+            global_splines_data{2}(1,1) = n;
+        case 'P2'
+            global_splines_data{2}(1,2) = n;
+        case 'P3'
+            global_splines_data{2}(1,3) = n;
+        case 'P4'
+            global_splines_data{2}(1,4) = n;
+        case 'P5'
+            global_splines_data{2}(1,5) = n;
+        case 'P6'
+            global_splines_data{2}(1,6) = n;
+        case 'P7'
+            global_splines_data{2}(1,7) = n;
+        case 'P8'
+            global_splines_data{2}(1,8) = n;
+      otherwise
+            error('Invalid selection %s', global_splines_data{3})
     end
     
     ySliderValueTextUI = global_splines_data{7};
     ySliderValueTextUI.String = n;
 %    set(hplot,'ydata',global_splines_data{2});
-    drawnow;
+%    drawnow;
 end
 
 function menuSelection(hObject,event)
