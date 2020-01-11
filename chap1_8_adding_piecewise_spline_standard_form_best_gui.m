@@ -44,7 +44,7 @@ function addUI()
     SLIDER_POS_X = 150
     MENU_POS_X = 70
 
-    xMin = global_splines_data{1}(1,1);
+    xMin = global_splines_data{1}(1,1) - 2;
     xMax = global_splines_data{1}(1,8) + 2;
     yMin = -10
     yMax = 10
@@ -56,18 +56,18 @@ function addUI()
     global_splines_data{4} = xSlider % required so that menu selection can update the curve point impacted by the x slider 
     uicontrol('style','text',...
         'position',[SLIDER_POS_X - 10 30 10 10],'string', 'X');
-    xValueText = uicontrol('Style','text','Position',[SLIDER_POS_X + 302,25,20,15],...
+    xValueText = uicontrol('Style','text','Position',[SLIDER_POS_X + 302,25,13,15],...
                 'String',global_splines_data{1}(1,1), 'BackgroundColor', 'w');
     global_splines_data{6} = xValueText % required so that the x slider can update its displayed value
 
     % slider controlling y coordinates
     ySlider = uicontrol('style','slider','units','pixel','position',[SLIDER_POS_X 0 300 20],...
-        'sliderstep',[1/(xMax-xMin), 2/(xMax-xMin)],'max',yMax,'min',yMin, 'value',global_splines_data{2}(1,1));
+        'sliderstep',[1/(yMax-yMin), 2/(yMax-yMin)],'max',yMax,'min',yMin, 'value',global_splines_data{2}(1,1));
     global_splines_data{5} = ySlider % required so that menu selection can update the curve point impacted by the y slider 
     addlistener(ySlider,'ContinuousValueChange',@(hObject, event) sliderPlot_y(hObject, event,hplot));
     uicontrol('style','text',...
         'position',[SLIDER_POS_X - 10 10 10 10],'string', 'Y');
-    yValueText = uicontrol('Style','text','Position',[SLIDER_POS_X + 302,5,20,15],...
+    yValueText = uicontrol('Style','text','Position',[SLIDER_POS_X + 302,5,13,15],...
                 'String',global_splines_data{2}(1,1), 'BackgroundColor', 'w');
     global_splines_data{7} = yValueText % required so that the y slider can update its displayed value
 
