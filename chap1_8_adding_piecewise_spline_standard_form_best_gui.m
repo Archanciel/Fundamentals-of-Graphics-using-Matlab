@@ -10,6 +10,7 @@ global global_splines_data % {1} --> curve points x coordinates
                            % {5} --> y slider reference 
                            % {6} --> x slider text value reference 
                            % {7} --> y slider text value reference 
+                           % {8} --> hplot reference
                            
 % piecewise splines points initial coordinates
 
@@ -50,12 +51,13 @@ function addUI()
 
     xSlider = uicontrol('style','slider','units','pixel','position',[SLIDER_POS_X 20 300 20],...
         'sliderstep',[1/(xMax-xMin), 2/(xMax-xMin)],'max',xMax,'min',xMin, 'value',global_splines_data{1}(1,1));
+    hplot = global_splines_data{8}
     addlistener(xSlider,'ContinuousValueChange',@(hObject, event) sliderPlot_x(hObject, event,hplot));
     global_splines_data{4} = xSlider % required so that menu selection can update the curve point impacted by the x slider 
     uicontrol('style','text',...
         'position',[SLIDER_POS_X - 10 30 10 10],'string', 'X');
-    xValueText = uicontrol('Style','text','Position',[SLIDER_POS_X + 302,30,10,10],...
-                'String','0');
+    xValueText = uicontrol('Style','text','Position',[SLIDER_POS_X + 302,25,13,15],...
+                'String','0', 'BackgroundColor', 'w');
     global_splines_data{6} = xValueText % required so that the x slider can update its displayed value
 
     % slider controlling y coordinates
@@ -65,8 +67,8 @@ function addUI()
     addlistener(ySlider,'ContinuousValueChange',@(hObject, event) sliderPlot_y(hObject, event,hplot));
     uicontrol('style','text',...
         'position',[SLIDER_POS_X - 10 10 10 10],'string', 'Y');
-    yValueText = uicontrol('Style','text','Position',[SLIDER_POS_X + 302,10,10,10],...
-                'String','0');
+    yValueText = uicontrol('Style','text','Position',[SLIDER_POS_X + 302,5,13,15],...
+                'String','0', 'BackgroundColor', 'w');
     global_splines_data{7} = yValueText % required so that the y slider can update its displayed value
 
     % drop down menu to select which point is modified by the sliders 
@@ -139,6 +141,8 @@ function computePlotFirstPiecewiseSpline()
     xx_A = linspace(xx_lim(1,1),xx_lim_A(1,2));
     yy_A = subs(y_A, x, xx_A);
     hplot = plot(xx_A, yy_A, 'b');
+    global_splines_data{8} = hplot
+    
 
     hold on
     xx_lim_B = [Pn(2,1) Pn(3,1)]
@@ -257,7 +261,9 @@ function sliderPlot_x(hObject,event,hplot)
         global_splines_data{1}(1,2) = n
     end
     
-    set(hplot,'xdata',global_splines_data{1});
+    xSliderValueTextUI = global_splines_data{6}
+    xSliderValueTextUI.String = n
+ %   set(hplot,'xdata',global_splines_data{1});
     drawnow;
 end
 
@@ -271,7 +277,9 @@ function sliderPlot_y(hObject,event,hplot)
         global_splines_data{2}(1,2) = n
     end
     
-    set(hplot,'ydata',global_splines_data{2});
+    ySliderValueTextUI = global_splines_data{7}
+    ySliderValueTextUI.String = n
+   % set(hplot,'ydata',global_splines_data{2});
     drawnow;
 end
 
