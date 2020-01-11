@@ -32,7 +32,7 @@ P_5_8 = [p5;p6;p7;p8]
 % initializing the global spline_data variable (for use by ui callback functions)
 global_splines_data{1} = [P_1_4(:,1)' P_5_8(:,1)']; % curve points x coordinates
 global_splines_data{2} = [P_1_4(:,2)' P_5_8(:,2)']; % curve points y coordinates
-global_splines_data{3} = 'p1';   % initial value of menu 
+global_splines_data{3} = 'P1';   % initial value of menu 
 
 computePlotFirstPiecewiseSpline()
 computePlotAdditionalPiecewiseSpline
@@ -44,8 +44,8 @@ function addUI()
     SLIDER_POS_X = 150
     MENU_POS_X = 70
 
-    xMin = -10
-    xMax = 10
+    xMin = global_splines_data{1}(1,1);
+    xMax = global_splines_data{1}(1,8) + 2;
     yMin = -10
     yMax = 10
 
@@ -56,24 +56,24 @@ function addUI()
     global_splines_data{4} = xSlider % required so that menu selection can update the curve point impacted by the x slider 
     uicontrol('style','text',...
         'position',[SLIDER_POS_X - 10 30 10 10],'string', 'X');
-    xValueText = uicontrol('Style','text','Position',[SLIDER_POS_X + 302,25,13,15],...
-                'String','0', 'BackgroundColor', 'w');
+    xValueText = uicontrol('Style','text','Position',[SLIDER_POS_X + 302,25,20,15],...
+                'String',global_splines_data{1}(1,1), 'BackgroundColor', 'w');
     global_splines_data{6} = xValueText % required so that the x slider can update its displayed value
 
     % slider controlling y coordinates
     ySlider = uicontrol('style','slider','units','pixel','position',[SLIDER_POS_X 0 300 20],...
-        'sliderstep',[1/(xMax-xMin), 2/(xMax-xMin)],'max',xMax,'min',xMin, 'value',global_splines_data{2}(1,1));
+        'sliderstep',[1/(xMax-xMin), 2/(xMax-xMin)],'max',yMax,'min',yMin, 'value',global_splines_data{2}(1,1));
     global_splines_data{5} = ySlider % required so that menu selection can update the curve point impacted by the y slider 
     addlistener(ySlider,'ContinuousValueChange',@(hObject, event) sliderPlot_y(hObject, event,hplot));
     uicontrol('style','text',...
         'position',[SLIDER_POS_X - 10 10 10 10],'string', 'Y');
-    yValueText = uicontrol('Style','text','Position',[SLIDER_POS_X + 302,5,13,15],...
-                'String','0', 'BackgroundColor', 'w');
+    yValueText = uicontrol('Style','text','Position',[SLIDER_POS_X + 302,5,20,15],...
+                'String',global_splines_data{2}(1,1), 'BackgroundColor', 'w');
     global_splines_data{7} = yValueText % required so that the y slider can update its displayed value
 
     % drop down menu to select which point is modified by the sliders 
     menu = uicontrol('Style','popupmenu',...
-        'position', [MENU_POS_X 20 60 20], 'string', {'p1','p2'});
+        'position', [MENU_POS_X 20 60 20], 'string', {'P1','P2','P3','P4','P5','P6','P7','P8'});
     menu.Callback = @menuSelection;
 end
 
@@ -253,33 +253,33 @@ end
 
 function sliderPlot_x(hObject,event,hplot)
     global global_splines_data
-    n = get(hObject,'Value')
+    n = get(hObject,'Value');
     
     if global_splines_data{3} == 'p1'
-        global_splines_data{1}(1,1) = n
+        global_splines_data{1}(1,1) = n;
     else
-        global_splines_data{1}(1,2) = n
+        global_splines_data{1}(1,2) = n;
     end
     
-    xSliderValueTextUI = global_splines_data{6}
-    xSliderValueTextUI.String = n
+    xSliderValueTextUI = global_splines_data{6};
+    xSliderValueTextUI.String = n;
  %   set(hplot,'xdata',global_splines_data{1});
     drawnow;
 end
 
 function sliderPlot_y(hObject,event,hplot)
     global global_splines_data
-    n = get(hObject,'Value')
+    n = get(hObject,'Value');
     
     if global_splines_data{3} == 'p1'
-        global_splines_data{2}(1,1) = n
+        global_splines_data{2}(1,1) = n;
     else
-        global_splines_data{2}(1,2) = n
+        global_splines_data{2}(1,2) = n;
     end
     
-    ySliderValueTextUI = global_splines_data{7}
-    ySliderValueTextUI.String = n
-   % set(hplot,'ydata',global_splines_data{2});
+    ySliderValueTextUI = global_splines_data{7};
+    ySliderValueTextUI.String = n;
+%    set(hplot,'ydata',global_splines_data{2});
     drawnow;
 end
 
@@ -288,15 +288,83 @@ function menuSelection(hObject,event)
     
     val = get(hObject,'Value');
     str = get(hObject,'String');
+    
+    % saving menu selection into global_splines_data so the two slider
+    % callback functions can operate on the right point
     global_splines_data{3} = str{val};
+    
+    % get slider and slider text references
     xSlider = global_splines_data{4};
+    xSliderTextValue = global_splines_data{6};
     ySlider = global_splines_data{5};
+    ySliderTextValue = global_splines_data{7};
 
-    if global_splines_data{3} == 'p1'
-        xSlider.Value = global_splines_data{1}(1,1);
-        ySlider.Value = global_splines_data{2}(1,1);
-    else
-        xSlider.Value = global_splines_data{1}(1,2);
-        ySlider.Value = global_splines_data{2}(1,2);
+    switch global_splines_data{3}
+        case 'P1'
+            xValue = global_splines_data{1}(1,1);
+            xSlider.Value = xValue;
+            xSliderTextValue.String = xValue;
+            
+            yValue = global_splines_data{2}(1,1);
+            ySlider.Value = yValue;
+            ySliderTextValue.String = yValue;
+        case 'P2'
+            xValue = global_splines_data{1}(1,2);
+            xSlider.Value = xValue;
+            xSliderTextValue.String = xValue;
+            
+            yValue = global_splines_data{2}(1,2);
+            ySlider.Value = yValue;
+            ySliderTextValue.String = yValue;
+        case 'P3'
+            xValue = global_splines_data{1}(1,3);
+            xSlider.Value = xValue;
+            xSliderTextValue.String = xValue;
+            
+            yValue = global_splines_data{2}(1,3);
+            ySlider.Value = yValue;
+            ySliderTextValue.String = yValue;
+        case 'P4'
+            xValue = global_splines_data{1}(1,4);
+            xSlider.Value = xValue;
+            xSliderTextValue.String = xValue;
+            
+            yValue = global_splines_data{2}(1,4);
+            ySlider.Value = yValue;
+            ySliderTextValue.String = yValue;
+        case 'P5'
+            xValue = global_splines_data{1}(1,5);
+            xSlider.Value = xValue;
+            xSliderTextValue.String = xValue;
+            
+            yValue = global_splines_data{2}(1,5);
+            ySlider.Value = yValue;
+            ySliderTextValue.String = yValue;
+        case 'P6'
+            xValue = global_splines_data{1}(1,6);
+            xSlider.Value = xValue;
+            xSliderTextValue.String = xValue;
+            
+            yValue = global_splines_data{2}(1,6);
+            ySlider.Value = yValue;
+            ySliderTextValue.String = yValue;
+        case 'P7'
+            xValue = global_splines_data{1}(1,7);
+            xSlider.Value = xValue;
+            xSliderTextValue.String = xValue;
+            
+            yValue = global_splines_data{2}(1,7);
+            ySlider.Value = yValue;
+            ySliderTextValue.String = yValue;
+        case 'P8'
+            xValue = global_splines_data{1}(1,8);
+            xSlider.Value = xValue;
+            xSliderTextValue.String = xValue;
+            
+            yValue = global_splines_data{2}(1,8);
+            ySlider.Value = yValue;
+            ySliderTextValue.String = yValue;
+      otherwise
+            error('Invalid selection %s', global_splines_data{3})
     end
 end
