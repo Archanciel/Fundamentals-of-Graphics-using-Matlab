@@ -34,8 +34,11 @@ global_splines_data{1} = [P_1_4(:,1)' P_5_8(:,1)']; % curve points x coordinates
 global_splines_data{2} = [P_1_4(:,2)' P_5_8(:,2)']; % curve points y coordinates
 global_splines_data{3} = 'P1';   % initial value of menu 
 
-computePlotFirstPiecewiseSpline()
-computePlotAdditionalPiecewiseSpline
+yFuncCellArray = computeFirstPiecewiseSpline()
+plotFirstPiecewiseSpline(yFuncCellArray)
+
+yFuncCellArray = computeAdditionalPiecewiseSpline()
+plotAdditionalPiecewiseSpline(yFuncCellArray)
 addUI()
 
 function addUI()
@@ -77,8 +80,9 @@ function addUI()
     menu.Callback = @menuSelection;
 end
 
-function computePlotFirstPiecewiseSpline()
-    global SCATTER_POINT_SIZE
+function yFuncCellArray = computeFirstPiecewiseSpline()
+    % Returns a 3 elements cell array containing piecewise splines
+    % y_A, y_B and y_C functions
     global global_splines_data
 
     Pn = [global_splines_data{1}(1,1:4)' global_splines_data{2}(1,1:4)']
@@ -95,7 +99,7 @@ function computePlotFirstPiecewiseSpline()
          0 0 0 0 -6 * Pn(3,1) -2 0 0 6 * Pn(3,1) 2 0 0;
          3 * Pn(1,1)^2 2 * Pn(1,1) 1 0 0 0 0 0 0 0 0 0;
          0 0 0 0 0 0 0 0 3 * Pn(4,1)^2 2 * Pn(4,1) 1 0]
-    C_i = inv(C)
+    C_i = inv(C);
 
     Y = [Pn(1,2);
         Pn(2,2);
@@ -108,21 +112,37 @@ function computePlotFirstPiecewiseSpline()
         0;
         0;
         4;
-        -2]
+        -2];
 
-    A = C_i * Y
+    A = C_i * Y;
 
     syms x
     y_A = A(1,1) * x^3 + A(2,1) * x^2 + A(3,1) * x + A(4,1);
     y_B = A(5,1) * x^3 + A(6,1) * x^2 + A(7,1) * x + A(8,1);
     y_C = A(9,1) * x^3 + A(10,1) * x^2 + A(11,1) * x + A(12,1);
 
+    yFuncCellArray{1} = y_A;
+    yFuncCellArray{2} = y_B;
+    yFuncCellArray{3} = y_C;
+    
     fprintf("y_A");
     vpa(y_A);
     fprintf("y_B");
     vpa(y_B);
     fprintf("y_C");
     vpa(y_C);
+end
+
+function plotFirstPiecewiseSpline(yFuncCellArray)
+    global SCATTER_POINT_SIZE
+    global global_splines_data
+
+    Pn = [global_splines_data{1}(1,1:4)' global_splines_data{2}(1,1:4)']
+
+    syms x
+    y_A = yFuncCellArray{1};
+    y_B = yFuncCellArray{2};
+    y_C = yFuncCellArray{3};
 
     %plotting
     close all
@@ -172,7 +192,10 @@ function computePlotFirstPiecewiseSpline()
     centeraxes(gca,opt);
 end
 
-function computePlotAdditionalPiecewiseSpline()
+function yFuncCellArray = computeAdditionalPiecewiseSpline()
+    % Returns a 3 elements cell array containing piecewise splines
+    % y_D, y_E and y_F functions
+    
     %adding new 4 points piecewise spline
     global SCATTER_POINT_SIZE
     global global_splines_data
@@ -191,7 +214,7 @@ function computePlotAdditionalPiecewiseSpline()
          0 0 0 0 -6 * Pn(3,1) -2 0 0 6 * Pn(3,1) 2 0 0;
          3 * Pn(1,1)^2 2 * Pn(1,1) 1 0 0 0 0 0 0 0 0 0;
          0 0 0 0 0 0 0 0 3 * Pn(4,1)^2 2 * Pn(4,1) 1 0]
-    C_i = inv(C)
+    C_i = inv(C);
 
     Y = [Pn(1,2);
         Pn(2,2);
@@ -204,9 +227,67 @@ function computePlotAdditionalPiecewiseSpline()
         0;
         0;
         -2;
-        0]
+        0];
 
-    A = C_i * Y
+    A = C_i * Y;
+
+    syms x
+    y_D = A(1,1) * x^3 + A(2,1) * x^2 + A(3,1) * x + A(4,1);
+    y_E = A(5,1) * x^3 + A(6,1) * x^2 + A(7,1) * x + A(8,1);
+    y_F = A(9,1) * x^3 + A(10,1) * x^2 + A(11,1) * x + A(12,1);
+
+    yFuncCellArray{1} = y_D;
+    yFuncCellArray{2} = y_E;
+    yFuncCellArray{3} = y_F;
+
+    fprintf("y_D")
+    vpa(y_D)
+    fprintf("y_E")
+    vpa(y_E)
+    fprintf("y_F")
+    vpa(y_F)
+end
+
+function plotAdditionalPiecewiseSpline(yFuncCellArray)
+    %adding new 4 points piecewise spline
+    global SCATTER_POINT_SIZE
+    global global_splines_data
+
+    Pn = [global_splines_data{1}(1,5:8)' global_splines_data{2}(1,5:8)']
+
+    syms x
+    y_D = yFuncCellArray{1};
+    y_E = yFuncCellArray{2};
+    y_F = yFuncCellArray{3};
+
+    C = [Pn(1,1)^3 Pn(1,1)^2 Pn(1,1) 1 0 0 0 0 0 0 0 0;
+         Pn(2,1)^3 Pn(2,1)^2 Pn(2,1) 1 0 0 0 0 0 0 0 0;
+         0 0 0 0 Pn(2,1)^3 Pn(2,1)^2 Pn(2,1) 1 0 0 0 0;
+         0 0 0 0 Pn(3,1)^3 Pn(3,1)^2 Pn(3,1) 1 0 0 0 0;
+         0 0 0 0 0 0 0 0 Pn(3,1)^3 Pn(3,1)^2 Pn(3,1) 1;
+         0 0 0 0 0 0 0 0 Pn(4,1)^3 Pn(4,1)^2 Pn(4,1) 1;
+         -3 * Pn(2,1)^2 -2 * Pn(2,1) -1 0 3 * Pn(2,1)^2 2 * Pn(2,1) 1 0 0 0 0 0;
+         0 0 0 0 -3 * Pn(3,1)^2 -2 * Pn(3,1) -1 0 3 * Pn(3,1)^2 2 * Pn(3,1) 1 0;
+         -6 * Pn(2,1) -2 0 0 6 * Pn(2,1) 2 0 0 0 0 0 0;
+         0 0 0 0 -6 * Pn(3,1) -2 0 0 6 * Pn(3,1) 2 0 0;
+         3 * Pn(1,1)^2 2 * Pn(1,1) 1 0 0 0 0 0 0 0 0 0;
+         0 0 0 0 0 0 0 0 3 * Pn(4,1)^2 2 * Pn(4,1) 1 0]
+    C_i = inv(C);
+
+    Y = [Pn(1,2);
+        Pn(2,2);
+        Pn(2,2);
+        Pn(3,2);
+        Pn(3,2);
+        Pn(4,2);
+        0;
+        0;
+        0;
+        0;
+        -2;
+        0];
+
+    A = C_i * Y;
 
     syms x
     y_D = A(1,1) * x^3 + A(2,1) * x^2 + A(3,1) * x + A(4,1);
@@ -249,6 +330,7 @@ function computePlotAdditionalPiecewiseSpline()
     text(Pn(4,1)+0.1, Pn(4,2)-0.1, 'P_8');
 end
 
+
 % ui callback functions
 
 function sliderPlot_x(hObject,event,hplot)
@@ -286,7 +368,7 @@ function sliderPlot_x(hObject,event,hplot)
     xSliderValueTextUI.String = n;
  %   set(hplot,'xdata',global_splines_data{1});
  %   drawnow;
-%    computePlotFirstPiecewiseSpline()
+%    computePlotFirstPiecewiseSpline() not working ü
 %    computePlotAdditionalPiecewiseSpline()
 end
 
