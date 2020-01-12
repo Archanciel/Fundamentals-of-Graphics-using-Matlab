@@ -3,7 +3,7 @@ clear all
 global SCATTER_POINT_SIZE
 SCATTER_POINT_SIZE = 15
 
-global global_splines_data % {1} --> curve points x coordinates
+global global_splines_data;% {1} --> curve points x coordinates
                            % {2} --> curve points y coordinates
                            % {3} --> current menu selection value 
                            % {4} --> x slider reference 
@@ -42,7 +42,7 @@ plotAdditionalPiecewiseSpline(yFuncCellArray)
 addUI()
 
 function addUI()
-    global global_splines_data
+    global global_splines_data;
 
     SLIDER_POS_X = 150
     MENU_POS_X = 70
@@ -54,25 +54,25 @@ function addUI()
 
     xSlider = uicontrol('style','slider','units','pixel','position',[SLIDER_POS_X 20 300 20],...
         'sliderstep',[1/(xMax-xMin), 2/(xMax-xMin)],'max',xMax,'min',xMin, 'value',global_splines_data{1}(1,1));
-    hplot = global_splines_data{8}
+    hplot = global_splines_data{8};
     addlistener(xSlider,'ContinuousValueChange',@(hObject, event) sliderPlot_x(hObject, event,hplot));
-    global_splines_data{4} = xSlider % required so that menu selection can update the curve point impacted by the x slider 
+    global_splines_data{4} = xSlider; % required so that menu selection can update the curve point impacted by the x slider 
     uicontrol('style','text',...
         'position',[SLIDER_POS_X - 10 30 10 10],'string', 'X');
     xValueText = uicontrol('Style','text','Position',[SLIDER_POS_X + 302,25,13,15],...
                 'String',global_splines_data{1}(1,1), 'BackgroundColor', 'w');
-    global_splines_data{6} = xValueText % required so that the x slider can update its displayed value
+    global_splines_data{6} = xValueText; % required so that the x slider can update its displayed value
 
     % slider controlling y coordinates
     ySlider = uicontrol('style','slider','units','pixel','position',[SLIDER_POS_X 0 300 20],...
         'sliderstep',[1/(yMax-yMin), 2/(yMax-yMin)],'max',yMax,'min',yMin, 'value',global_splines_data{2}(1,1));
-    global_splines_data{5} = ySlider % required so that menu selection can update the curve point impacted by the y slider 
+    global_splines_data{5} = ySlider; % required so that menu selection can update the curve point impacted by the y slider 
     addlistener(ySlider,'ContinuousValueChange',@(hObject, event) sliderPlot_y(hObject, event,hplot));
     uicontrol('style','text',...
         'position',[SLIDER_POS_X - 10 10 10 10],'string', 'Y');
     yValueText = uicontrol('Style','text','Position',[SLIDER_POS_X + 302,5,13,15],...
                 'String',global_splines_data{2}(1,1), 'BackgroundColor', 'w');
-    global_splines_data{7} = yValueText % required so that the y slider can update its displayed value
+    global_splines_data{7} = yValueText; % required so that the y slider can update its displayed value
 
     % drop down menu to select which point is modified by the sliders 
     menu = uicontrol('Style','popupmenu',...
@@ -83,9 +83,9 @@ end
 function yFuncCellArray = computeFirstPiecewiseSpline()
     % Returns a 3 elements cell array containing piecewise splines
     % y_A, y_B and y_C functions
-    global global_splines_data
+    global global_splines_data;
 
-    Pn = [global_splines_data{1}(1,1:4)' global_splines_data{2}(1,1:4)']
+    Pn = [global_splines_data{1}(1,1:4)' global_splines_data{2}(1,1:4)'];
 
     C = [Pn(1,1)^3 Pn(1,1)^2 Pn(1,1) 1 0 0 0 0 0 0 0 0;
          Pn(2,1)^3 Pn(2,1)^2 Pn(2,1) 1 0 0 0 0 0 0 0 0;
@@ -135,9 +135,9 @@ end
 
 function plotFirstPiecewiseSpline(yFuncCellArray)
     global SCATTER_POINT_SIZE
-    global global_splines_data
+    global global_splines_data;
 
-    Pn = [global_splines_data{1}(1,1:4)' global_splines_data{2}(1,1:4)']
+    Pn = [global_splines_data{1}(1,1:4)' global_splines_data{2}(1,1:4)'];
 
     syms x
     y_A = yFuncCellArray{1};
@@ -148,7 +148,7 @@ function plotFirstPiecewiseSpline(yFuncCellArray)
     close all
     figure
 
-    xx_lim = [global_splines_data{1}(1,1) - 1 global_splines_data{1}(1,8) + 1]
+    xx_lim = [global_splines_data{1}(1,1) - 1 global_splines_data{1}(1,8) + 1];
 
     %plotting partial initial piecewise curves
 
@@ -156,7 +156,7 @@ function plotFirstPiecewiseSpline(yFuncCellArray)
     xx_A = linspace(xx_lim(1,1),xx_lim_A(1,2));
     yy_A = subs(y_A, x, xx_A);
     hplot = plot(xx_A, yy_A, 'b');
-    global_splines_data{8} = hplot
+    global_splines_data{8} = hplot;
 
     hold on
     xx_lim_B = [Pn(2,1) Pn(3,1)]
@@ -191,9 +191,9 @@ function yFuncCellArray = computeAdditionalPiecewiseSpline()
     % y_D, y_E and y_F functions
     
     %adding new 4 points piecewise spline
-    global global_splines_data
+    global global_splines_data;
 
-    Pn = [global_splines_data{1}(1,5:8)' global_splines_data{2}(1,5:8)']
+    Pn = [global_splines_data{1}(1,5:8)' global_splines_data{2}(1,5:8)'];
 
     C = [Pn(1,1)^3 Pn(1,1)^2 Pn(1,1) 1 0 0 0 0 0 0 0 0;
          Pn(2,1)^3 Pn(2,1)^2 Pn(2,1) 1 0 0 0 0 0 0 0 0;
@@ -243,10 +243,10 @@ end
 
 function plotAdditionalPiecewiseSpline(yFuncCellArray)
     %adding new 4 points piecewise spline
-    global SCATTER_POINT_SIZE
-    global global_splines_data
+    global SCATTER_POINT_SIZE;
+    global global_splines_data;
 
-    Pn = [global_splines_data{1}(1,5:8)' global_splines_data{2}(1,5:8)']
+    Pn = [global_splines_data{1}(1,5:8)' global_splines_data{2}(1,5:8)'];
 
     syms x
     y_D = yFuncCellArray{1};
@@ -282,7 +282,7 @@ end
 % ui callback functions
 
 function sliderPlot_x(hObject,event,hplot)
-    global global_splines_data
+    global global_splines_data;
     n = get(hObject,'Value');
     
     if global_splines_data{3} == 'p1'
@@ -315,53 +315,50 @@ function sliderPlot_x(hObject,event,hplot)
     xSliderValueTextUI = global_splines_data{6};
     xSliderValueTextUI.String = n;
 
-    yFuncCellArray_A_B_C = computeFirstPiecewiseSpline()
-    Pn = [global_splines_data{1}(1,1:4)' global_splines_data{2}(1,1:4)']
+    yFuncCellArray_A_B_C = computeFirstPiecewiseSpline();
+    Pn = [global_splines_data{1}(1,1:4)' global_splines_data{2}(1,1:4)'];
 
     syms x
     y_A = yFuncCellArray_A_B_C{1};
     y_B = yFuncCellArray_A_B_C{2};
     y_C = yFuncCellArray_A_B_C{3};
 
-    xx_lim = [global_splines_data{1}(1,1) - 1 global_splines_data{1}(1,8) + 1]
+    xx_lim = [global_splines_data{1}(1,1) - 1 global_splines_data{1}(1,8) + 1];
     
-    xx_lim_A = [Pn(1,1) - 1 Pn(2,1)]
+    xx_lim_A = [Pn(1,1) - 1 Pn(2,1)];
     xx_A = linspace(xx_lim(1,1),xx_lim_A(1,2));
     yy_A = subs(y_A, x, xx_A);
 
-    xx_lim_B = [Pn(2,1) Pn(3,1)]
+    xx_lim_B = [Pn(2,1) Pn(3,1)];
     xx_B = linspace(xx_lim_B(1,1),xx_lim_B(1,2));
     yy_B = subs(y_B, x, xx_B);
 
-    xx_lim_C = [Pn(3,1) Pn(4,1)]
+    xx_lim_C = [Pn(3,1) Pn(4,1)];
     xx_C = linspace(xx_lim_C(1,1),xx_lim_C(1,2));
     yy_C = subs(y_C, x, xx_C);
-
-    xx_A_D = [xx_A xx_B xx_C]
-    yy_A_D = [yy_A yy_B yy_C]
     
     yFuncCellArray_D_E_F = computeAdditionalPiecewiseSpline()
-    Pn = [global_splines_data{1}(1,5:8)' global_splines_data{2}(1,5:8)']
+    Pn = [global_splines_data{1}(1,5:8)' global_splines_data{2}(1,5:8)'];
 
     syms x
     y_D = yFuncCellArray_D_E_F{1};
     y_E = yFuncCellArray_D_E_F{2};
     y_F = yFuncCellArray_D_E_F{3};
     
-    xx_lim_D = [Pn(1,1) Pn(2,1)]
+    xx_lim_D = [Pn(1,1) Pn(2,1)];
     xx_D = linspace(xx_lim_D(1,1),xx_lim_D(1,2));
     yy_D = subs(y_D, x, xx_D);
 
-    xx_lim_E = [Pn(2,1) Pn(3,1)]
+    xx_lim_E = [Pn(2,1) Pn(3,1)];
     xx_E = linspace(xx_lim_E(1,1),xx_lim_E(1,2));
     yy_E = subs(y_E, x, xx_E);
 
-    xx_lim_F = [Pn(3,1) Pn(4,1) + 1]
+    xx_lim_F = [Pn(3,1) Pn(4,1) + 1];
     xx_F = linspace(xx_lim_F(1,1),xx_lim_F(1,2));
     yy_F = subs(y_F, x, xx_F);
 
-    xx_A_F = [xx_A xx_B xx_C xx_D xx_E xx_F]
-    yy_A_F = [yy_A yy_B yy_C yy_D yy_E yy_F]
+    xx_A_F = [xx_A xx_B xx_C xx_D xx_E xx_F];
+    yy_A_F = [yy_A yy_B yy_C yy_D yy_E yy_F];
 
     set(hplot,'xdata',xx_A_F);
     set(hplot,'ydata',yy_A_F);
@@ -369,7 +366,7 @@ function sliderPlot_x(hObject,event,hplot)
 end
 
 function sliderPlot_y(hObject,event,hplot)
-    global global_splines_data
+    global global_splines_data;
     n = get(hObject,'Value');
     
     switch global_splines_data{3}
@@ -400,7 +397,7 @@ function sliderPlot_y(hObject,event,hplot)
 end
 
 function menuSelection(hObject,event)
-    global global_splines_data
+    global global_splines_data;
     
     val = get(hObject,'Value');
     str = get(hObject,'String');
