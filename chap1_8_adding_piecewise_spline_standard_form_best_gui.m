@@ -149,7 +149,6 @@ function plotFirstPiecewiseSpline(yFuncCellArray)
     figure
 
     xx_lim = [global_splines_data{1}(1,1) - 1 global_splines_data{1}(1,8) + 1]
-    xx_all = linspace(xx_lim(1,1),xx_lim(1,2));
 
     %plotting partial initial piecewise curves
 
@@ -158,7 +157,6 @@ function plotFirstPiecewiseSpline(yFuncCellArray)
     yy_A = subs(y_A, x, xx_A);
     hplot = plot(xx_A, yy_A, 'b');
     global_splines_data{8} = hplot
-    
 
     hold on
     xx_lim_B = [Pn(2,1) Pn(3,1)]
@@ -316,10 +314,58 @@ function sliderPlot_x(hObject,event,hplot)
     
     xSliderValueTextUI = global_splines_data{6};
     xSliderValueTextUI.String = n;
+
     yFuncCellArray_A_B_C = computeFirstPiecewiseSpline()
+    Pn = [global_splines_data{1}(1,1:4)' global_splines_data{2}(1,1:4)']
+
+    syms x
+    y_A = yFuncCellArray_A_B_C{1};
+    y_B = yFuncCellArray_A_B_C{2};
+    y_C = yFuncCellArray_A_B_C{3};
+
+    xx_lim = [global_splines_data{1}(1,1) - 1 global_splines_data{1}(1,8) + 1]
+    
+    xx_lim_A = [Pn(1,1) - 1 Pn(2,1)]
+    xx_A = linspace(xx_lim(1,1),xx_lim_A(1,2));
+    yy_A = subs(y_A, x, xx_A);
+
+    xx_lim_B = [Pn(2,1) Pn(3,1)]
+    xx_B = linspace(xx_lim_B(1,1),xx_lim_B(1,2));
+    yy_B = subs(y_B, x, xx_B);
+
+    xx_lim_C = [Pn(3,1) Pn(4,1)]
+    xx_C = linspace(xx_lim_C(1,1),xx_lim_C(1,2));
+    yy_C = subs(y_C, x, xx_C);
+
+    xx_A_D = [xx_A xx_B xx_C]
+    yy_A_D = [yy_A yy_B yy_C]
+    
     yFuncCellArray_D_E_F = computeAdditionalPiecewiseSpline()
- %   set(hplot,'xdata',global_splines_data{1});
- %   drawnow;
+    Pn = [global_splines_data{1}(1,5:8)' global_splines_data{2}(1,5:8)']
+
+    syms x
+    y_D = yFuncCellArray_D_E_F{1};
+    y_E = yFuncCellArray_D_E_F{2};
+    y_F = yFuncCellArray_D_E_F{3};
+    
+    xx_lim_D = [Pn(1,1) Pn(2,1)]
+    xx_D = linspace(xx_lim_D(1,1),xx_lim_D(1,2));
+    yy_D = subs(y_D, x, xx_D);
+
+    xx_lim_E = [Pn(2,1) Pn(3,1)]
+    xx_E = linspace(xx_lim_E(1,1),xx_lim_E(1,2));
+    yy_E = subs(y_E, x, xx_E);
+
+    xx_lim_F = [Pn(3,1) Pn(4,1) + 1]
+    xx_F = linspace(xx_lim_F(1,1),xx_lim_F(1,2));
+    yy_F = subs(y_F, x, xx_F);
+
+    xx_A_F = [xx_A xx_B xx_C xx_D xx_E xx_F]
+    yy_A_F = [yy_A yy_B yy_C yy_D yy_E yy_F]
+
+    set(hplot,'xdata',xx_A_F);
+    set(hplot,'ydata',yy_A_F);
+    drawnow;
 end
 
 function sliderPlot_y(hObject,event,hplot)
