@@ -153,10 +153,6 @@ function plotFirstPiecewiseSpline(yFuncCellArray)
 
     %plotting partial initial piecewise curves
 
-    clear yy_A
-    clear yy_B
-    clear yy_C
-
     xx_lim_A = [Pn(1,1) - 1 Pn(2,1)]
     xx_A = linspace(xx_lim(1,1),xx_lim_A(1,2));
     yy_A = subs(y_A, x, xx_A);
@@ -261,10 +257,6 @@ function plotAdditionalPiecewiseSpline(yFuncCellArray)
 
     %plotting partial added piecewise curves
 
-    clear yy_D
-    clear yy_E
-    clear yy_F
-
     xx_lim_D = [Pn(1,1) Pn(2,1)]
     xx_D = linspace(xx_lim_D(1,1),xx_lim_D(1,2));
     yy_D = subs(y_D, x, xx_D);
@@ -324,8 +316,8 @@ function sliderPlot_x(hObject,event,hplot)
     
     xSliderValueTextUI = global_splines_data{6};
     xSliderValueTextUI.String = n;
-    %computeFirstPiecewiseSpline() not working ü
-    %computeAdditionalPiecewiseSpline()
+    yFuncCellArray_A_B_C = computeFirstPiecewiseSpline()
+    yFuncCellArray_D_E_F = computeAdditionalPiecewiseSpline()
  %   set(hplot,'xdata',global_splines_data{1});
  %   drawnow;
 end
