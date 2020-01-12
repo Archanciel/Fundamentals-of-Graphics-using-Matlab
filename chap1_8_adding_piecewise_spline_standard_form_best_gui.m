@@ -197,7 +197,6 @@ function yFuncCellArray = computeAdditionalPiecewiseSpline()
     % y_D, y_E and y_F functions
     
     %adding new 4 points piecewise spline
-    global SCATTER_POINT_SIZE
     global global_splines_data
 
     Pn = [global_splines_data{1}(1,5:8)' global_splines_data{2}(1,5:8)']
@@ -259,47 +258,6 @@ function plotAdditionalPiecewiseSpline(yFuncCellArray)
     y_D = yFuncCellArray{1};
     y_E = yFuncCellArray{2};
     y_F = yFuncCellArray{3};
-
-    C = [Pn(1,1)^3 Pn(1,1)^2 Pn(1,1) 1 0 0 0 0 0 0 0 0;
-         Pn(2,1)^3 Pn(2,1)^2 Pn(2,1) 1 0 0 0 0 0 0 0 0;
-         0 0 0 0 Pn(2,1)^3 Pn(2,1)^2 Pn(2,1) 1 0 0 0 0;
-         0 0 0 0 Pn(3,1)^3 Pn(3,1)^2 Pn(3,1) 1 0 0 0 0;
-         0 0 0 0 0 0 0 0 Pn(3,1)^3 Pn(3,1)^2 Pn(3,1) 1;
-         0 0 0 0 0 0 0 0 Pn(4,1)^3 Pn(4,1)^2 Pn(4,1) 1;
-         -3 * Pn(2,1)^2 -2 * Pn(2,1) -1 0 3 * Pn(2,1)^2 2 * Pn(2,1) 1 0 0 0 0 0;
-         0 0 0 0 -3 * Pn(3,1)^2 -2 * Pn(3,1) -1 0 3 * Pn(3,1)^2 2 * Pn(3,1) 1 0;
-         -6 * Pn(2,1) -2 0 0 6 * Pn(2,1) 2 0 0 0 0 0 0;
-         0 0 0 0 -6 * Pn(3,1) -2 0 0 6 * Pn(3,1) 2 0 0;
-         3 * Pn(1,1)^2 2 * Pn(1,1) 1 0 0 0 0 0 0 0 0 0;
-         0 0 0 0 0 0 0 0 3 * Pn(4,1)^2 2 * Pn(4,1) 1 0]
-    C_i = inv(C);
-
-    Y = [Pn(1,2);
-        Pn(2,2);
-        Pn(2,2);
-        Pn(3,2);
-        Pn(3,2);
-        Pn(4,2);
-        0;
-        0;
-        0;
-        0;
-        -2;
-        0];
-
-    A = C_i * Y;
-
-    syms x
-    y_D = A(1,1) * x^3 + A(2,1) * x^2 + A(3,1) * x + A(4,1);
-    y_E = A(5,1) * x^3 + A(6,1) * x^2 + A(7,1) * x + A(8,1);
-    y_F = A(9,1) * x^3 + A(10,1) * x^2 + A(11,1) * x + A(12,1);
-
-    fprintf("y_D")
-    vpa(y_D)
-    fprintf("y_E")
-    vpa(y_E)
-    fprintf("y_F")
-    vpa(y_F)
 
     %plotting partial added piecewise curves
 
@@ -366,10 +324,10 @@ function sliderPlot_x(hObject,event,hplot)
     
     xSliderValueTextUI = global_splines_data{6};
     xSliderValueTextUI.String = n;
+    %computeFirstPiecewiseSpline() not working ü
+    %computeAdditionalPiecewiseSpline()
  %   set(hplot,'xdata',global_splines_data{1});
  %   drawnow;
-%    computePlotFirstPiecewiseSpline() not working ü
-%    computePlotAdditionalPiecewiseSpline()
 end
 
 function sliderPlot_y(hObject,event,hplot)
