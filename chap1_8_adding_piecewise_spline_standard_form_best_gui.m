@@ -285,12 +285,6 @@ function sliderPlot_x(hObject,event,hplot)
     global global_splines_data;
     n = get(hObject,'Value');
     
-    if global_splines_data{3} == 'p1'
-        global_splines_data{1}(1,1) = n;
-    else
-        global_splines_data{1}(1,2) = n;
-    end
-
     switch global_splines_data{3}
         case 'P1'
             global_splines_data{1}(1,1) = n;
