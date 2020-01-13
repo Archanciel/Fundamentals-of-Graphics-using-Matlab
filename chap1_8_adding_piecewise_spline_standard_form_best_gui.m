@@ -11,6 +11,8 @@ global global_splines_data;% {1} --> curve points x coordinates
                            % {6} --> x slider text value reference 
                            % {7} --> y slider text value reference 
                            % {8} --> hplot reference
+                           % {9} --> scatter point reference
+                           % {10} --> point label array
                            
 % piecewise splines points initial coordinates
 
@@ -169,7 +171,7 @@ function plotFirstPiecewiseSpline(yFuncCellArray)
     yy_C = subs(y_C, x, xx_C);
     plot(xx_C, yy_C, 'm');
 
-    scatter(Pn(:,1),Pn(:,2),SCATTER_POINT_SIZE,'filled')
+    scatter(Pn(:,1),Pn(:,2),SCATTER_POINT_SIZE,'k','filled')
     text(Pn(1,1)+0.1, Pn(1,2)-0.1, 'P_1');
     text(Pn(2,1)+0.1, Pn(2,2)-0.1, 'P_2');
     text(Pn(3,1)+0.1, Pn(3,2)-0.1, 'P_3');
@@ -271,7 +273,7 @@ function plotAdditionalPiecewiseSpline(yFuncCellArray)
     yy_F = subs(y_F, x, xx_F);
     plot(xx_F, yy_F, 'g');
 
-    scatter(Pn(:,1),Pn(:,2),SCATTER_POINT_SIZE,'filled')
+    scatter(Pn(:,1),Pn(:,2),SCATTER_POINT_SIZE,'k','filled')
     text(Pn(1,1)-0.3, Pn(1,2)-0.3, 'P_5');
     text(Pn(2,1)+0.1, Pn(2,2)-0.1, 'P_6');
     text(Pn(3,1)+0.1, Pn(3,2)-0.1, 'P_7');
@@ -283,6 +285,8 @@ end
 
 function sliderPlot_x(hObject,event,hplot)
     global global_splines_data;
+    global SCATTER_POINT_SIZE;
+    
     n = get(hObject,'Value');
     
     switch global_splines_data{3}
@@ -332,6 +336,7 @@ function sliderPlot_x(hObject,event,hplot)
     yy_C = subs(y_C, x, xx_C);
     
     yFuncCellArray_D_E_F = computeAdditionalPiecewiseSpline()
+    Pn_first = Pn
     Pn = [global_splines_data{1}(1,5:8)' global_splines_data{2}(1,5:8)'];
 
     syms x
@@ -354,9 +359,26 @@ function sliderPlot_x(hObject,event,hplot)
     xx_A_F = [xx_A xx_B xx_C xx_D xx_E xx_F];
     yy_A_F = [yy_A yy_B yy_C yy_D yy_E yy_F];
 
+
     set(hplot,'xdata',xx_A_F);
     set(hplot,'ydata',yy_A_F);
     drawnow;
+
+    delete(findobj(gca, 'type', 'text'));    
+%    delete(findobj(gca, 'type', 'patch'));    
+    delete(findobj(gca,'SizeData', SCATTER_POINT_SIZE))
+    scatter(Pn(:,1),Pn(:,2),SCATTER_POINT_SIZE,'k','filled')
+    text(Pn(1,1)+0.1, Pn(1,2)-0.1, 'P_5');
+    text(Pn(2,1)+0.1, Pn(2,2)-0.1, 'P_6');
+    text(Pn(3,1)+0.1, Pn(3,2)-0.1, 'P_7'); 
+    text(Pn(4,1)+0.1, Pn(4,2)-0.1, 'P_8');
+    
+    Pn = Pn_first
+    scatter(Pn(:,1),Pn(:,2),SCATTER_POINT_SIZE,'k','filled')
+    text(Pn(1,1)+0.1, Pn(1,2)-0.1, 'P_1');
+    text(Pn(2,1)+0.1, Pn(2,2)-0.1, 'P_2');
+    text(Pn(3,1)+0.1, Pn(3,2)-0.1, 'P_3'); 
+    text(Pn(4,1)+0.1, Pn(4,2)-0.1, 'P_4');
 end
 
 function sliderPlot_y(hObject,event,hplot)
