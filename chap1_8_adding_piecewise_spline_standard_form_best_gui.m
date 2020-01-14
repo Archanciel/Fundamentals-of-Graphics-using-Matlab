@@ -151,29 +151,12 @@ function plotFirstPiecewiseSpline(yFuncCellArray)
     xx_lim = [global_splines_data{1}(1,1) - 1 global_splines_data{1}(1,8) + 1];
 
     %plotting partial initial piecewise curves
-
-    xx_lim_A = [Pn(1,1) - 1 Pn(2,1)]
-    xx_A = linspace(xx_lim(1,1),xx_lim_A(1,2));
-    yy_A = subs(y_A, x, xx_A);
-    hplot = plot(xx_A, yy_A, 'b');
-    global_splines_data{8} = hplot;
-
-    hold on
-    xx_lim_B = [Pn(2,1) Pn(3,1)]
-    xx_B = linspace(xx_lim_B(1,1),xx_lim_B(1,2));
-    yy_B = subs(y_B, x, xx_B);
-    plot(xx_B, yy_B, 'r');
-
-    xx_lim_C = [Pn(3,1) Pn(4,1)]
-    xx_C = linspace(xx_lim_C(1,1),xx_lim_C(1,2));
-    yy_C = subs(y_C, x, xx_C);
-    plot(xx_C, yy_C, 'm');
-
-    scatter(Pn(:,1),Pn(:,2),SCATTER_POINT_SIZE,'k','filled')
-    text(Pn(1,1)+0.1, Pn(1,2)-0.1, 'P_1');
-    text(Pn(2,1)+0.1, Pn(2,2)-0.1, 'P_2');
-    text(Pn(3,1)+0.1, Pn(3,2)-0.1, 'P_3');
-    text(Pn(4,1)+0.1, Pn(4,2)-0.1, 'P_4');
+    points_labels{1} = 'P_1';
+    points_labels{2} = 'P_2';
+    points_labels{3} = 'P_3';
+    points_labels{4} = 'P_4';
+    
+    plotPartialPiecewiseSpline(Pn, xx_lim, y_A, y_B, y_C, points_labels)
 
     xlabel('x')
     ylabel('y')
@@ -184,6 +167,39 @@ function plotFirstPiecewiseSpline(yFuncCellArray)
     opt.fontsize = 8;
 
     centeraxes(gca,opt);
+end
+
+function plotPartialPiecewiseSpline(Pn, xx_lim, y_ONE, y_TWO, y_THREE, points_labels)
+    global SCATTER_POINT_SIZE
+    global global_splines_data;
+
+    syms x
+    
+    xx_lim_ONE = [Pn(1,1) - 1 Pn(2,1)]
+    xx_ONE = linspace(xx_lim(1,1),xx_lim_ONE(1,2));
+    yy_ONE = subs(y_ONE, x, xx_ONE);
+    hplot = plot(xx_ONE, yy_ONE, 'b');
+    
+    if size(global_splines_data,2) < 8
+        global_splines_data{8} = hplot;
+    end
+
+    hold on
+    xx_lim_TWO = [Pn(2,1) Pn(3,1)]
+    xx_TWO = linspace(xx_lim_TWO(1,1),xx_lim_TWO(1,2));
+    yy_TWO = subs(y_TWO, x, xx_TWO);
+    plot(xx_TWO, yy_TWO, 'r');
+
+    xx_lim_THREE = [Pn(3,1) Pn(4,1)]
+    xx_THREE = linspace(xx_lim_THREE(1,1),xx_lim_THREE(1,2));
+    yy_THREE = subs(y_THREE, x, xx_THREE);
+    plot(xx_THREE, yy_THREE, 'm');
+
+    scatter(Pn(:,1),Pn(:,2),SCATTER_POINT_SIZE,'k','filled')
+    text(Pn(1,1)+0.1, Pn(1,2)-0.1, points_labels{1});
+    text(Pn(2,1)+0.1, Pn(2,2)-0.1, points_labels{2});
+    text(Pn(3,1)+0.1, Pn(3,2)-0.1, points_labels{3});
+    text(Pn(4,1)+0.1, Pn(4,2)-0.1, points_labels{4});
 end
 
 function yFuncCellArray = computeAdditionalPiecewiseSpline()
@@ -356,7 +372,6 @@ function sliderPlot_x(hObject,event,hplot)
 
     xx_A_F = [xx_A xx_B xx_C xx_D xx_E xx_F];
     yy_A_F = [yy_A yy_B yy_C yy_D yy_E yy_F];
-
 
     set(hplot,'xdata',xx_A_F);
     set(hplot,'ydata',yy_A_F);
