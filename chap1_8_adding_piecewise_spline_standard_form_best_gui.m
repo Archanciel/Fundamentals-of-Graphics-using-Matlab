@@ -11,8 +11,6 @@ global global_splines_data;% {1} --> curve points x coordinates
                            % {6} --> x slider text value reference 
                            % {7} --> y slider text value reference 
                            % {8} --> hplot reference
-                           % {9} --> scatter point reference
-                           % {10} --> point label array
                            
 % piecewise splines points initial coordinates
 
@@ -365,8 +363,7 @@ function sliderPlot_x(hObject,event,hplot)
     drawnow;
 
     delete(findobj(gca, 'type', 'text'));    
-%    delete(findobj(gca, 'type', 'patch'));    
-    delete(findobj(gca,'SizeData', SCATTER_POINT_SIZE))
+    delete(findobj(gca, 'type', 'scatter'));    
     scatter(Pn(:,1),Pn(:,2),SCATTER_POINT_SIZE,'k','filled')
     text(Pn(1,1)+0.1, Pn(1,2)-0.1, 'P_5');
     text(Pn(2,1)+0.1, Pn(2,2)-0.1, 'P_6');
