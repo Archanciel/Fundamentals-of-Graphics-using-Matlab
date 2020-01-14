@@ -156,7 +156,11 @@ function plotFirstPiecewiseSpline(yFuncCellArray)
     points_labels{3} = 'P_3';
     points_labels{4} = 'P_4';
     
-    plotPartialPiecewiseSpline(Pn, xx_lim, y_A, y_B, y_C, points_labels)
+    spline_colors{1} = 'b'
+    spline_colors{2} = 'r'
+    spline_colors{3} = 'm'
+    
+    plotPartialPiecewiseSpline(Pn, xx_lim, y_A, y_B, y_C, points_labels, spline_colors)
 
     xlabel('x')
     ylabel('y')
@@ -169,7 +173,7 @@ function plotFirstPiecewiseSpline(yFuncCellArray)
     centeraxes(gca,opt);
 end
 
-function plotPartialPiecewiseSpline(Pn, xx_lim, y_ONE, y_TWO, y_THREE, points_labels)
+function plotPartialPiecewiseSpline(Pn, xx_lim, y_ONE, y_TWO, y_THREE, points_labels, spline_colors)
     global SCATTER_POINT_SIZE
     global global_splines_data;
 
@@ -178,7 +182,7 @@ function plotPartialPiecewiseSpline(Pn, xx_lim, y_ONE, y_TWO, y_THREE, points_la
     xx_lim_ONE = [Pn(1,1) - 1 Pn(2,1)]
     xx_ONE = linspace(xx_lim(1,1),xx_lim_ONE(1,2));
     yy_ONE = subs(y_ONE, x, xx_ONE);
-    hplot = plot(xx_ONE, yy_ONE, 'b');
+    hplot = plot(xx_ONE, yy_ONE, spline_colors{1});
     
     if size(global_splines_data,2) < 8
         global_splines_data{8} = hplot;
@@ -188,12 +192,12 @@ function plotPartialPiecewiseSpline(Pn, xx_lim, y_ONE, y_TWO, y_THREE, points_la
     xx_lim_TWO = [Pn(2,1) Pn(3,1)]
     xx_TWO = linspace(xx_lim_TWO(1,1),xx_lim_TWO(1,2));
     yy_TWO = subs(y_TWO, x, xx_TWO);
-    plot(xx_TWO, yy_TWO, 'r');
+    plot(xx_TWO, yy_TWO, spline_colors{2});
 
     xx_lim_THREE = [Pn(3,1) Pn(4,1)]
     xx_THREE = linspace(xx_lim_THREE(1,1),xx_lim_THREE(1,2));
     yy_THREE = subs(y_THREE, x, xx_THREE);
-    plot(xx_THREE, yy_THREE, 'm');
+    plot(xx_THREE, yy_THREE, spline_colors{3});
 
     scatter(Pn(:,1),Pn(:,2),SCATTER_POINT_SIZE,'k','filled')
     text(Pn(1,1)+0.1, Pn(1,2)-0.1, points_labels{1});
@@ -271,27 +275,18 @@ function plotAdditionalPiecewiseSpline(yFuncCellArray)
 
     %plotting partial added piecewise curves
 
+    points_labels{1} = 'P_5';
+    points_labels{2} = 'P_6';
+    points_labels{3} = 'P_7';
+    points_labels{4} = 'P_8';
+    
+    spline_colors{1} = 'k'
+    spline_colors{2} = 'r'
+    spline_colors{3} = 'g'
+
     xx_lim_D = [Pn(1,1) Pn(2,1)]
-    xx_D = linspace(xx_lim_D(1,1),xx_lim_D(1,2));
-    yy_D = subs(y_D, x, xx_D);
-    plot(xx_D, yy_D, 'k');
-
-    hold on
-    xx_lim_E = [Pn(2,1) Pn(3,1)]
-    xx_E = linspace(xx_lim_E(1,1),xx_lim_E(1,2));
-    yy_E = subs(y_E, x, xx_E);
-    plot(xx_E, yy_E, 'r');
-
-    xx_lim_F = [Pn(3,1) Pn(4,1) + 1]
-    xx_F = linspace(xx_lim_F(1,1),xx_lim_F(1,2));
-    yy_F = subs(y_F, x, xx_F);
-    plot(xx_F, yy_F, 'g');
-
-    scatter(Pn(:,1),Pn(:,2),SCATTER_POINT_SIZE,'k','filled')
-    text(Pn(1,1)-0.3, Pn(1,2)-0.3, 'P_5');
-    text(Pn(2,1)+0.1, Pn(2,2)-0.1, 'P_6');
-    text(Pn(3,1)+0.1, Pn(3,2)-0.1, 'P_7');
-    text(Pn(4,1)+0.1, Pn(4,2)-0.1, 'P_8');
+    
+    plotPartialPiecewiseSpline(Pn, xx_lim_D, y_D, y_E, y_F, points_labels, spline_colors)
 end
 
 
