@@ -362,8 +362,10 @@ function sliderPlot_x(hObject,event,hplot)
     set(hplot,'ydata',yy_A_F);
     drawnow;
 
-    delete(findobj(gca, 'type', 'text'));    
-    delete(findobj(gca, 'type', 'scatter'));    
+    delete(findobj(gca, 'type', 'scatter')); % deleting scattered points    
+    delete(findobj(gca, 'type', 'text')); % deleting point labels
+
+    % redrawing scattered points and their labels
     scatter(Pn(:,1),Pn(:,2),SCATTER_POINT_SIZE,'k','filled')
     text(Pn(1,1)+0.1, Pn(1,2)-0.1, 'P_5');
     text(Pn(2,1)+0.1, Pn(2,2)-0.1, 'P_6');
