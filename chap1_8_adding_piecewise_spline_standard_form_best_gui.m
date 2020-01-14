@@ -229,6 +229,14 @@ function plotPartialPiecewiseSpline(Pn, xx_lim, y_ONE, y_TWO, y_THREE, points_la
     text(Pn(4,1)+0.1, Pn(4,2)-0.1, points_labels{4});
 end
 
+function plotPointsAndLabels()
+    scatter(Pn(:,1),Pn(:,2),SCATTER_POINT_SIZE,'k','filled')
+    text(Pn(1,1)+0.1, Pn(1,2)-0.1, points_labels{1});
+    text(Pn(2,1)+0.1, Pn(2,2)-0.1, points_labels{2});
+    text(Pn(3,1)+0.1, Pn(3,2)-0.1, points_labels{3});
+    text(Pn(4,1)+0.1, Pn(4,2)-0.1, points_labels{4});
+end
+
 function yFuncCellArray = computeAdditionalPiecewiseSpline()
     % Returns a 3 elements cell array containing piecewise splines
     % y_D, y_E and y_F functions
@@ -401,6 +409,7 @@ function sliderPlot_x(hObject,event,hplot)
     
     plotPartialPiecewiseSpline(Pn, xx_lim_D, y_D, y_E, y_F, points_labels, spline_colors)
 
+    % put that in specific func and use global data for labels !
     delete(findobj(gca, 'type', 'scatter')); % deleting scattered points    
     delete(findobj(gca, 'type', 'text')); % deleting point labels
 
