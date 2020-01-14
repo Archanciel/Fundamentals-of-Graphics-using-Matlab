@@ -348,7 +348,7 @@ function sliderPlot_x(hObject,event,hplot)
     y_C = yFuncCellArray_A_B_C{3};
 
     xx_lim = [global_splines_data{1}(1,1) - 1 global_splines_data{1}(1,8) + 1];
-    
+%{    
     xx_lim_A = [Pn(1,1) - 1 Pn(2,1)];
     xx_A = linspace(xx_lim(1,1),xx_lim_A(1,2));
     yy_A = subs(y_A, x, xx_A);
@@ -360,7 +360,12 @@ function sliderPlot_x(hObject,event,hplot)
     xx_lim_C = [Pn(3,1) Pn(4,1)];
     xx_C = linspace(xx_lim_C(1,1),xx_lim_C(1,2));
     yy_C = subs(y_C, x, xx_C);
+%}
+    points_labels = global_splines_data{9} 
+    spline_colors = global_splines_data{11} 
     
+    plotPartialPiecewiseSpline(Pn, xx_lim, y_A, y_B, y_C, points_labels, spline_colors)
+
     yFuncCellArray_D_E_F = computeAdditionalPiecewiseSpline()
     Pn_first = Pn
     Pn = [global_splines_data{1}(1,5:8)' global_splines_data{2}(1,5:8)'];
@@ -369,7 +374,7 @@ function sliderPlot_x(hObject,event,hplot)
     y_D = yFuncCellArray_D_E_F{1};
     y_E = yFuncCellArray_D_E_F{2};
     y_F = yFuncCellArray_D_E_F{3};
-    
+%{    
     xx_lim_D = [Pn(1,1) Pn(2,1)];
     xx_D = linspace(xx_lim_D(1,1),xx_lim_D(1,2));
     yy_D = subs(y_D, x, xx_D);
@@ -388,6 +393,13 @@ function sliderPlot_x(hObject,event,hplot)
     set(hplot,'xdata',xx_A_F);
     set(hplot,'ydata',yy_A_F);
     drawnow;
+%}
+    points_labels = global_splines_data{10} 
+    spline_colors = global_splines_data{12} 
+
+    xx_lim_D = [Pn(1,1) Pn(2,1)]
+    
+    plotPartialPiecewiseSpline(Pn, xx_lim_D, y_D, y_E, y_F, points_labels, spline_colors)
 
     delete(findobj(gca, 'type', 'scatter')); % deleting scattered points    
     delete(findobj(gca, 'type', 'text')); % deleting point labels
@@ -405,6 +417,7 @@ function sliderPlot_x(hObject,event,hplot)
     text(Pn(2,1)+0.1, Pn(2,2)-0.1, 'P_2');
     text(Pn(3,1)+0.1, Pn(3,2)-0.1, 'P_3'); 
     text(Pn(4,1)+0.1, Pn(4,2)-0.1, 'P_4');
+
 end
 
 function sliderPlot_y(hObject,event,hplot)
