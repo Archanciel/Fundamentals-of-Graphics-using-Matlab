@@ -3,6 +3,7 @@ clear all
 global SCATTER_POINT_SIZE
 SCATTER_POINT_SIZE = 15
 
+
 global global_splines_data;% {1} --> curve points x coordinates
                            % {2} --> curve points y coordinates
                            % {3} --> current menu selection value 
@@ -11,7 +12,35 @@ global global_splines_data;% {1} --> curve points x coordinates
                            % {6} --> x slider text value reference 
                            % {7} --> y slider text value reference 
                            % {8} --> hplot reference
-                           
+                           % {9} --> initial piecewise spline points_labels
+                           % {10} --> additional piecewise spline points_labels
+                           % {11} --> initial piecewise spline colors
+                           % {12} --> additional piecewise spline colors
+
+points_labels{1} = 'P_5';
+points_labels{2} = 'P_6';
+points_labels{3} = 'P_7';
+points_labels{4} = 'P_8';
+global_splines_data{10} = points_labels
+
+clear points_labels
+points_labels{1} = 'P_1';
+points_labels{2} = 'P_2';
+points_labels{3} = 'P_3';
+points_labels{4} = 'P_4';
+global_splines_data{9} = points_labels
+
+spline_colors{1} = 'b'
+spline_colors{2} = 'r'
+spline_colors{3} = 'm'
+global_splines_data{11} = spline_colors
+
+clear spline_colors
+spline_colors{1} = 'k'
+spline_colors{2} = 'r'
+spline_colors{3} = 'g'
+global_splines_data{12} = spline_colors
+
 % piecewise splines points initial coordinates
 
 p1 = [0 1]
@@ -151,14 +180,8 @@ function plotFirstPiecewiseSpline(yFuncCellArray)
     xx_lim = [global_splines_data{1}(1,1) - 1 global_splines_data{1}(1,8) + 1];
 
     %plotting partial initial piecewise curves
-    points_labels{1} = 'P_1';
-    points_labels{2} = 'P_2';
-    points_labels{3} = 'P_3';
-    points_labels{4} = 'P_4';
-    
-    spline_colors{1} = 'b'
-    spline_colors{2} = 'r'
-    spline_colors{3} = 'm'
+    points_labels = global_splines_data{9} 
+    spline_colors = global_splines_data{11} 
     
     plotPartialPiecewiseSpline(Pn, xx_lim, y_A, y_B, y_C, points_labels, spline_colors)
 
@@ -275,14 +298,8 @@ function plotAdditionalPiecewiseSpline(yFuncCellArray)
 
     %plotting partial added piecewise curves
 
-    points_labels{1} = 'P_5';
-    points_labels{2} = 'P_6';
-    points_labels{3} = 'P_7';
-    points_labels{4} = 'P_8';
-    
-    spline_colors{1} = 'k'
-    spline_colors{2} = 'r'
-    spline_colors{3} = 'g'
+    points_labels = global_splines_data{10} 
+    spline_colors = global_splines_data{12} 
 
     xx_lim_D = [Pn(1,1) Pn(2,1)]
     
