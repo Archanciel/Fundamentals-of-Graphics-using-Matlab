@@ -11,24 +11,27 @@ global global_splines_data;% {1} --> curve points x coordinates
                            % {5} --> y slider reference 
                            % {6} --> x slider text value reference 
                            % {7} --> y slider text value reference 
-                           % {8} --> hplot reference
+                           % {8} --> hplot reference NO LONGER USED !
                            % {9} --> initial piecewise spline points_labels
                            % {10} --> additional piecewise spline points_labels
                            % {11} --> initial piecewise spline colors
                            % {12} --> additional piecewise spline colors
+                           % {13} --> first piecewise spline line handles
+                           % {14} --> additional piecewise spline line handles
+
+points_labels{1} = 'P_1';
+points_labels{2} = 'P_2';
+points_labels{3} = 'P_3';
+points_labels{4} = 'P_4';
+global_splines_data{9} = points_labels
+
+clear points_labels
 
 points_labels{1} = 'P_5';
 points_labels{2} = 'P_6';
 points_labels{3} = 'P_7';
 points_labels{4} = 'P_8';
 global_splines_data{10} = points_labels
-
-clear points_labels
-points_labels{1} = 'P_1';
-points_labels{2} = 'P_2';
-points_labels{3} = 'P_3';
-points_labels{4} = 'P_4';
-global_splines_data{9} = points_labels
 
 spline_colors{1} = 'b'
 spline_colors{2} = 'r'
@@ -180,14 +183,15 @@ function plotFirstPiecewiseSpline(yFuncCellArray)
     xx_lim = [global_splines_data{1}(1,1) - 1 global_splines_data{1}(1,8) + 1];
 
     %plotting partial initial piecewise curves
-    points_labels = global_splines_data{9} 
-    spline_colors = global_splines_data{11} 
+    points_labels = global_splines_data{9}; 
+    spline_colors = global_splines_data{11}; 
     
-    plotPartialPiecewiseSpline(Pn, xx_lim, y_A, y_B, y_C, points_labels, spline_colors)
-
-    xlabel('x')
-    ylabel('y')
-    title(["Piecewise spline + 1" "standard form - " "partial curves"])
+    plottedFirstPiecewiseSplines = plotPartialPiecewiseSpline(Pn, xx_lim, y_A, y_B, y_C, points_labels, spline_colors);
+    global_splines_data{13} = plottedFirstPiecewiseSplines;
+    
+    xlabel('x');
+    ylabel('y');
+    title(["Piecewise spline + 1" "standard form - " "partial curves"]);
 
     set(gca,'ylim',[-5 10],'xlim',[xx_lim(1,1) xx_lim(1,2)],'xtick',xx_lim(1,1):xx_lim(1,2),'ytick',-5:10)
     opt.fontname = 'helvetica';
@@ -196,31 +200,29 @@ function plotFirstPiecewiseSpline(yFuncCellArray)
     centeraxes(gca,opt);
 end
 
-function plotPartialPiecewiseSpline(Pn, xx_lim, y_ONE, y_TWO, y_THREE, points_labels, spline_colors)
+function plottedPiecewiseSplines = plotPartialPiecewiseSpline(Pn, xx_lim, y_ONE, y_TWO, y_THREE, points_labels, spline_colors)
+    %Returns handles on the plotted piecewise splines
+    %so that they can be deleted before redrawing them !
     global SCATTER_POINT_SIZE
     global global_splines_data;
-
+    
     syms x
     
     xx_lim_ONE = [Pn(1,1) - 1 Pn(2,1)]
     xx_ONE = linspace(xx_lim(1,1),xx_lim_ONE(1,2));
     yy_ONE = subs(y_ONE, x, xx_ONE);
-    hplot = plot(xx_ONE, yy_ONE, spline_colors{1});
+    plottedPiecewiseSplines{1} = plot(xx_ONE, yy_ONE, spline_colors{1});
     
-    if size(global_splines_data,2) < 8
-        global_splines_data{8} = hplot;
-    end
-
     hold on
     xx_lim_TWO = [Pn(2,1) Pn(3,1)]
     xx_TWO = linspace(xx_lim_TWO(1,1),xx_lim_TWO(1,2));
     yy_TWO = subs(y_TWO, x, xx_TWO);
-    plot(xx_TWO, yy_TWO, spline_colors{2});
+    plottedPiecewiseSplines{2} = plot(xx_TWO, yy_TWO, spline_colors{2});
 
     xx_lim_THREE = [Pn(3,1) Pn(4,1)]
     xx_THREE = linspace(xx_lim_THREE(1,1),xx_lim_THREE(1,2));
     yy_THREE = subs(y_THREE, x, xx_THREE);
-    plot(xx_THREE, yy_THREE, spline_colors{3});
+    plottedPiecewiseSplines{3} = plot(xx_THREE, yy_THREE, spline_colors{3});
 
     scatter(Pn(:,1),Pn(:,2),SCATTER_POINT_SIZE,'k','filled')
     text(Pn(1,1)+0.1, Pn(1,2)-0.1, points_labels{1});
@@ -306,12 +308,13 @@ function plotAdditionalPiecewiseSpline(yFuncCellArray)
 
     %plotting partial added piecewise curves
 
-    points_labels = global_splines_data{10} 
-    spline_colors = global_splines_data{12} 
+    points_labels = global_splines_data{10}; 
+    spline_colors = global_splines_data{12}; 
 
-    xx_lim_D = [Pn(1,1) Pn(2,1)]
+    xx_lim_D = [Pn(1,1) Pn(2,1)];
     
-    plotPartialPiecewiseSpline(Pn, xx_lim_D, y_D, y_E, y_F, points_labels, spline_colors)
+    plottedAdditionalPiecewiseSplines = plotPartialPiecewiseSpline(Pn, xx_lim_D, y_D, y_E, y_F, points_labels, spline_colors);
+    global_splines_data{14} = plottedAdditionalPiecewiseSplines;
 end
 
 
@@ -356,23 +359,11 @@ function sliderPlot_x(hObject,event,hplot)
     y_C = yFuncCellArray_A_B_C{3};
 
     xx_lim = [global_splines_data{1}(1,1) - 1 global_splines_data{1}(1,8) + 1];
-%{    
-    xx_lim_A = [Pn(1,1) - 1 Pn(2,1)];
-    xx_A = linspace(xx_lim(1,1),xx_lim_A(1,2));
-    yy_A = subs(y_A, x, xx_A);
-
-    xx_lim_B = [Pn(2,1) Pn(3,1)];
-    xx_B = linspace(xx_lim_B(1,1),xx_lim_B(1,2));
-    yy_B = subs(y_B, x, xx_B);
-
-    xx_lim_C = [Pn(3,1) Pn(4,1)];
-    xx_C = linspace(xx_lim_C(1,1),xx_lim_C(1,2));
-    yy_C = subs(y_C, x, xx_C);
-%}
     points_labels = global_splines_data{9} 
     spline_colors = global_splines_data{11} 
     
-    plotPartialPiecewiseSpline(Pn, xx_lim, y_A, y_B, y_C, points_labels, spline_colors)
+    deletePartialPiecewiseSpline(global_splines_data{13});
+    global_splines_data{13} = plotPartialPiecewiseSpline(Pn, xx_lim, y_A, y_B, y_C, points_labels, spline_colors)
 
     yFuncCellArray_D_E_F = computeAdditionalPiecewiseSpline()
     Pn_first = Pn
@@ -382,32 +373,13 @@ function sliderPlot_x(hObject,event,hplot)
     y_D = yFuncCellArray_D_E_F{1};
     y_E = yFuncCellArray_D_E_F{2};
     y_F = yFuncCellArray_D_E_F{3};
-%{    
-    xx_lim_D = [Pn(1,1) Pn(2,1)];
-    xx_D = linspace(xx_lim_D(1,1),xx_lim_D(1,2));
-    yy_D = subs(y_D, x, xx_D);
-
-    xx_lim_E = [Pn(2,1) Pn(3,1)];
-    xx_E = linspace(xx_lim_E(1,1),xx_lim_E(1,2));
-    yy_E = subs(y_E, x, xx_E);
-
-    xx_lim_F = [Pn(3,1) Pn(4,1) + 1];
-    xx_F = linspace(xx_lim_F(1,1),xx_lim_F(1,2));
-    yy_F = subs(y_F, x, xx_F);
-
-    xx_A_F = [xx_A xx_B xx_C xx_D xx_E xx_F];
-    yy_A_F = [yy_A yy_B yy_C yy_D yy_E yy_F];
-
-    set(hplot,'xdata',xx_A_F);
-    set(hplot,'ydata',yy_A_F);
-    drawnow;
-%}
     points_labels = global_splines_data{10} 
     spline_colors = global_splines_data{12} 
 
     xx_lim_D = [Pn(1,1) Pn(2,1)]
     
-    plotPartialPiecewiseSpline(Pn, xx_lim_D, y_D, y_E, y_F, points_labels, spline_colors)
+    deletePartialPiecewiseSpline(global_splines_data{14});
+    global_splines_data{14} = plotPartialPiecewiseSpline(Pn, xx_lim_D, y_D, y_E, y_F, points_labels, spline_colors)
 
     % put that in specific func and use global data for labels !
     delete(findobj(gca, 'type', 'scatter')); % deleting scattered points    
@@ -427,6 +399,14 @@ function sliderPlot_x(hObject,event,hplot)
     text(Pn(3,1)+0.1, Pn(3,2)-0.1, 'P_3'); 
     text(Pn(4,1)+0.1, Pn(4,2)-0.1, 'P_4');
 
+end
+
+function deletePartialPiecewiseSpline(plottedPiecewiseSplinesCell)
+    splineNumber = size(plottedPiecewiseSplinesCell, 2)
+    
+    for i = 1:splineNumber
+        delete(plottedPiecewiseSplinesCell{i})
+    end
 end
 
 function sliderPlot_y(hObject,event,hplot)
