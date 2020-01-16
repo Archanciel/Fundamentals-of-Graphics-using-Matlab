@@ -12,20 +12,22 @@ global global_splines_data;% {1} --> curve points x coordinates
                            % {6} --> x slider text value reference 
                            % {7} --> y slider text value reference 
                            % {8} --> NO LONGER USED !
-                           % {9} --> initial piecewise spline points_labels
-                           % {10} --> additional piecewise spline points_labels
+                           % {9} --> initial piecewise spline points_labels strings
+                           % {10} --> additional piecewise spline points_labels strings
                            % {11} --> initial piecewise spline colors
                            % {12} --> additional piecewise spline colors
                            % {13} --> first piecewise spline line handles
                            % {14} --> additional piecewise spline line handles
                            % {15} --> initial piecewise spline point label handles
                            % {16} --> additional piecewise spline point label handles
+                           % {17} --> initial piecewise spline scattered point handles
+                           % {18} --> additional piecewise spline scattered point handles
 
 points_labels{1} = 'P_1';
 points_labels{2} = 'P_2';
 points_labels{3} = 'P_3';
 points_labels{4} = 'P_4';
-global_splines_data{9} = points_labels
+global_splines_data{9} = points_labels;
 
 clear points_labels
 
@@ -33,49 +35,51 @@ points_labels{1} = 'P_5';
 points_labels{2} = 'P_6';
 points_labels{3} = 'P_7';
 points_labels{4} = 'P_8';
-global_splines_data{10} = points_labels
+global_splines_data{10} = points_labels;
 
 spline_colors{1} = 'b'
 spline_colors{2} = 'r'
 spline_colors{3} = 'm'
-global_splines_data{11} = spline_colors
+global_splines_data{11} = spline_colors;
 
 clear spline_colors
 spline_colors{1} = 'k'
 spline_colors{2} = 'r'
 spline_colors{3} = 'g'
-global_splines_data{12} = spline_colors
+global_splines_data{12} = spline_colors;
 
 % piecewise splines points initial coordinates
 
-p1 = [0 1]
-p2 = [2 2]
-p3 = [5 0]
-p4 = [8 0]
+p1 = [0 1];
+p2 = [2 2];
+p3 = [5 0];
+p4 = [8 0];
 
-P_1_4 = [p1;p2;p3;p4]
+P_1_4 = [p1;p2;p3;p4];
 
 %added piecewise spline points. Must be located here so plot x axis limit
 %can account for p8 x value !
-p5 = [8 0]
-p6 = [9 -1]
-p7 = [10 3]
-p8 = [11 2]
-P_5_8 = [p5;p6;p7;p8]
+p5 = [8 0];
+p6 = [9 -1];
+p7 = [10 3];
+p8 = [11 2];
+P_5_8 = [p5;p6;p7;p8];
 
 % initializing the global spline_data variable (for use by ui callback functions)
 global_splines_data{1} = [P_1_4(:,1)' P_5_8(:,1)']; % curve points x coordinates
 global_splines_data{2} = [P_1_4(:,2)' P_5_8(:,2)']; % curve points y coordinates
 global_splines_data{3} = 'P1';   % initial value of menu 
 
-yFuncCellArray = computeFirstPiecewiseSpline()
-plotFirstPiecewiseSpline(yFuncCellArray)
+yFuncCellArray = computeFirstPiecewiseSpline();
+plotFirstPiecewiseSpline(yFuncCellArray);
 
-yFuncCellArray = computeAdditionalPiecewiseSpline()
-plotAdditionalPiecewiseSpline(yFuncCellArray)
-addUI()
+yFuncCellArray = computeAdditionalPiecewiseSpline();
+plotAdditionalPiecewiseSpline(yFuncCellArray);
+addUI();
 
 function addUI()
+    % Adds UI controls
+    
     global global_splines_data;
 
     SLIDER_POS_X = 150
@@ -117,6 +121,7 @@ end
 function yFuncCellArray = computeFirstPiecewiseSpline()
     % Returns a 3 elements cell array containing piecewise splines
     % y_A, y_B and y_C functions
+    
     global global_splines_data;
 
     Pn = [global_splines_data{1}(1,1:4)' global_splines_data{2}(1,1:4)'];
@@ -168,7 +173,7 @@ function yFuncCellArray = computeFirstPiecewiseSpline()
 end
 
 function plotFirstPiecewiseSpline(yFuncCellArray)
-    global SCATTER_POINT_SIZE
+    global SCATTER_POINT_SIZE;
     global global_splines_data;
 
     Pn = [global_splines_data{1}(1,1:4)' global_splines_data{2}(1,1:4)'];
@@ -191,8 +196,7 @@ function plotFirstPiecewiseSpline(yFuncCellArray)
     isAdditionalSpline = 0 % first point label will be shifted to avoid overwritting
                     % last point label of initial piecewise spline
     plottedFirstPiecewiseSplines = plotPartialPiecewiseSpline(Pn, xx_lim, y_A, y_B, y_C, points_labels, spline_colors, isAdditionalSpline);
-    global_splines_data{13} = plottedFirstPiecewiseSplines(1:3);
-    global_splines_data{15} = plottedFirstPiecewiseSplines(4);
+    global_splines_data{13} = plottedFirstPiecewiseSplines;
     
     xlabel('x');
     ylabel('y');
@@ -208,7 +212,7 @@ end
 function plottedPiecewiseSplines = plotPartialPiecewiseSpline(Pn, xx_lim, y_ONE, y_TWO, y_THREE, points_labels, spline_colors, isAdditionalSpline)
     %Returns handles on the plotted piecewise splines
     %so that they can be deleted before redrawing them !
-    global SCATTER_POINT_SIZE
+    global SCATTER_POINT_SIZE;
     global global_splines_data;
     
     syms x;
@@ -229,37 +233,73 @@ function plottedPiecewiseSplines = plotPartialPiecewiseSpline(Pn, xx_lim, y_ONE,
     yy_THREE = subs(y_THREE, x, xx_THREE);
     plottedPiecewiseSplines{3} = plot(xx_THREE, yy_THREE, spline_colors{3});
 
-    pointLabels = plotPointsAndLabels(Pn, points_labels, isAdditionalSpline)
-    plottedPiecewiseSplines{4} = pointLabels
+    if size(global_splines_data, 2) >= 16
+        if isAdditionalSpline == 0
+            pointLabelHandlesToDelete = global_splines_data{15};
+        else
+            pointLabelHandlesToDelete = global_splines_data{16};
+        end
+    else
+        pointLabelHandlesToDelete = {};
+    end
+
+    if size(global_splines_data, 2) >= 18
+        if isAdditionalSpline == 0
+            scatteredPointHandleToDelete = global_splines_data{17};
+        else
+            scatteredPointHandleToDelete = global_splines_data{18};
+        end
+    else
+        scatteredPointHandleToDelete = {};
+    end
+
+    [newPointLabelHandles, newScatteredPointHandle] = plotPointsAndLabels(Pn,... 
+                                                                          points_labels,...
+                                                                          isAdditionalSpline,...
+                                                                          pointLabelHandlesToDelete,...
+                                                                          scatteredPointHandleToDelete);
+    
+    if isAdditionalSpline == 0
+        global_splines_data{15} = newPointLabelHandles;
+        global_splines_data{17} = newScatteredPointHandle;
+    else
+        global_splines_data{16} = newPointLabelHandles;
+        global_splines_data{18} = newScatteredPointHandle;
+    end
 end
 
-function pointLabels = plotPointsAndLabels(Pn, points_labels, isAdditionalSpline)
+function [newPointLabelHandles, newScatteredPointHandle] = plotPointsAndLabels(Pn,...
+                                                                                pointsLabelStrings,...
+                                                                                isAdditionalSpline,...
+                                                                                pointsLabelHandles,...
+                                                                                scatteredPointsHandle)
     % isAdditionalSpline argument == 1 indicaten that the first point label of the
     % additional spline must be shifted in order to avoid overwritting the
     % last point initial sline label
-    % isAdditionalSpline argument == 0 indicates that all points and their
-    % labels can be deleted before being redrawn
     %
-    % Returns pointLabels so they can be deleted before being redrawn
-    global SCATTER_POINT_SIZE
+    % Returns newPointLabelHandles so they can be deleted before being redrawn
+    % and newSscatteredPointHandle which hosts the handle returned by the scatter
+    % function
 
-    if isAdditionalSpline == 0
-        delete(findobj(gca, 'type', 'scatter')); % deleting scattered points    
-%        delete(findobj(gca, 'type', 'text')); % deleting point labels
-        deletePointLabels(points_labels)
-    end
+    global SCATTER_POINT_SIZE;
+ 
+    deleteScatteredPoints(scatteredPointsHandle);
+    deletePointLabels(pointsLabelHandles);
     
-    scatter(Pn(:,1),Pn(:,2),SCATTER_POINT_SIZE,'k','filled');
+    newScatteredPointHandle = scatter(Pn(:,1),Pn(:,2),SCATTER_POINT_SIZE,'k','filled');
     
     if isAdditionalSpline == 1
-        pointLabels{1} = text(Pn(1,1)-0.3, Pn(1,2)-0.3, points_labels{1});
+        % in this case, the point label is written in a shifted position
+        % in order to avoid overwrittinf the initial spline last point
+        % label since the two points share the same x-y coordinates
+        newPointLabelHandles{1} = text(Pn(1,1)-0.3, Pn(1,2)-0.3, pointsLabelStrings{1});
     else
-        pointLabels{1} = text(Pn(1,1)+0.1, Pn(1,2)-0.1, points_labels{1});
+        newPointLabelHandles{1} = text(Pn(1,1)+0.1, Pn(1,2)-0.1, pointsLabelStrings{1});
     end
     
-    pointLabels{2} = text(Pn(2,1)+0.1, Pn(2,2)-0.1, points_labels{2});
-    pointLabels{3} = text(Pn(3,1)+0.1, Pn(3,2)-0.1, points_labels{3});
-    pointLabels{4} = text(Pn(4,1)+0.1, Pn(4,2)-0.1, points_labels{4});
+    newPointLabelHandles{2} = text(Pn(2,1)+0.1, Pn(2,2)-0.1, pointsLabelStrings{2});
+    newPointLabelHandles{3} = text(Pn(3,1)+0.1, Pn(3,2)-0.1, pointsLabelStrings{3});
+    newPointLabelHandles{4} = text(Pn(4,1)+0.1, Pn(4,2)-0.1, pointsLabelStrings{4});
 end
 
 function yFuncCellArray = computeAdditionalPiecewiseSpline()
@@ -324,7 +364,7 @@ function plotAdditionalPiecewiseSpline(yFuncCellArray)
 
     Pn = [global_splines_data{1}(1,5:8)' global_splines_data{2}(1,5:8)'];
 
-    syms x
+    syms x;
     y_D = yFuncCellArray{1};
     y_E = yFuncCellArray{2};
     y_F = yFuncCellArray{3};
@@ -337,10 +377,9 @@ function plotAdditionalPiecewiseSpline(yFuncCellArray)
     xx_lim_D = [Pn(1,1) Pn(2,1)];
     
     isAdditionalSpline = 1 % first point label will be shifted to avoid overwritting
-                    % last point label of initial piecewise spline
+                           % last point label of initial piecewise spline
     plottedAdditionalPiecewiseSplines = plotPartialPiecewiseSpline(Pn, xx_lim_D, y_D, y_E, y_F, points_labels, spline_colors, isAdditionalSpline);
-    global_splines_data{14} = plottedAdditionalPiecewiseSplines(1:3);
-    global_splines_data{16} = plottedAdditionalPiecewiseSplines(4);
+    global_splines_data{14} = plottedAdditionalPiecewiseSplines;
 end
 
 
@@ -370,7 +409,7 @@ function sliderPlot_x(hObject,event,hplot)
         case 'P8'
             global_splines_data{1}(1,8) = n;
       otherwise
-            error('Invalid selection %s', global_splines_data{3})
+            error('Invalid selection %s', global_splines_data{3});
     end
     
     xSliderValueTextUI = global_splines_data{6};
@@ -385,50 +424,58 @@ function sliderPlot_x(hObject,event,hplot)
     y_C = yFuncCellArray_A_B_C{3};
 
     xx_lim = [global_splines_data{1}(1,1) - 1 global_splines_data{1}(1,8) + 1];
-    points_labels = global_splines_data{9} 
-    spline_colors = global_splines_data{11} 
+    points_labels = global_splines_data{9};
+    spline_colors = global_splines_data{11};
     
     deletePartialPiecewiseSpline(global_splines_data{13});
     isAdditionalSpline = 0 % first point label will be shifted to avoid overwritting
                     % last point label of initial piecewise spline
-    plottedFirstPiecewiseSplines = plotPartialPiecewiseSpline(Pn, xx_lim, y_A, y_B, y_C, points_labels, spline_colors, isAdditionalSpline)
-    global_splines_data{13} = plottedFirstPiecewiseSplines(1:3);
-    global_splines_data{15} = plottedFirstPiecewiseSplines(4);
-    yFuncCellArray_D_E_F = computeAdditionalPiecewiseSpline()
-    Pn_first = Pn
+    plottedFirstPiecewiseSplines = plotPartialPiecewiseSpline(Pn, xx_lim, y_A, y_B, y_C, points_labels, spline_colors, isAdditionalSpline);
+    global_splines_data{13} = plottedFirstPiecewiseSplines;
+    yFuncCellArray_D_E_F = computeAdditionalPiecewiseSpline();
+    Pn_first = Pn;
     Pn = [global_splines_data{1}(1,5:8)' global_splines_data{2}(1,5:8)'];
 
-    syms x
+    syms x;
     y_D = yFuncCellArray_D_E_F{1};
     y_E = yFuncCellArray_D_E_F{2};
     y_F = yFuncCellArray_D_E_F{3};
-    points_labels = global_splines_data{10} 
-    spline_colors = global_splines_data{12} 
+    points_labels = global_splines_data{10};
+    spline_colors = global_splines_data{12};
 
-    xx_lim_D = [Pn(1,1) Pn(2,1)]
+    xx_lim_D = [Pn(1,1) Pn(2,1)];
     
     deletePartialPiecewiseSpline(global_splines_data{14});
 
     isAdditionalSpline = 1 % first point label will be shifted to avoid overwritting
-                    % last point label of initial piecewise spline
-    plottedFirstPiecewiseSplines = plotPartialPiecewiseSpline(Pn, xx_lim_D, y_D, y_E, y_F, points_labels, spline_colors, isAdditionalSpline)
-    global_splines_data{14} = plottedFirstPiecewiseSplines(1:3);
-    global_splines_data{16} = plottedFirstPiecewiseSplines(4);
+                           % last point label of initial piecewise spline
+    plottedFirstPiecewiseSplines = plotPartialPiecewiseSpline(Pn, xx_lim_D, y_D, y_E, y_F, points_labels, spline_colors, isAdditionalSpline);
+    global_splines_data{14} = plottedFirstPiecewiseSplines;
 end
 
 function deletePartialPiecewiseSpline(plottedPiecewiseSplinesCell)
-    elementNb = size(plottedPiecewiseSplinesCell, 2)
+    elementNb = size(plottedPiecewiseSplinesCell, 2);
     
     for i = 1:elementNb
-        delete(plottedPiecewiseSplinesCell{i})
+        delete(plottedPiecewiseSplinesCell{i});
     end
 end
 
-function deletePointLabels(pointLabels)
-    elementNb = size(pointLabels, 2)
+function deletePointLabels(pointLabelHandels)
+    elementNb = size(pointLabelHandels, 2);
     
     for i = 1:elementNb
-        delete(pointLabels{i})
+        delete(pointLabelHandels{i});
+    end
+end
+
+function deleteScatteredPoints(scatteredPointsHandle)
+    % scatteredPointsHandle hosts the handle returned by the scatter
+    % function
+    elementNb = size(scatteredPointsHandle, 2);
+    
+    if elementNb > 0
+        delete(scatteredPointsHandle);
     end
 end
 
@@ -459,8 +506,6 @@ function sliderPlot_y(hObject,event,hplot)
     
     ySliderValueTextUI = global_splines_data{7};
     ySliderValueTextUI.String = n;
-%    set(hplot,'ydata',global_splines_data{2});
-%    drawnow;
 end
 
 function menuSelection(hObject,event)
@@ -545,6 +590,6 @@ function menuSelection(hObject,event)
             ySlider.Value = yValue;
             ySliderTextValue.String = yValue;
       otherwise
-            error('Invalid selection %s', global_splines_data{3})
+            error('Invalid selection %s', global_splines_data{3});
     end
 end
