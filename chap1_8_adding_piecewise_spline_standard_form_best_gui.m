@@ -118,6 +118,28 @@ function addUI()
     menu.Callback = @menuSelection;
 end
 
+function [minX maxX] = getMinMaxX(pointIndex)
+    global MIN_X
+    global MAX_X
+    global global_splines_data; 
+    
+    currentX = global_splines_data{1}(1, pointIndex);
+        
+    if pointIndex == 1
+        minX = MIN_X;
+    else    
+        prevPointX = global_splines_data{1}(1, pointIndex - 1) + 1;
+        minX = min(prevPointX, currentX);
+    end
+      
+    if pointIndex == 8
+        maxX = MAX_X;
+    else
+        nextPointX = global_splines_data{1}(1, pointIndex + 1) - 1;
+        maxX = max(nextPointX, currentX);
+    end
+end 
+
 function yFuncCellArray = computeFirstPiecewiseSpline()
     % Returns a 3 elements cell array containing piecewise splines
     % y_A, y_B and y_C functions
