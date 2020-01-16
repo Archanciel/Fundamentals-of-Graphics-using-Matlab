@@ -54,33 +54,30 @@ for i = 1:8
 end
 %}
 i = 4
-mm = getMinMaxX(i)
+[minX maxX] = getMinMaxX(i)
 i = 5
-mm = getMinMaxX(i)
+[minX maxX] = getMinMaxX(i)
 i = 7
-mm = getMinMaxX(i)
+[minX maxX] = getMinMaxX(i)
 
-function minMaxArray = getMinMaxX(pointIndex)
+function [minX maxX] = getMinMaxX(pointIndex)
     global MIN_X
     global MAX_X
-    global MIN_Y
-    global MAX_Y
     global global_splines_data; 
     
-    minMaxArray = [MIN_X MAX_X];
     currentX = global_splines_data{1}(1, pointIndex);
         
     if pointIndex == 1
-        minMaxArray(1, 1) = MIN_X;
+        minX = MIN_X;
     else    
         prevPointX = global_splines_data{1}(1, pointIndex - 1) + 1;
-        minMaxArray(1, 1) = min(prevPointX, currentX);
+        minX = min(prevPointX, currentX);
     end
       
     if pointIndex == 8
-        minMaxArray(1, 2) = MAX_X;
+        maxX = MAX_X;
     else
         nextPointX = global_splines_data{1}(1, pointIndex + 1) - 1;
-        minMaxArray(1, 2) = max(nextPointX, currentX);
+        maxX = max(nextPointX, currentX);
     end
 end    
