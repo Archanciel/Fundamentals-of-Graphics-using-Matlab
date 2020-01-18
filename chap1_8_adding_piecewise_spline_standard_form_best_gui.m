@@ -1,6 +1,6 @@
 clear all
 
-global SCATTER_POINT_SIZE
+global SCATTER_POINT_SIZE;
 SCATTER_POINT_SIZE = 15;
 
 global XY_SLIDER_STEP;
@@ -186,14 +186,6 @@ function yFuncCellArray = computeFirstPiecewiseSpline()
     yFuncCellArray{1} = y_A;
     yFuncCellArray{2} = y_B;
     yFuncCellArray{3} = y_C;
-%{    
-    fprintf("y_A");
-    vpa(y_A);
-    fprintf("y_B");
-    vpa(y_B);
-    fprintf("y_C");
-    vpa(y_C);
-%}
 end
 
 function plotFirstPiecewiseSpline(yFuncCellArray)
