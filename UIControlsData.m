@@ -1,4 +1,4 @@
-% {1} --> curve points x coordinates
+                           % {1} --> curve points x coordinates
                            % {2} --> curve points y coordinates
                            % {3} current menu selection value 
                            % {4} x slider reference 
