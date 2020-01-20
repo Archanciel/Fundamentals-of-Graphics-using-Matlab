@@ -12,7 +12,7 @@ global global_splines_data;% {1} --> curve points x coordinates
                            % {10} --> additional piecewise spline points_labels strings
                            % {11} --> initial piecewise spline colors
                            % {12} --> additional piecewise spline colors
-                           % {13} --> first piecewise spline line handles
+                           % {13} --> initial piecewise spline line handles
                            % {14} --> additional piecewise spline line handles
                            % {15} --> initial piecewise spline point label handles
                            % {16} --> additional piecewise spline point label handles
