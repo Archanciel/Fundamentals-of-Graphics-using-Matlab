@@ -17,6 +17,7 @@
                            % {17} --> initial piecewise spline scattered point handles
                            % {18} --> additional piecewise spline scattered point handles
 classdef UIControlsData < handle
+    % inheriting from handle in order for instances to be passed by reference
     properties
         % constants
         SCATTER_POINT_SIZE = 15;
