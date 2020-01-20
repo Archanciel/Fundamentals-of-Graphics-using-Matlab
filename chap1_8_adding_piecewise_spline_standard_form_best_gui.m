@@ -24,6 +24,10 @@ global uiData; % must be declared as global variable since this is the unique
                % calbacks, uiData is passed as argument to the function.
 uiData = UIControlsData();
 
+global splineData; % must be declared as global variable since this is the unique
+                   % the popupmenu callback function can acess to it ! In other
+                   % calbacks, uiData is passed as argument to the function.
+splineData = SplineData();
 
 points_labels{1} = 'P_1';
 points_labels{2} = 'P_2';
