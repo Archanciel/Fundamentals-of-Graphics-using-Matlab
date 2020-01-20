@@ -94,23 +94,23 @@ function addUI(uiData)
     xSlider = uicontrol('style','slider','units','pixel','position',[SLIDER_POS_X 20 300 20],...
         'sliderstep',[uiData.XY_SLIDER_STEP/(xSliderMax-xSliderMin), uiData.XY_SLIDER_STEP * 5/(xSliderMax-xSliderMin)],'max',xSliderMax,'min',xSliderMin, 'value',global_splines_data{1}(1,1));
     addlistener(xSlider,'ContinuousValueChange',@(hObject, event) sliderPlot_x(hObject, event, uiData));
-    global_splines_data{4} = xSlider; % required so that menu selection can update the curve point impacted by the x slider 
+    uiData.xSliderHandle = xSlider; % required so that menu selection can update the curve point impacted by the x slider 
     uicontrol('style','text',...
         'position',[SLIDER_POS_X - 10 30 10 10],'string', 'X');
     xValueText = uicontrol('Style','text','Position',[SLIDER_POS_X + 302,25,20,15],...
                 'String',global_splines_data{1}(1,1), 'BackgroundColor', 'w');
-    global_splines_data{6} = xValueText; % required so that the x slider can update its displayed value
+    uiData.xSliderTextValueHandle = xValueText; % required so that the x slider can update its displayed value
 
     % slider controlling y coordinates
     ySlider = uicontrol('style','slider','units','pixel','position',[SLIDER_POS_X 0 300 20],...
         'sliderstep',[uiData.XY_SLIDER_STEP/(yMax-yMin), uiData.XY_SLIDER_STEP * 5/(yMax-yMin)],'max',yMax,'min',yMin, 'value',global_splines_data{2}(1,1));
-    global_splines_data{5} = ySlider; % required so that menu selection can update the curve point impacted by the y slider 
+    uiData.ySliderHandle = ySlider; % required so that menu selection can update the curve point impacted by the y slider 
     addlistener(ySlider,'ContinuousValueChange',@(hObject, event) sliderPlot_y(hObject, event, uiData));
     uicontrol('style','text',...
         'position',[SLIDER_POS_X - 10 10 10 10],'string', 'Y');
     yValueText = uicontrol('Style','text','Position',[SLIDER_POS_X + 302,5,20,15],...
                 'String',global_splines_data{2}(1,1), 'BackgroundColor', 'w');
-    global_splines_data{7} = yValueText; % required so that the y slider can update its displayed value
+    uiData.ySliderTextValueHandle = yValueText; % required so that the y slider can update its displayed value
 
     % drop down menu to select which point is modified by the sliders
     % since two separate piecewise spines are used, P4 and P5 can not be modified
@@ -465,7 +465,7 @@ function sliderPlot_x(hObject, event, uiData)
             error('Invalid selection %s', uiData.pointMenuCurrentSelection);
     end
     
-    xSliderValueTextUI = global_splines_data{6};
+    xSliderValueTextUI = uiData.xSliderTextValueHandle;
     xSliderValueTextUI.String = n;
 
     yFuncCellArray_A_B_C = computeFirstPiecewiseSpline();
@@ -568,7 +568,7 @@ function sliderPlot_y(hObject,event, uiData)
             error('Invalid selection %s', uiData.pointMenuCurrentSelection)
     end
     
-    ySliderValueTextUI = global_splines_data{7};
+    ySliderValueTextUI = uiData.ySliderTextValueHandle;
     ySliderValueTextUI.String = n;
 end
 
@@ -596,10 +596,10 @@ function menuSelection(hObject, event)
     uiData.pointMenuCurrentSelection = str{val};
     
     % get slider and slider text references
-    xSlider = global_splines_data{4};
-    xSliderTextValue = global_splines_data{6};
-    ySlider = global_splines_data{5};
-    ySliderTextValue = global_splines_data{7};
+    xSlider = uiData.xSliderHandle;
+    xSliderTextValue = uiData.xSliderTextValueHandle;
+    ySlider = uiData.ySliderHandle;
+    ySliderTextValue = uiData.ySliderTextValueHandle;
 
     switch uiData.pointMenuCurrentSelection
         case 'P1'
