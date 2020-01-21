@@ -128,9 +128,7 @@ function addUI(uiData, splineData)
 end
 
 function [minX maxX] = getMinMaxX(pointIndex, uiData, splineData)
-    global global_splines_data;
-    
-    [xAxisMin, xAxisMax] = getXAxisLimits();
+    [xAxisMin, xAxisMax] = getXAxisLimits(splineData);
     currentX = splineData.splineXpointCoordVector(1, pointIndex);
         
     if pointIndex == 1
@@ -470,7 +468,7 @@ function sliderPlot_x(hObject, event, uiData, splineData)
     xSliderValueTextUI = uiData.xSliderTextValueHandle;
     xSliderValueTextUI.String = n;
 
-    yFuncCellArray_A_B_C = computeFirstPiecewiseSpline();
+    yFuncCellArray_A_B_C = computeFirstPiecewiseSpline(splineData);
     Pn = [splineData.splineXpointCoordVector(1,1:4)' global_splines_data{2}(1,1:4)'];
 
     syms x
@@ -493,7 +491,7 @@ function sliderPlot_x(hObject, event, uiData, splineData)
                                                               spline_colors,...
                                                               isAdditionalSpline);
     global_splines_data{13} = plottedFirstPiecewiseSplines;
-    yFuncCellArray_D_E_F = computeAdditionalPiecewiseSpline();
+    yFuncCellArray_D_E_F = computeAdditionalPiecewiseSpline(splineData);
     Pn_first = Pn;
     Pn = [splineData.splineXpointCoordVector(1,5:8)' global_splines_data{2}(1,5:8)'];
 
