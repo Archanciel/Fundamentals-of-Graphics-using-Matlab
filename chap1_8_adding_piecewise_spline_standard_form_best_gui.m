@@ -70,7 +70,7 @@ function addUI(uiData, splineData)
     SLIDER_POS_X = 150;
     MENU_POS_X = 70;
 
-    [xSliderMin xSliderMax] = getMinMaxX(1, uiData, splineData);
+    [xSliderMin, xSliderMax] = getMinMaxX(1, uiData, splineData);
     yMin = -10;
     yMax = 10;
 
@@ -106,7 +106,7 @@ function addUI(uiData, splineData)
     addlistener(menu,'ContinuousValueChange',@(hObject, event) sliderPlot_y(hObject, event));
 end
 
-function [minX maxX] = getMinMaxX(pointIndex, uiData, splineData)
+function [minX, maxX] = getMinMaxX(pointIndex, uiData, splineData)
     [xAxisMin, xAxisMax] = getXAxisLimits(splineData);
     currentX = splineData.splineXpointCoordVector(1, pointIndex);
         
@@ -393,7 +393,7 @@ end
 
 % ui callback functions
 
-function sliderPlot_x(hObject, event, uiData, splineData)
+function sliderPlot_x(hObject, ~, uiData, splineData)
     n = get(hObject,'Value');
     
     switch uiData.pointMenuCurrentSelection
@@ -420,6 +420,10 @@ function sliderPlot_x(hObject, event, uiData, splineData)
     xSliderValueTextUI = uiData.xSliderTextValueHandle;
     xSliderValueTextUI.String = n;
 
+    computeAndReplot(uiData, splineData)
+end
+
+function computeAndReplot(uiData, splineData)
     yFuncCellArray_A_B_C = computeFirstPiecewiseSpline(splineData);
     Pn = [splineData.splineXpointCoordVector(1,1:4)' splineData.splineYpointCoordVector(1,1:4)'];
 
@@ -488,7 +492,7 @@ function deleteScatteredPoints(scatteredPointsHandle)
     end
 end
 
-function sliderPlot_y(hObject,event, uiData, splineData)
+function sliderPlot_y(hObject, ~, uiData, splineData)
     n = get(hObject,'Value');
     
     switch uiData.pointMenuCurrentSelection
@@ -515,50 +519,11 @@ function sliderPlot_y(hObject,event, uiData, splineData)
     ySliderValueTextUI = uiData.ySliderTextValueHandle;
     ySliderValueTextUI.String = n;
 
-    yFuncCellArray_A_B_C = computeFirstPiecewiseSpline(splineData);
-    Pn = [splineData.splineXpointCoordVector(1,1:4)' splineData.splineYpointCoordVector(1,1:4)'];
-
-    syms x
-    y_A = yFuncCellArray_A_B_C{1};
-    y_B = yFuncCellArray_A_B_C{2};
-    y_C = yFuncCellArray_A_B_C{3};
-    
-    deletePartialPiecewiseSpline(splineData.splineLineHandleVector);
-    isAdditionalSpline = 0; % first point label will be shifted to avoid overwritting
-                            % last point label of initial piecewise spline
-    plottedFirstPiecewiseSplines = plotPartialPiecewiseSpline(uiData,...
-                                                              Pn,...
-                                                              y_A,...
-                                                              y_B,...
-                                                              y_C,...
-                                                              splineData,...
-                                                              isAdditionalSpline);
-    splineData.splineLineHandleVector = plottedFirstPiecewiseSplines;
-    yFuncCellArray_D_E_F = computeAdditionalPiecewiseSpline(splineData);
-    Pn_first = Pn;
-    Pn = [splineData.splineXpointCoordVector(1,5:8)' splineData.splineYpointCoordVector(1,5:8)'];
-
-    syms x;
-    y_D = yFuncCellArray_D_E_F{1};
-    y_E = yFuncCellArray_D_E_F{2};
-    y_F = yFuncCellArray_D_E_F{3};
-    
-    deletePartialPiecewiseSpline(splineData.additionalSplineLineHandleVector);
-
-    isAdditionalSpline = 1;% first point label will be shifted to avoid overwritting
-                           % last point label of initial piecewise spline
-    plottedFirstPiecewiseSplines = plotPartialPiecewiseSpline(uiData,...
-                                                              Pn,...
-                                                              y_D,...
-                                                              y_E,...
-                                                              y_F,...
-                                                              splineData,...
-                                                              isAdditionalSpline);
-    splineData.additionalSplineLineHandleVector = plottedFirstPiecewiseSplines;
+    computeAndReplot(uiData, splineData)
 end
 
 function updateSliderXProperties(slider, sliderTextValue, pointIndex, uiData, splineData)
-    [xSliderMin xSliderMax] = getMinMaxX(pointIndex, uiData, splineData);
+    [xSliderMin, xSliderMax] = getMinMaxX(pointIndex, uiData, splineData);
     slider.Max = xSliderMax;
     slider.Min = xSliderMin;
     slider.SliderStep = [uiData.XY_SLIDER_STEP/(xSliderMax-xSliderMin), uiData.XY_SLIDER_STEP * 5/(xSliderMax-xSliderMin)];
@@ -567,7 +532,7 @@ function updateSliderXProperties(slider, sliderTextValue, pointIndex, uiData, sp
     sliderTextValue.String = xValue;
 end
 
-function menuSelection(hObject, event)
+function menuSelection(hObject, ~)
     global uiData;
     global splineData
     
