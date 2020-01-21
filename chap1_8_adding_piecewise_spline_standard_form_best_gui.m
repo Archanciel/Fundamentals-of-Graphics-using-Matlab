@@ -1,7 +1,7 @@
 clear all
 
 global global_splines_data;% {1} curve points x coordinates
-                           % {2} --> curve points y coordinates
+                           % {2} curve points y coordinates
                            % {3} --> current menu selection value 
                            % {4} --> x slider reference 
                            % {5} --> y slider reference 
@@ -73,7 +73,7 @@ P_5_8 = [p5;p6;p7;p8];
 
 % initializing the global spline_data variable (for use by ui callback functions)
 splineData.splineXpointCoordVector = [P_1_4(:,1)' P_5_8(:,1)']; % curve points x coordinates
-global_splines_data{2} = [P_1_4(:,2)' P_5_8(:,2)']; % curve points y coordinates
+splineData.splineYpointCoordVector = [P_1_4(:,2)' P_5_8(:,2)']; % curve points y coordinates
 uiData.pointMenuCurrentSelection = 'P1';   % initial value of menu 
 
 yFuncCellArray = computeFirstPiecewiseSpline(splineData);
@@ -85,8 +85,6 @@ addUI(uiData, splineData);
 
 function addUI(uiData, splineData)
     % Adds UI controls
-    
-    global global_splines_data;
     
     SLIDER_POS_X = 150;
     MENU_POS_X = 70;
@@ -107,13 +105,13 @@ function addUI(uiData, splineData)
 
     % slider controlling y coordinates
     ySlider = uicontrol('style','slider','units','pixel','position',[SLIDER_POS_X 0 300 20],...
-        'sliderstep',[uiData.XY_SLIDER_STEP/(yMax-yMin), uiData.XY_SLIDER_STEP * 5/(yMax-yMin)],'max',yMax,'min',yMin, 'value',global_splines_data{2}(1,1));
+        'sliderstep',[uiData.XY_SLIDER_STEP/(yMax-yMin), uiData.XY_SLIDER_STEP * 5/(yMax-yMin)],'max',yMax,'min',yMin, 'value',splineData.splineYpointCoordVector(1,1));
     uiData.ySliderHandle = ySlider; % required so that menu selection can update the curve point impacted by the y slider 
     addlistener(ySlider,'ContinuousValueChange',@(hObject, event) sliderPlot_y(hObject, event, uiData, splineData));
     uicontrol('style','text',...
         'position',[SLIDER_POS_X - 10 10 10 10],'string', 'Y');
     yValueText = uicontrol('Style','text','Position',[SLIDER_POS_X + 302,5,20,15],...
-                'String',global_splines_data{2}(1,1), 'BackgroundColor', 'w');
+                'String',splineData.splineYpointCoordVector(1,1), 'BackgroundColor', 'w');
     uiData.ySliderTextValueHandle = yValueText; % required so that the y slider can update its displayed value
 
     % drop down menu to select which point is modified by the sliders
@@ -150,9 +148,7 @@ function yFuncCellArray = computeFirstPiecewiseSpline(splineData)
     % Returns a 3 elements cell array containing piecewise splines
     % y_A, y_B and y_C functions
     
-    global global_splines_data;
-
-    Pn = [splineData.splineXpointCoordVector(1,1:4)' global_splines_data{2}(1,1:4)'];
+    Pn = [splineData.splineXpointCoordVector(1,1:4)' splineData.splineYpointCoordVector(1,1:4)'];
 
     C = [Pn(1,1)^3 Pn(1,1)^2 Pn(1,1) 1 0 0 0 0 0 0 0 0;
          Pn(2,1)^3 Pn(2,1)^2 Pn(2,1) 1 0 0 0 0 0 0 0 0;
@@ -196,7 +192,7 @@ end
 function plotFirstPiecewiseSpline(yFuncCellArray, uiData, splineData)
     global global_splines_data;
 
-    Pn = [splineData.splineXpointCoordVector(1,1:4)' global_splines_data{2}(1,1:4)'];
+    Pn = [splineData.splineXpointCoordVector(1,1:4)' splineData.splineYpointCoordVector(1,1:4)'];
 
     syms x
     y_A = yFuncCellArray{1};
@@ -355,9 +351,8 @@ function yFuncCellArray = computeAdditionalPiecewiseSpline(splineData)
     % y_D, y_E and y_F functions
     
     %adding new 4 points piecewise spline
-    global global_splines_data;
 
-    Pn = [splineData.splineXpointCoordVector(1,5:8)' global_splines_data{2}(1,5:8)'];
+    Pn = [splineData.splineXpointCoordVector(1,5:8)' splineData.splineYpointCoordVector(1,5:8)'];
 
     C = [Pn(1,1)^3 Pn(1,1)^2 Pn(1,1) 1 0 0 0 0 0 0 0 0;
          Pn(2,1)^3 Pn(2,1)^2 Pn(2,1) 1 0 0 0 0 0 0 0 0;
@@ -411,7 +406,7 @@ function plotAdditionalPiecewiseSpline(yFuncCellArray, uiData, splineData)
     %adding new 4 points piecewise spline
     global global_splines_data;
 
-    Pn = [splineData.splineXpointCoordVector(1,5:8)' global_splines_data{2}(1,5:8)'];
+    Pn = [splineData.splineXpointCoordVector(1,5:8)' splineData.splineYpointCoordVector(1,5:8)'];
 
     syms x;
     y_D = yFuncCellArray{1};
@@ -469,7 +464,7 @@ function sliderPlot_x(hObject, event, uiData, splineData)
     xSliderValueTextUI.String = n;
 
     yFuncCellArray_A_B_C = computeFirstPiecewiseSpline(splineData);
-    Pn = [splineData.splineXpointCoordVector(1,1:4)' global_splines_data{2}(1,1:4)'];
+    Pn = [splineData.splineXpointCoordVector(1,1:4)' splineData.splineYpointCoordVector(1,1:4)'];
 
     syms x
     y_A = yFuncCellArray_A_B_C{1};
@@ -493,7 +488,7 @@ function sliderPlot_x(hObject, event, uiData, splineData)
     global_splines_data{13} = plottedFirstPiecewiseSplines;
     yFuncCellArray_D_E_F = computeAdditionalPiecewiseSpline(splineData);
     Pn_first = Pn;
-    Pn = [splineData.splineXpointCoordVector(1,5:8)' global_splines_data{2}(1,5:8)'];
+    Pn = [splineData.splineXpointCoordVector(1,5:8)' splineData.splineYpointCoordVector(1,5:8)'];
 
     syms x;
     y_D = yFuncCellArray_D_E_F{1};
@@ -544,26 +539,25 @@ function deleteScatteredPoints(scatteredPointsHandle)
 end
 
 function sliderPlot_y(hObject,event, uiData, splineData)
-    global global_splines_data;
     n = get(hObject,'Value');
     
     switch uiData.pointMenuCurrentSelection
         case 'P1'
-            global_splines_data{2}(1,1) = n;
+            splineData.splineYpointCoordVector(1,1) = n;
         case 'P2'
-            global_splines_data{2}(1,2) = n;
+            splineData.splineYpointCoordVector(1,2) = n;
         case 'P3'
-            global_splines_data{2}(1,3) = n;
+            splineData.splineYpointCoordVector(1,3) = n;
         case 'P4'
-            global_splines_data{2}(1,4) = n;
+            splineData.splineYpointCoordVector(1,4) = n;
         case 'P5'
-            global_splines_data{2}(1,5) = n;
+            splineData.splineYpointCoordVector(1,5) = n;
         case 'P6'
-            global_splines_data{2}(1,6) = n;
+            splineData.splineYpointCoordVector(1,6) = n;
         case 'P7'
-            global_splines_data{2}(1,7) = n;
+            splineData.splineYpointCoordVector(1,7) = n;
         case 'P8'
-            global_splines_data{2}(1,8) = n;
+            splineData.splineYpointCoordVector(1,8) = n;
       otherwise
             error('Invalid selection %s', uiData.pointMenuCurrentSelection)
     end
@@ -583,7 +577,6 @@ function updateSliderXProperties(slider, sliderTextValue, pointIndex, uiData, sp
 end
 
 function menuSelection(hObject, event)
-    global global_splines_data;
     global uiData;
     global splineData
     
@@ -604,49 +597,49 @@ function menuSelection(hObject, event)
         case 'P1'
             updateSliderXProperties(xSlider, xSliderTextValue, 1, uiData, splineData)
             
-            yValue = global_splines_data{2}(1,1);
+            yValue = splineData.splineYpointCoordVector(1,1);
             ySlider.Value = yValue;
             ySliderTextValue.String = yValue;
         case 'P2'
             updateSliderXProperties(xSlider, xSliderTextValue, 2, uiData, splineData)
             
-            yValue = global_splines_data{2}(1,2);
+            yValue = splineData.splineYpointCoordVector(1,2);
             ySlider.Value = yValue;
             ySliderTextValue.String = yValue;
         case 'P3'
             updateSliderXProperties(xSlider, xSliderTextValue, 3, uiData, splineData)
             
-            yValue = global_splines_data{2}(1,3);
+            yValue = splineData.splineYpointCoordVector(1,3);
             ySlider.Value = yValue;
             ySliderTextValue.String = yValue;
         case 'P4'
             updateSliderXProperties(xSlider, xSliderTextValue, 4, uiData, splineData)
             
-            yValue = global_splines_data{2}(1,4);
+            yValue = splineData.splineYpointCoordVector(1,4);
             ySlider.Value = yValue;
             ySliderTextValue.String = yValue;
         case 'P5'
             updateSliderXProperties(xSlider, xSliderTextValue, 5, uiData, splineData)
             
-            yValue = global_splines_data{2}(1,5);
+            yValue = splineData.splineYpointCoordVector(1,5);
             ySlider.Value = yValue;
             ySliderTextValue.String = yValue;
         case 'P6'
             updateSliderXProperties(xSlider, xSliderTextValue, 6, uiData, splineData)
             
-            yValue = global_splines_data{2}(1,6);
+            yValue = splineData.splineYpointCoordVector(1,6);
             ySlider.Value = yValue;
             ySliderTextValue.String = yValue;
         case 'P7'
             updateSliderXProperties(xSlider, xSliderTextValue, 7, uiData, splineData)
             
-            yValue = global_splines_data{2}(1,7);
+            yValue = splineData.splineYpointCoordVector(1,7);
             ySlider.Value = yValue;
             ySliderTextValue.String = yValue;
         case 'P8'
             updateSliderXProperties(xSlider, xSliderTextValue, 8, uiData, splineData)
             
-            yValue = global_splines_data{2}(1,8);
+            yValue = splineData.splineYpointCoordVector(1,8);
             ySlider.Value = yValue;
             ySliderTextValue.String = yValue;
       otherwise
