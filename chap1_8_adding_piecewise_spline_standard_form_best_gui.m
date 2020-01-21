@@ -1,6 +1,6 @@
 clear all
 
-global global_splines_data;% {1} --> curve points x coordinates
+global global_splines_data;% {1} curve points x coordinates
                            % {2} --> curve points y coordinates
                            % {3} --> current menu selection value 
                            % {4} --> x slider reference 
