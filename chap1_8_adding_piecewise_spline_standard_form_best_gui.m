@@ -364,15 +364,6 @@ function yFuncCellArray = computeAdditionalPiecewiseSpline(splineData)
     yFuncCellArray{1} = y_D;
     yFuncCellArray{2} = y_E;
     yFuncCellArray{3} = y_F;
-
-%{
-    fprintf("y_D")
-    vpa(y_D)
-    fprintf("y_E")
-    vpa(y_E)
-    fprintf("y_F")
-    vpa(y_F)
-%}
 end
 
 function plotAdditionalPiecewiseSpline(yFuncCellArray, uiData, splineData)
@@ -523,6 +514,47 @@ function sliderPlot_y(hObject,event, uiData, splineData)
     
     ySliderValueTextUI = uiData.ySliderTextValueHandle;
     ySliderValueTextUI.String = n;
+
+    yFuncCellArray_A_B_C = computeFirstPiecewiseSpline(splineData);
+    Pn = [splineData.splineXpointCoordVector(1,1:4)' splineData.splineYpointCoordVector(1,1:4)'];
+
+    syms x
+    y_A = yFuncCellArray_A_B_C{1};
+    y_B = yFuncCellArray_A_B_C{2};
+    y_C = yFuncCellArray_A_B_C{3};
+    
+    deletePartialPiecewiseSpline(splineData.splineLineHandleVector);
+    isAdditionalSpline = 0; % first point label will be shifted to avoid overwritting
+                            % last point label of initial piecewise spline
+    plottedFirstPiecewiseSplines = plotPartialPiecewiseSpline(uiData,...
+                                                              Pn,...
+                                                              y_A,...
+                                                              y_B,...
+                                                              y_C,...
+                                                              splineData,...
+                                                              isAdditionalSpline);
+    splineData.splineLineHandleVector = plottedFirstPiecewiseSplines;
+    yFuncCellArray_D_E_F = computeAdditionalPiecewiseSpline(splineData);
+    Pn_first = Pn;
+    Pn = [splineData.splineXpointCoordVector(1,5:8)' splineData.splineYpointCoordVector(1,5:8)'];
+
+    syms x;
+    y_D = yFuncCellArray_D_E_F{1};
+    y_E = yFuncCellArray_D_E_F{2};
+    y_F = yFuncCellArray_D_E_F{3};
+    
+    deletePartialPiecewiseSpline(splineData.additionalSplineLineHandleVector);
+
+    isAdditionalSpline = 1;% first point label will be shifted to avoid overwritting
+                           % last point label of initial piecewise spline
+    plottedFirstPiecewiseSplines = plotPartialPiecewiseSpline(uiData,...
+                                                              Pn,...
+                                                              y_D,...
+                                                              y_E,...
+                                                              y_F,...
+                                                              splineData,...
+                                                              isAdditionalSpline);
+    splineData.additionalSplineLineHandleVector = plottedFirstPiecewiseSplines;
 end
 
 function updateSliderXProperties(slider, sliderTextValue, pointIndex, uiData, splineData)
