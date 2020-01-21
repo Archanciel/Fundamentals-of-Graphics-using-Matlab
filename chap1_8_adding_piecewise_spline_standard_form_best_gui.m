@@ -1,24 +1,5 @@
 clear all
 
-global global_splines_data;% {1} curve points x coordinates
-                           % {2} curve points y coordinates
-                           % {3} --> current menu selection value 
-                           % {4} --> x slider reference 
-                           % {5} --> y slider reference 
-                           % {6} --> x slider text value reference 
-                           % {7} --> y slider text value reference 
-                           % {8} --> NO LONGER USED !
-                           % {9} initial piecewise spline points_labels strings
-                           % {10} additional piecewise spline points_labels strings
-                           % {11} initial piecewise spline colors
-                           % {12} additional piecewise spline colors
-                           % {13} initial piecewise spline line handles
-                           % {14} additional piecewise spline line handles
-                           % {15} initial piecewise spline point label handles
-                           % {16} additional piecewise spline point label handles
-                           % {17} --> initial piecewise spline scattered point handles
-                           % {18} --> additional piecewise spline scattered point handles
-
 global uiData; % must be declared as global variable since this is the unique
                % the popupmenu callback function can acess to it ! In other
                % calbacks, uiData is passed as argument to the function.
@@ -241,8 +222,6 @@ function plottedPiecewiseSplines = plotPartialPiecewiseSpline(uiData,...
                                                               isAdditionalSpline)
     %Returns handles on the plotted piecewise splines
     %so that they can be deleted before redrawing them !
-    global global_splines_data;
-    
     syms x;
 
     if isAdditionalSpline == 0
@@ -279,24 +258,16 @@ function plottedPiecewiseSplines = plotPartialPiecewiseSpline(uiData,...
     
     plottedPiecewiseSplines{3} = plot(xx_THREE, yy_THREE, spline_colors{3});
 
-    if size(global_splines_data, 2) >= 16
-        if isAdditionalSpline == 0
-            pointLabelHandlesToDelete = splineData.splinePointLabelHandleVector;
-        else
-            pointLabelHandlesToDelete = splineData.additionalSplinePointLabelHandleVector;
-        end
+    if isAdditionalSpline == 0
+        pointLabelHandlesToDelete = splineData.splinePointLabelHandleVector;
     else
-        pointLabelHandlesToDelete = {};
+        pointLabelHandlesToDelete = splineData.additionalSplinePointLabelHandleVector;
     end
-
-    if size(global_splines_data, 2) >= 18
-        if isAdditionalSpline == 0
-            scatteredPointHandleToDelete = global_splines_data{17};
-        else
-            scatteredPointHandleToDelete = global_splines_data{18};
-        end
+    
+    if isAdditionalSpline == 0
+        scatteredPointHandleToDelete = splineData.splineScatteredPointHandleVector;
     else
-        scatteredPointHandleToDelete = {};
+        scatteredPointHandleToDelete = splineData.additionalSplineScatteredPointHandleVector;
     end
 
     [newPointLabelHandles, newScatteredPointHandle] = plotPointsAndLabels(uiData,...
@@ -308,10 +279,10 @@ function plottedPiecewiseSplines = plotPartialPiecewiseSpline(uiData,...
     
     if isAdditionalSpline == 0
         splineData.splinePointLabelHandleVector = newPointLabelHandles;
-        global_splines_data{17} = newScatteredPointHandle;
+        splineData.splineScatteredPointHandleVector = newScatteredPointHandle;
     else
         splineData.additionalSplinePointLabelHandleVector = newPointLabelHandles;
-        global_splines_data{18} = newScatteredPointHandle;
+        splineData.additionalSplineScatteredPointHandleVector = newScatteredPointHandle;
     end
 end
 

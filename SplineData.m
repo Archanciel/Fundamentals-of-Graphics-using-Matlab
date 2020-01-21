@@ -29,7 +29,7 @@ classdef SplineData < handle
         splinePointLabelHandleVector;
         additionalSplinePointLabelHandleVector;
         splineScatteredPointHandleVector;
-        additionalSplineScatteredHandleVector;
+        additionalSplineScatteredPointHandleVector;
     end
     methods
         function obj = SplineData()
@@ -80,8 +80,8 @@ classdef SplineData < handle
              obj.splineScatteredPointHandleVector = vector;
         end
         
-        function obj = set.additionalSplineScatteredHandleVector(obj, vector)
-             obj.additionalSplineScatteredHandleVector = vector;
+        function obj = set.additionalSplineScatteredPointHandleVector(obj, vector)
+             obj.additionalSplineScatteredPointHandleVector = vector;
         end
     end
 end
