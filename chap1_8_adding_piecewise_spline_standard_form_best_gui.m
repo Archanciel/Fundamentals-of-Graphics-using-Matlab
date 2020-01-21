@@ -233,10 +233,10 @@ function plottedPiecewiseSplines = plotPartialPiecewiseSpline(uiData,...
     end
 
     if isAdditionalSpline == 0
-        xx_ONE = linspace(Pn(1,1) - 1, Pn(2,1));
+        xx_ONE = linspace(Pn(1,1) - 1, Pn(2,1), uiData.PLOT_RESOLUTION);
         yy_ONE = subs(y_ONE, x, xx_ONE);
     else
-        xx_ONE = linspace(Pn(1,1), Pn(2,1));
+        xx_ONE = linspace(Pn(1,1), Pn(2,1), uiData.PLOT_RESOLUTION);
         yy_ONE = subs(y_ONE, x, xx_ONE);
     end
     
@@ -244,15 +244,15 @@ function plottedPiecewiseSplines = plotPartialPiecewiseSpline(uiData,...
     
     hold on
     xx_lim_TWO = [Pn(2,1) Pn(3,1)];
-    xx_TWO = linspace(xx_lim_TWO(1,1),xx_lim_TWO(1,2));
+    xx_TWO = linspace(xx_lim_TWO(1,1),xx_lim_TWO(1,2), uiData.PLOT_RESOLUTION);
     yy_TWO = subs(y_TWO, x, xx_TWO);
     plottedPiecewiseSplines{2} = plot(xx_TWO, yy_TWO, spline_colors{2});
 
     if isAdditionalSpline == 0
-        xx_THREE = linspace(Pn(3,1), Pn(4,1));
+        xx_THREE = linspace(Pn(3,1), Pn(4,1), uiData.PLOT_RESOLUTION);
         yy_THREE = subs(y_THREE, x, xx_THREE);
     else
-        xx_THREE = linspace(Pn(3,1), Pn(4,1) + 1);
+        xx_THREE = linspace(Pn(3,1), Pn(4,1) + 1, uiData.PLOT_RESOLUTION);
         yy_THREE = subs(y_THREE, x, xx_THREE);
     end
     
