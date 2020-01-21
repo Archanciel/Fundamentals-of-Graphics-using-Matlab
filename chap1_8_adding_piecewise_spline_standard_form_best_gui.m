@@ -14,8 +14,8 @@ global global_splines_data;% {1} curve points x coordinates
                            % {12} additional piecewise spline colors
                            % {13} initial piecewise spline line handles
                            % {14} additional piecewise spline line handles
-                           % {15} --> initial piecewise spline point label handles
-                           % {16} --> additional piecewise spline point label handles
+                           % {15} initial piecewise spline point label handles
+                           % {16} additional piecewise spline point label handles
                            % {17} --> initial piecewise spline scattered point handles
                            % {18} --> additional piecewise spline scattered point handles
 
@@ -202,8 +202,6 @@ function plotFirstPiecewiseSpline(yFuncCellArray, uiData, splineData)
     figure
 
     %plotting partial initial piecewise curves
-    points_labels = splineData.splinePointLabelStrVector; 
-    spline_colors = splineData.splineColorVector; 
     
     isAdditionalSpline = 0; % first point label will be shifted to avoid overwritting
                             % last point label of initial piecewise spline
@@ -212,8 +210,7 @@ function plotFirstPiecewiseSpline(yFuncCellArray, uiData, splineData)
                                                               y_A,...
                                                               y_B,...
                                                               y_C,...
-                                                              points_labels,...
-                                                              spline_colors,...
+                                                              splineData,...
                                                               isAdditionalSpline);
     splineData.splineLineHandleVector = plottedFirstPiecewiseSplines;
     
@@ -240,15 +237,22 @@ function plottedPiecewiseSplines = plotPartialPiecewiseSpline(uiData,...
                                                               y_ONE,...
                                                               y_TWO,...
                                                               y_THREE,...
-                                                              points_labels,...
-                                                              spline_colors,...
+                                                              splineData,...
                                                               isAdditionalSpline)
     %Returns handles on the plotted piecewise splines
     %so that they can be deleted before redrawing them !
     global global_splines_data;
     
     syms x;
-    
+
+    if isAdditionalSpline == 0
+        points_labels = splineData.splinePointLabelStrVector; 
+        spline_colors = splineData.splineColorVector; 
+    else
+        points_labels = splineData.additionalSplinePointLabelStrVector; 
+        spline_colors = splineData.additionalSplineColorVector; 
+    end
+
     if isAdditionalSpline == 0
         xx_ONE = linspace(Pn(1,1) - 1, Pn(2,1));
         yy_ONE = subs(y_ONE, x, xx_ONE);
@@ -277,9 +281,9 @@ function plottedPiecewiseSplines = plotPartialPiecewiseSpline(uiData,...
 
     if size(global_splines_data, 2) >= 16
         if isAdditionalSpline == 0
-            pointLabelHandlesToDelete = global_splines_data{15};
+            pointLabelHandlesToDelete = splineData.splinePointLabelHandleVector;
         else
-            pointLabelHandlesToDelete = global_splines_data{16};
+            pointLabelHandlesToDelete = splineData.additionalSplinePointLabelHandleVector;
         end
     else
         pointLabelHandlesToDelete = {};
@@ -303,10 +307,10 @@ function plottedPiecewiseSplines = plotPartialPiecewiseSpline(uiData,...
                                                                           scatteredPointHandleToDelete);
     
     if isAdditionalSpline == 0
-        global_splines_data{15} = newPointLabelHandles;
+        splineData.splinePointLabelHandleVector = newPointLabelHandles;
         global_splines_data{17} = newScatteredPointHandle;
     else
-        global_splines_data{16} = newPointLabelHandles;
+        splineData.additionalSplinePointLabelHandleVector = newPointLabelHandles;
         global_splines_data{18} = newScatteredPointHandle;
     end
 end
@@ -411,9 +415,6 @@ function plotAdditionalPiecewiseSpline(yFuncCellArray, uiData, splineData)
     y_F = yFuncCellArray{3};
 
     %plotting partial added piecewise curves
-
-    points_labels = splineData.additionalSplinePointLabelStrVector; 
-    spline_colors = splineData.additionalSplineColorVector; 
     
     isAdditionalSpline = 1;% first point label will be shifted to avoid overwritting
                            % last point label of initial piecewise spline
@@ -422,8 +423,7 @@ function plotAdditionalPiecewiseSpline(yFuncCellArray, uiData, splineData)
                                                                    y_D,...
                                                                    y_E,...
                                                                    y_F,...
-                                                                   points_labels,...
-                                                                   spline_colors,...
+                                                                   splineData,...
                                                                    isAdditionalSpline);
     splineData.additionalSplineLineHandleVector = plottedAdditionalPiecewiseSplines;
 end
@@ -465,9 +465,6 @@ function sliderPlot_x(hObject, event, uiData, splineData)
     y_A = yFuncCellArray_A_B_C{1};
     y_B = yFuncCellArray_A_B_C{2};
     y_C = yFuncCellArray_A_B_C{3};
-
-    points_labels = splineData.splinePointLabelStrVector;
-    spline_colors = splineData.splineColorVector;
     
     deletePartialPiecewiseSpline(splineData.splineLineHandleVector);
     isAdditionalSpline = 0; % first point label will be shifted to avoid overwritting
@@ -477,8 +474,7 @@ function sliderPlot_x(hObject, event, uiData, splineData)
                                                               y_A,...
                                                               y_B,...
                                                               y_C,...
-                                                              points_labels,...
-                                                              spline_colors,...
+                                                              splineData,...
                                                               isAdditionalSpline);
     splineData.splineLineHandleVector = plottedFirstPiecewiseSplines;
     yFuncCellArray_D_E_F = computeAdditionalPiecewiseSpline(splineData);
@@ -489,8 +485,6 @@ function sliderPlot_x(hObject, event, uiData, splineData)
     y_D = yFuncCellArray_D_E_F{1};
     y_E = yFuncCellArray_D_E_F{2};
     y_F = yFuncCellArray_D_E_F{3};
-    points_labels = splineData.additionalSplinePointLabelStrVector;
-    spline_colors = splineData.additionalSplineColorVector;
     
     deletePartialPiecewiseSpline(splineData.additionalSplineLineHandleVector);
 
@@ -501,8 +495,7 @@ function sliderPlot_x(hObject, event, uiData, splineData)
                                                               y_D,...
                                                               y_E,...
                                                               y_F,...
-                                                              points_labels,...
-                                                              spline_colors,...
+                                                              splineData,...
                                                               isAdditionalSpline);
     splineData.additionalSplineLineHandleVector = plottedFirstPiecewiseSplines;
 end
