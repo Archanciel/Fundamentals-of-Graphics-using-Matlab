@@ -8,8 +8,8 @@ global global_splines_data;% {1} curve points x coordinates
                            % {6} --> x slider text value reference 
                            % {7} --> y slider text value reference 
                            % {8} --> NO LONGER USED !
-                           % {9} --> initial piecewise spline points_labels strings
-                           % {10} --> additional piecewise spline points_labels strings
+                           % {9} initial piecewise spline points_labels strings
+                           % {10} additional piecewise spline points_labels strings
                            % {11} --> initial piecewise spline colors
                            % {12} --> additional piecewise spline colors
                            % {13} --> initial piecewise spline line handles
@@ -33,7 +33,7 @@ points_labels{1} = 'P_1';
 points_labels{2} = 'P_2';
 points_labels{3} = 'P_3';
 points_labels{4} = 'P_4';
-global_splines_data{9} = points_labels;
+splineData.splinePointLabelStrVector = points_labels;
 
 clear points_labels
 
@@ -41,7 +41,7 @@ points_labels{1} = 'P_5';
 points_labels{2} = 'P_6';
 points_labels{3} = 'P_7';
 points_labels{4} = 'P_8';
-global_splines_data{10} = points_labels;
+splineData.additionalSplinePointLabelStrVector = points_labels;
 
 spline_colors{1} = 'b';
 spline_colors{2} = 'r';
@@ -204,7 +204,7 @@ function plotFirstPiecewiseSpline(yFuncCellArray, uiData, splineData)
     figure
 
     %plotting partial initial piecewise curves
-    points_labels = global_splines_data{9}; 
+    points_labels = splineData.splinePointLabelStrVector; 
     spline_colors = global_splines_data{11}; 
     
     isAdditionalSpline = 0; % first point label will be shifted to avoid overwritting
@@ -415,7 +415,7 @@ function plotAdditionalPiecewiseSpline(yFuncCellArray, uiData, splineData)
 
     %plotting partial added piecewise curves
 
-    points_labels = global_splines_data{10}; 
+    points_labels = splineData.additionalSplinePointLabelStrVector; 
     spline_colors = global_splines_data{12}; 
     
     isAdditionalSpline = 1;% first point label will be shifted to avoid overwritting
@@ -471,7 +471,7 @@ function sliderPlot_x(hObject, event, uiData, splineData)
     y_B = yFuncCellArray_A_B_C{2};
     y_C = yFuncCellArray_A_B_C{3};
 
-    points_labels = global_splines_data{9};
+    points_labels = splineData.splinePointLabelStrVector;
     spline_colors = global_splines_data{11};
     
     deletePartialPiecewiseSpline(global_splines_data{13});
@@ -494,7 +494,7 @@ function sliderPlot_x(hObject, event, uiData, splineData)
     y_D = yFuncCellArray_D_E_F{1};
     y_E = yFuncCellArray_D_E_F{2};
     y_F = yFuncCellArray_D_E_F{3};
-    points_labels = global_splines_data{10};
+    points_labels = splineData.additionalSplinePointLabelStrVector;
     spline_colors = global_splines_data{12};
     
     deletePartialPiecewiseSpline(global_splines_data{14});
