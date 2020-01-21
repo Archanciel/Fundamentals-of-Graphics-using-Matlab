@@ -4,8 +4,8 @@
                            % {10} additional piecewise spline points_labels strings
                            % {11} piecewise spline colors
                            % {12} additional piecewise spline colors
-                           % {13} --> piecewise spline line handles
-                           % {14} --> additional piecewise spline line handles
+                           % {13} piecewise spline line handles
+                           % {14} additional piecewise spline line handles
                            % {15} --> piecewise spline point label handles
                            % {16} --> additional piecewise spline point label handles
                            % {17} --> piecewise spline scattered point handles
