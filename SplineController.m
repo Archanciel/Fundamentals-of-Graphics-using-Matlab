@@ -3,9 +3,12 @@ classdef SplineController < handle
     properties
         % constants
         % none !
+        
+        splineModel;
     end
     methods
-        function obj = SplineController()
+        function obj = SplineController(splineModel)
+            obl.splineModel = splineModel;
         end
     end
 end
