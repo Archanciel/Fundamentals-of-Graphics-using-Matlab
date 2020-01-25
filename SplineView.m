@@ -2,22 +2,17 @@ classdef SplineView < matlab.apps.AppBase
 % Source is chap1_8_adding_piecewise_spline_standard_form_app.mlapp
     % Properties that correspond to app components
     properties (Access = public)
-        % UI controls
-        UIFigure              matlab.ui.Figure;
-        UIAxes                matlab.ui.control.UIAxes;
-        Panel                 matlab.ui.container.Panel;
-        XCoordSliderTxtValue  matlab.ui.control.Label;
-        YCoordSliderTxtValue  matlab.ui.control.Label;
-        XSliderLabel          matlab.ui.control.Label;
-        XCoordSlider          matlab.ui.control.Slider;
-        YSliderLabel          matlab.ui.control.Label;
-        YCoordSlider          matlab.ui.control.Slider;
-        PointDropDownLabel    matlab.ui.control.Label;
-        PointSelectionMenu    matlab.ui.control.DropDown;
-        
-        % other properties
-        splineModel           SplineModel;
-        splineController      SplineController;
+        UIFigure              matlab.ui.Figure
+        UIAxes                matlab.ui.control.UIAxes
+        Panel                 matlab.ui.container.Panel
+        XCoordSliderTxtValue  matlab.ui.control.Label
+        YCoordSliderTxtValue  matlab.ui.control.Label
+        XSliderLabel          matlab.ui.control.Label
+        XCoordSlider          matlab.ui.control.Slider
+        YSliderLabel          matlab.ui.control.Label
+        YCoordSlider          matlab.ui.control.Slider
+        PointDropDownLabel    matlab.ui.control.Label
+        PointSelectionMenu    matlab.ui.control.DropDown
     end
 
     % Callbacks that handle component events
@@ -118,9 +113,8 @@ classdef SplineView < matlab.apps.AppBase
     methods (Access = public)
 
         % Construct app
-        function app = SplineView(splineModel, splineController)
-            app.splineModel = splineModel
-            app.splineController = splineController
+        function app = SplineView
+
             % Create UIFigure and components
             createComponents(app)
 
