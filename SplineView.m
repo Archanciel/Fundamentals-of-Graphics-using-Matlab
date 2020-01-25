@@ -119,8 +119,8 @@ classdef SplineView < matlab.apps.AppBase
 
         % Construct app
         function app = SplineView(splineModel, splineController)
-            app.splineModel = splineModel
-            app.splineController = splineController
+            app.splineModel = splineModel;
+            app.splineController = splineController;
             % Create UIFigure and components
             createComponents(app)
 
