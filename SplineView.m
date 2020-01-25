@@ -2,17 +2,39 @@ classdef SplineView < matlab.apps.AppBase
 % Source is chap1_8_adding_piecewise_spline_standard_form_app.mlapp
     % Properties that correspond to app components
     properties (Access = public)
-        UIFigure            matlab.ui.Figure
-        UIAxes              matlab.ui.control.UIAxes
-        XSliderTxtValue     matlab.ui.control.Label
-        YSliderTxtValue     matlab.ui.control.Label
-        XSliderLabel        matlab.ui.control.Label
-        XSlider             matlab.ui.control.Slider
-        YSliderLabel        matlab.ui.control.Label
-        YSlider             matlab.ui.control.Slider
-        PointDropDownLabel  matlab.ui.control.Label
-        PointDropDown       matlab.ui.control.DropDown
-        Panel               matlab.ui.container.Panel
+        UIFigure              matlab.ui.Figure
+        UIAxes                matlab.ui.control.UIAxes
+        Panel                 matlab.ui.container.Panel
+        XCoordSliderTxtValue  matlab.ui.control.Label
+        YCoordSliderTxtValue  matlab.ui.control.Label
+        XSliderLabel          matlab.ui.control.Label
+        XCoordSlider          matlab.ui.control.Slider
+        YSliderLabel          matlab.ui.control.Label
+        YCoordSlider          matlab.ui.control.Slider
+        PointDropDownLabel    matlab.ui.control.Label
+        PointSelectionMenu    matlab.ui.control.DropDown
+    end
+
+    % Callbacks that handle component events
+    methods (Access = private)
+
+        % Value changed function: PointSelectionMenu
+        function PointSelectionMenuValueChanged(app, event)
+            value = app.PointSelectionMenu.Value;
+            
+        end
+
+        % Value changed function: XCoordSlider
+        function XCoordSliderValueChanged(app, event)
+            value = app.XCoordSlider.Value;
+            
+        end
+
+        % Value changed function: YCoordSlider
+        function YCoordSliderValueChanged(app, event)
+            value = app.YCoordSlider.Value;
+            
+        end
     end
 
     % Component initialization
@@ -37,15 +59,15 @@ classdef SplineView < matlab.apps.AppBase
             app.Panel = uipanel(app.UIFigure);
             app.Panel.Position = [8 18 407 124];
 
-            % Create XSliderTxtValue
-            app.XSliderTxtValue = uilabel(app.Panel);
-            app.XSliderTxtValue.Position = [384 92 25 22];
-            app.XSliderTxtValue.Text = '10';
+            % Create XCoordSliderTxtValue
+            app.XCoordSliderTxtValue = uilabel(app.Panel);
+            app.XCoordSliderTxtValue.Position = [384 92 25 22];
+            app.XCoordSliderTxtValue.Text = '10';
 
-            % Create YSliderTxtValue
-            app.YSliderTxtValue = uilabel(app.Panel);
-            app.YSliderTxtValue.Position = [386 33 25 22];
-            app.YSliderTxtValue.Text = '10';
+            % Create YCoordSliderTxtValue
+            app.YCoordSliderTxtValue = uilabel(app.Panel);
+            app.YCoordSliderTxtValue.Position = [386 33 25 22];
+            app.YCoordSliderTxtValue.Text = '10';
 
             % Create XSliderLabel
             app.XSliderLabel = uilabel(app.Panel);
@@ -53,11 +75,12 @@ classdef SplineView < matlab.apps.AppBase
             app.XSliderLabel.Position = [173 92 25 22];
             app.XSliderLabel.Text = 'X';
 
-            % Create XSlider
-            app.XSlider = uislider(app.Panel);
-            app.XSlider.Limits = [-1 9];
-            app.XSlider.Position = [219 101 150 3];
-            app.XSlider.Value = 3;
+            % Create XCoordSlider
+            app.XCoordSlider = uislider(app.Panel);
+            app.XCoordSlider.Limits = [10 90];
+            app.XCoordSlider.ValueChangedFcn = createCallbackFcn(app, @XCoordSliderValueChanged, true);
+            app.XCoordSlider.Position = [219 101 150 3];
+            app.XCoordSlider.Value = 10;
 
             % Create YSliderLabel
             app.YSliderLabel = uilabel(app.Panel);
@@ -65,9 +88,10 @@ classdef SplineView < matlab.apps.AppBase
             app.YSliderLabel.Position = [173 33 25 22];
             app.YSliderLabel.Text = 'Y';
 
-            % Create YSlider
-            app.YSlider = uislider(app.Panel);
-            app.YSlider.Position = [219 42 150 3];
+            % Create YCoordSlider
+            app.YCoordSlider = uislider(app.Panel);
+            app.YCoordSlider.ValueChangedFcn = createCallbackFcn(app, @YCoordSliderValueChanged, true);
+            app.YCoordSlider.Position = [219 42 150 3];
 
             % Create PointDropDownLabel
             app.PointDropDownLabel = uilabel(app.Panel);
@@ -75,9 +99,10 @@ classdef SplineView < matlab.apps.AppBase
             app.PointDropDownLabel.Position = [8 92 32 22];
             app.PointDropDownLabel.Text = 'Point';
 
-            % Create PointDropDown
-            app.PointDropDown = uidropdown(app.Panel);
-            app.PointDropDown.Position = [55 92 100 22];
+            % Create PointSelectionMenu
+            app.PointSelectionMenu = uidropdown(app.Panel);
+            app.PointSelectionMenu.ValueChangedFcn = createCallbackFcn(app, @PointSelectionMenuValueChanged, true);
+            app.PointSelectionMenu.Position = [55 92 100 22];
 
             % Show the figure after all components are created
             app.UIFigure.Visible = 'on';
