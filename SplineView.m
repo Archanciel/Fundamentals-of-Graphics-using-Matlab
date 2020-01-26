@@ -17,6 +17,7 @@ classdef SplineView < matlab.apps.AppBase
         
         % other properties
         splineModel           SplineModel;
+        splineDrawingParm     SplineDrawingParm
         splineController      SplineController;
     end
 
@@ -118,8 +119,9 @@ classdef SplineView < matlab.apps.AppBase
     methods (Access = public)
 
         % Construct app
-        function app = SplineView(splineModel, splineController)
+        function app = SplineView(splineModel, splineDrawingParm, splineController)
             app.splineModel = splineModel;
+            app.splineDrawingParm = splineDrawingParm;
             app.splineController = splineController;
             % Create UIFigure and components
             createComponents(app)
