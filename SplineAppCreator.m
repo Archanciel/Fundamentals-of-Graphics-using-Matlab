@@ -16,7 +16,10 @@ p4 = [8 0];
 
 P_1_4 = [p1;p2;p3;p4];
 
-splineModel = SplineModel(P_1_4)
+splineModel = SplineModel(P_1_4,...
+                          4,...
+                          -2)
+yFuncCellArray_A_B_C = splineModel.computeFirstPiecewiseSpline()
 splineDrawingParm = SplineDrawingParm(points_labels,...
                                       spline_colors)
 splineController = SplineController(splineModel);
