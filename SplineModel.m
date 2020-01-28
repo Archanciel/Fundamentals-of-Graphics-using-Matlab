@@ -19,8 +19,8 @@ classdef SplineModel < handle
             obj.splineStartSlope = splineStartSlope
             obj.splineEndSlope = splineEndSlope
         end
-        function yFuncCellArray = computeFirstPiecewiseSpline(obj)
-            % Returns a 3 elements cell array containing piecewise splines
+        function yFuncCellArray = computePiecewiseSplineFunctions(obj)
+            % Returns a 3 elements cell array containing the piecewise spline
             % y_A, y_B and y_C functions
 
             Pn = [obj.splineXpointCoordVector(1,:)' obj.splineYpointCoordVector(1,:)'];
@@ -62,6 +62,11 @@ classdef SplineModel < handle
             yFuncCellArray{1} = y_A;
             yFuncCellArray{2} = y_B;
             yFuncCellArray{3} = y_C;
+        end
+        function [xAxisMin, xAxisMax] = getXAxisLimits(obj)
+            xAxisMin = obj.splineXpointCoordVector(1, 1) - 1; 
+%            xAxisMax = obj.splineXpointCoordVector(1,8) + 1;
+            xAxisMax = obj.splineXpointCoordVector(1, end) + 1;
         end
     end
 end

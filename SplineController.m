@@ -5,10 +5,11 @@ classdef SplineController < handle
         % none !
         
         splineModel;
+        splineView; % set in SplineAppCreator !
     end
     methods
         function obj = SplineController(splineModel)
-            obl.splineModel = splineModel;
+            obj.splineModel = splineModel;
         end
     end
 end
