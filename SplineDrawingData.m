@@ -1,4 +1,4 @@
-classdef SplineDrawingParm < handle
+classdef SplineDrawingData < handle
     % inheriting from handle in order for instances to be passed by reference
     properties
         % constants
@@ -10,7 +10,7 @@ classdef SplineDrawingParm < handle
         splineScatteredPointHandleVector;
     end
     methods
-        function obj = SplineDrawingParm(splinePointLabelStrCellVector,...
+        function obj = SplineDrawingData(splinePointLabelStrCellVector,...
                                          splineColorCellVector)
             obj.splinePointLabelStrCellVector = splinePointLabelStrCellVector;
             obj.splineColorCellVector = splineColorCellVector;
