@@ -120,10 +120,10 @@ classdef SplineView < matlab.apps.AppBase
     methods (Access = private)
         
         function plotPartialPiecewiseSpline(app,...
+                                            splineModel,...
                                             isAdditionalSpline)
             %Returns handles on the plotted piecewise splines
             %so that they can be deleted before redrawing them !
-            splineModel = app.splineCollection.getSplineModel(1);
             yFuncCellArray = splineModel.computePiecewiseSplineFunctions();
             Pn = [splineModel.splineXpointCoordVector(1,:)' splineModel.splineYpointCoordVector(1,:)'];
 
@@ -467,7 +467,12 @@ classdef SplineView < matlab.apps.AppBase
         function drawPiecewiseSpline(app)
             isAdditionalSpline = 0; % first point label will be shifted to avoid overwritting
                                     % last point label of initial piecewise spline
-            app.plotPartialPiecewiseSpline(isAdditionalSpline);
+            for i = 1:length(app.splineCollection.splineModelCellVector)
+                splineModel = app.splineCollection.getSplineModel(i);
+
+                app.plotPartialPiecewiseSpline(splineModel,...
+                                               isAdditionalSpline);
+            end
 
             xlabel(app.uiAxes,'x');
             ylabel(app.uiAxes, 'y');
