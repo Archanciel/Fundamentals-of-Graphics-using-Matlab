@@ -4,12 +4,12 @@ classdef SplineController < handle
         % constants
         % none !
         
-        splineModel;
-        splineView; % set in SplineAppCreator !
+        splineCollection              SplineCollection;
+        splineView                    SplineView; % set in SplineAppCreator !
     end
     methods
-        function obj = SplineController(splineModel)
-            obj.splineModel = splineModel;
+        function obj = SplineController(splineCollection)
+            obj.splineCollection = splineCollection;
         end
     end
 end

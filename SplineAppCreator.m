@@ -11,6 +11,11 @@ splineModel = SplineModel(P_1_4,...
                           4,...
                           -2);
 
+splineCollectionCellVector{1} = splineModel;
+splineCollection = SplineCollection(splineCollectionCellVector,...
+                                    4,...
+                                    -2);
+
 % initial piecewise spline drawing parms
 
 points_labels{1} = 'P_1';
@@ -25,8 +30,8 @@ spline_colors{3} = 'm';
 splineDrawingData = SplineDrawingData(points_labels,...
                                       spline_colors);
 
-splineController = SplineController(splineModel);
-appView = SplineView(splineModel, splineDrawingData, splineController);
+splineController = SplineController(splineCollection);
+appView = SplineView(splineCollection, splineDrawingData, splineController);
 splineController.splineView = appView;
 
 

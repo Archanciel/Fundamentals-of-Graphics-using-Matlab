@@ -63,10 +63,5 @@ classdef SplineModel < handle
             yFuncCellArray{2} = y_B;
             yFuncCellArray{3} = y_C;
         end
-        function [xAxisMin, xAxisMax] = getXAxisLimits(obj)
-            xAxisMin = obj.splineXpointCoordVector(1, 1) - 1; 
-%            xAxisMax = obj.splineXpointCoordVector(1,8) + 1;
-            xAxisMax = obj.splineXpointCoordVector(1, end) + 1;
-        end
     end
 end

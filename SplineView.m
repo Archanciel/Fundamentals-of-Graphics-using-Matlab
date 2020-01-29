@@ -21,9 +21,9 @@ classdef SplineView < matlab.apps.AppBase
         pointSelectionMenu    matlab.ui.control.DropDown
         
         % other properties
-        splineModel           SplineModel;
+        splineCollection      SplineCollection
         splineDrawingData     SplineDrawingData
-        splineController      SplineController;
+        splineController      SplineController
     end
 
     % Callbacks that handle component events
@@ -124,8 +124,9 @@ classdef SplineView < matlab.apps.AppBase
                                             isAdditionalSpline)
             %Returns handles on the plotted piecewise splines
             %so that they can be deleted before redrawing them !
-            yFuncCellArray = app.splineModel.computePiecewiseSplineFunctions();
-            Pn = [app.splineModel.splineXpointCoordVector(1,:)' app.splineModel.splineYpointCoordVector(1,:)'];
+            splineModel = app.splineCollection.getSplineModel(1)
+            yFuncCellArray = splineModel.computePiecewiseSplineFunctions();
+            Pn = [splineModel.splineXpointCoordVector(1,:)' splineModel.splineYpointCoordVector(1,:)'];
 
             points_labels = app.splineDrawingData.splinePointLabelStrCellVector; 
             spline_colors = app.splineDrawingData.splineColorCellVector; 
@@ -439,8 +440,8 @@ classdef SplineView < matlab.apps.AppBase
     methods (Access = public)
 
         % Construct app
-        function app = SplineView(splineModel, splineDrawingData, splineController)
-            app.splineModel = splineModel;
+        function app = SplineView(splineCollection, splineDrawingData, splineController)
+            app.splineCollection = splineCollection;
             app.splineDrawingData = splineDrawingData;
             app.splineController = splineController;
             % Create UIFigure and components
@@ -474,7 +475,7 @@ classdef SplineView < matlab.apps.AppBase
             ylabel(app.uiAxes, 'y');
             title(app.uiAxes, ["Piecewise spline + 1" "standard form - " "partial curves"]);
 
-            [xAxisMin, xAxisMax] = app.splineModel.getXAxisLimits();
+            [xAxisMin, xAxisMax] = app.splineCollection.getXAxisLimits();
 
             set(app.uiAxes,'ylim',[-5 10],'xlim',[xAxisMin xAxisMax],'xtick',xAxisMin:xAxisMax,'ytick',-5:10)
             opt.fontname = 'helvetica';
