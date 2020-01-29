@@ -9,7 +9,7 @@ P_1_4 = [p1;p2;p3;p4];
 
 splineModel = SplineModel(P_1_4,...
                           4,...
-                          -2)
+                          -2);
 
 % initial piecewise spline drawing parms
 

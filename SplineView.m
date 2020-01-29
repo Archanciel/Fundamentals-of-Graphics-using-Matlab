@@ -120,40 +120,50 @@ classdef SplineView < matlab.apps.AppBase
     % Spline drawing methods
     methods (Access = private)
         
-        function plottedPiecewiseSplines = plotPartialPiecewiseSpline(app,...
-                                                                      Pn,...
-                                                                      y_ONE,...
-                                                                      y_TWO,...
-                                                                      y_THREE,...
-                                                                      isAdditionalSpline)
+        function plotPartialPiecewiseSpline(app,...
+                                            isAdditionalSpline)
             %Returns handles on the plotted piecewise splines
             %so that they can be deleted before redrawing them !
-            syms x;
+            yFuncCellArray = app.splineModel.computePiecewiseSplineFunctions();
+            Pn = [app.splineModel.splineXpointCoordVector(1,:)' app.splineModel.splineYpointCoordVector(1,:)'];
 
-            if isAdditionalSpline == 0
-                points_labels = app.splineDrawingData.splinePointLabelStrCellVector; 
-                spline_colors = app.splineDrawingData.splineColorCellVector; 
-            else
-                points_labels = app.splineDrawingData.additionalSplinePointLabelStrVector; 
-                spline_colors = app.splineDrawingData.additionalSplineColorVector; 
+            points_labels = app.splineDrawingData.splinePointLabelStrCellVector; 
+            spline_colors = app.splineDrawingData.splineColorCellVector; 
+
+            for i = 1:length(yFuncCellArray)
+                y_func = yFuncCellArray{i};
+                
+                if i == 1
+                    xx_func = linspace(Pn(i,1) - 1, Pn(i + 1,1), app.PLOT_RESOLUTION);
+                elseif i == 3
+                    if isAdditionalSpline == 0
+                        xx_func = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
+                    else
+                        xx_func = linspace(Pn(i,1), Pn(i + 1,1) + 1, app.PLOT_RESOLUTION);
+                    end
+                else
+                    xx_func = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
+                end
+                
+                syms x
+                
+                yy_func = subs(y_func, x, xx_func);
+                app.splineDrawingData.splineLineHandleCellVector{i} = plot(app.uiAxes, xx_func, yy_func, spline_colors{i});
+                hold(app.uiAxes,'on');
             end
-
+%{
             if isAdditionalSpline == 0
-                xx_ONE = linspace(Pn(1,1) - 1, Pn(2,1), app.PLOT_RESOLUTION);
-                yy_ONE = subs(y_ONE, x, xx_ONE);
             else
                 xx_ONE = linspace(Pn(1,1), Pn(2,1), app.PLOT_RESOLUTION);
                 yy_ONE = subs(y_ONE, x, xx_ONE);
             end
 
-            plottedPiecewiseSplines{1} = plot(app.uiAxes, xx_ONE, yy_ONE, spline_colors{1});
 
-            hold(app.uiAxes,'on');
             
             xx_lim_TWO = [Pn(2,1) Pn(3,1)];
             xx_TWO = linspace(xx_lim_TWO(1,1),xx_lim_TWO(1,2), app.PLOT_RESOLUTION);
             yy_TWO = subs(y_TWO, x, xx_TWO);
-            plottedPiecewiseSplines{2} = plot(app.uiAxes, xx_TWO, yy_TWO, spline_colors{2});
+            app.splineDrawingData.splineLineHandleCellVector{2} = plot(app.uiAxes, xx_TWO, yy_TWO, spline_colors{2});
 
             if isAdditionalSpline == 0
                 xx_THREE = linspace(Pn(3,1), Pn(4,1), app.PLOT_RESOLUTION);
@@ -163,8 +173,8 @@ classdef SplineView < matlab.apps.AppBase
                 yy_THREE = subs(y_THREE, x, xx_THREE);
             end
 
-            plottedPiecewiseSplines{3} = plot(app.uiAxes, xx_THREE, yy_THREE, spline_colors{3});
-
+            app.splineDrawingData.splineLineHandleCellVector{3} = plot(app.uiAxes, xx_THREE, yy_THREE, spline_colors{3});
+%}
             if isAdditionalSpline == 0
                 pointLabelHandlesToDelete = app.splineDrawingData.splinePointLabelHandleVector;
             else
@@ -269,7 +279,7 @@ classdef SplineView < matlab.apps.AppBase
             % Last modified: September 13, 2015, by Johan E. Carlson
             %==========================================================================
 
-            ax = app.uiAxes
+            ax = app.uiAxes;
 
             if nargin < 2,
                 fontsize = get(ax,'FontSize');
@@ -402,9 +412,11 @@ classdef SplineView < matlab.apps.AppBase
             y = [0; xticksize/4; -xticksize/4];
             patch(ax, x,y,[0 0 0])
 
-%            axis off;
-%            box off;
+            ax.XGrid = 'on';
+            ax.YGrid = 'on';
 
+            axis = 'off';
+%            box off;
             %--------------------------------------------------------------------------
             % Create output struct
             %--------------------------------------------------------------------------
@@ -418,7 +430,7 @@ classdef SplineView < matlab.apps.AppBase
                 out.yticklabel = newyticklab;
                 out.newxlabel = newxlabel;
                 out.newylabel = newylabel;
-            end  
+            end 
         end
       
     end
@@ -454,22 +466,9 @@ classdef SplineView < matlab.apps.AppBase
         end
 
         function drawPiecewiseSpline(app)
-            yFuncCellArray = app.splineModel.computePiecewiseSplineFunctions();
-            Pn = [app.splineModel.splineXpointCoordVector(1,:)' app.splineModel.splineYpointCoordVector(1,:)'];
-
-            syms x
-            y_A = yFuncCellArray{1};
-            y_B = yFuncCellArray{2};
-            y_C = yFuncCellArray{3};
-
             isAdditionalSpline = 0; % first point label will be shifted to avoid overwritting
                                     % last point label of initial piecewise spline
-            plottedFirstPiecewiseSplines = app.plotPartialPiecewiseSpline(Pn,...
-                                                                      y_A,...
-                                                                      y_B,...
-                                                                      y_C,...
-                                                                      isAdditionalSpline);
-            app.splineDrawingData.splineLineHandleVector = plottedFirstPiecewiseSplines;
+            app.plotPartialPiecewiseSpline(isAdditionalSpline);
 
             xlabel(app.uiAxes,'x');
             ylabel(app.uiAxes, 'y');

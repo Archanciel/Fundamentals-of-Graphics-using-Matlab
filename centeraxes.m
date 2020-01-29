@@ -154,6 +154,9 @@ x = [xlim(2); xlim(2)-yticksize; xlim(2)-yticksize];
 y = [0; xticksize/4; -xticksize/4];
 patch(x,y,[0 0 0])
 
+ax.XGrid = 'on'
+ax.YGrid = 'on'
+
 axis off;
 box off;
 

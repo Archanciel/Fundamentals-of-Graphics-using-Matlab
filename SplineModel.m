@@ -16,8 +16,8 @@ classdef SplineModel < handle
             % setting x and y coordinates vector                            
             obj.splineXpointCoordVector = [splinePointVector(:,1)'];
             obj.splineYpointCoordVector = [splinePointVector(:,2)'];
-            obj.splineStartSlope = splineStartSlope
-            obj.splineEndSlope = splineEndSlope
+            obj.splineStartSlope = splineStartSlope;
+            obj.splineEndSlope = splineEndSlope;
         end
         function yFuncCellArray = computePiecewiseSplineFunctions(obj)
             % Returns a 3 elements cell array containing the piecewise spline

@@ -5,7 +5,7 @@ classdef SplineDrawingData < handle
         % none !
         splinePointLabelStrCellVector;
         splineColorCellVector;
-        splineLineHandleVector;
+        splineLineHandleCellVector;
         splinePointLabelHandleVector;
         splineScatteredPointHandleVector;
     end
