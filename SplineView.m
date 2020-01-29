@@ -22,7 +22,6 @@ classdef SplineView < matlab.apps.AppBase
         
         % other properties
         splineCollection      SplineCollection
-        splineDrawingData     SplineDrawingData
         splineController      SplineController
     end
 
@@ -124,12 +123,12 @@ classdef SplineView < matlab.apps.AppBase
                                             isAdditionalSpline)
             %Returns handles on the plotted piecewise splines
             %so that they can be deleted before redrawing them !
-            splineModel = app.splineCollection.getSplineModel(1)
+            splineModel = app.splineCollection.getSplineModel(1);
             yFuncCellArray = splineModel.computePiecewiseSplineFunctions();
             Pn = [splineModel.splineXpointCoordVector(1,:)' splineModel.splineYpointCoordVector(1,:)'];
 
-            points_labels = app.splineDrawingData.splinePointLabelStrCellVector; 
-            spline_colors = app.splineDrawingData.splineColorCellVector; 
+            points_labels = splineModel.splinePointLabelStrCellVector; 
+            spline_colors = splineModel.splineColorCellVector; 
 
             for i = 1:length(yFuncCellArray)
                 y_func = yFuncCellArray{i};
@@ -149,7 +148,7 @@ classdef SplineView < matlab.apps.AppBase
                 syms x
                 
                 yy_func = subs(y_func, x, xx_func);
-                app.splineDrawingData.splineLineHandleCellVector{i} = plot(app.uiAxes, xx_func, yy_func, spline_colors{i});
+                splineModel.splineLineHandleCellVector{i} = plot(app.uiAxes, xx_func, yy_func, spline_colors{i});
                 hold(app.uiAxes,'on');
             end
 %{
@@ -177,15 +176,15 @@ classdef SplineView < matlab.apps.AppBase
             app.splineDrawingData.splineLineHandleCellVector{3} = plot(app.uiAxes, xx_THREE, yy_THREE, spline_colors{3});
 %}
             if isAdditionalSpline == 0
-                pointLabelHandlesToDelete = app.splineDrawingData.splinePointLabelHandleVector;
+                pointLabelHandlesToDelete = splineModel.splinePointLabelHandleVector;
             else
-                pointLabelHandlesToDelete = app.splineDrawingData.additionalSplinePointLabelHandleVector;
+                pointLabelHandlesToDelete = splineModel.additionalSplinePointLabelHandleVector;
             end
 
             if isAdditionalSpline == 0
-                scatteredPointHandleToDelete = app.splineDrawingData.splineScatteredPointHandleVector;
+                scatteredPointHandleToDelete = splineModel.splineScatteredPointHandleVector;
             else
-                scatteredPointHandleToDelete = app.splineDrawingData.additionalSplineScatteredPointHandleVector;
+                scatteredPointHandleToDelete = splineModel.additionalSplineScatteredPointHandleVector;
             end
 
             [newPointLabelHandles, newScatteredPointHandle] = app.plotPointsAndLabels(Pn,... 
@@ -195,11 +194,11 @@ classdef SplineView < matlab.apps.AppBase
                                                                                   scatteredPointHandleToDelete);
 
             if isAdditionalSpline == 0
-                app.splineDrawingData.splinePointLabelHandleVector = newPointLabelHandles;
-                app.splineDrawingData.splineScatteredPointHandleVector = newScatteredPointHandle;
+                splineModel.splinePointLabelHandleVector = newPointLabelHandles;
+                splineModel.splineScatteredPointHandleVector = newScatteredPointHandle;
             else
-                app.splineDrawingData.additionalSplinePointLabelHandleVector = newPointLabelHandles;
-                app.splineDrawingData.additionalSplineScatteredPointHandleVector = newScatteredPointHandle;
+                splineModel.additionalSplinePointLabelHandleVector = newPointLabelHandles;
+                splineModel.additionalSplineScatteredPointHandleVector = newScatteredPointHandle;
             end
         end
 
@@ -440,9 +439,8 @@ classdef SplineView < matlab.apps.AppBase
     methods (Access = public)
 
         % Construct app
-        function app = SplineView(splineCollection, splineDrawingData, splineController)
+        function app = SplineView(splineCollection, splineController)
             app.splineCollection = splineCollection;
-            app.splineDrawingData = splineDrawingData;
             app.splineController = splineController;
             % Create UIFigure and components
             createComponents(app)
