@@ -9,7 +9,7 @@ classdef SplineModel < handle
         splineStartSlope;
         splineEndSlope;
         
-        % drawing data
+        % UI data
         splinePointLabelStrCellVector;
         splineColorCellVector;
         splineLineHandleCellVector;

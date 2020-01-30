@@ -113,6 +113,9 @@ classdef SplineView < matlab.apps.AppBase
             app.pointSelectionMenu = uidropdown(app.panel);
             app.pointSelectionMenu.ValueChangedFcn = createCallbackFcn(app, @pointSelectionMenuValueChanged, true);
             app.pointSelectionMenu.Position = [55 92 100 22];
+            menuItemsCellArray = app.splineCollection.getAllSplinePointSelectionMenuValueStr()
+            app.pointSelectionMenu.Items = menuItemsCellArray;
+            app.pointSelectionMenu.Value = menuItemsCellArray{1};
         end
     end
     
