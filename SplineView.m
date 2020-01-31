@@ -130,33 +130,29 @@ classdef SplineView < matlab.apps.AppBase
             %so that they can be deleted before redrawing them !
             yFuncCellArray = splineModel.computePiecewiseSplineFunctions();
             Pn = [splineModel.splineXpointCoordVector(1,:)' splineModel.splineYpointCoordVector(1,:)'];
-
-            points_labels = splineModel.splinePointLabelStrCellVector; 
             spline_colors = splineModel.splineColorCellVector; 
 
+            % computing xx_func
+            
             for i = 1:length(yFuncCellArray)
                 y_func = yFuncCellArray{i};
                 
                 if i == 1
                     % handling first part of the 3 part piecewise spline
                     if splineIndex == 1
+                        % handling the first part of the the first piecewise spline of the
+                        % piecewise spline collection. xx_func must start at first x minus one.
                         xx_func = linspace(Pn(i,1) - 1, Pn(i + 1,1), app.PLOT_RESOLUTION);
                     else
                         xx_func = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
                     end
                 elseif i == 3
                     % handling last part of the 3 part piecewise spline
-                    if splineIndex == 1
-                        % handling the last part of the first piecewise spline of the
-                        % piecewise spline collection
-                        xx_func = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
-                    elseif splineIndex == splineNumber
+                    if splineIndex == splineNumber
                         % handling the last part of the the last piecewise spline of the
-                        % piecewise spline collection
+                        % piecewise spline collection. xx_func must exceed last x by one.
                         xx_func = linspace(Pn(i,1), Pn(i + 1,1) + 1, app.PLOT_RESOLUTION);
                     else
-                        % handling the last part of one of the intermediate piecewise spline of the
-                        % piecewise spline collection
                         xx_func = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
                     end
                 else
@@ -169,47 +165,13 @@ classdef SplineView < matlab.apps.AppBase
                 splineModel.splineLineHandleCellVector{i} = plot(app.uiAxes, xx_func, yy_func, spline_colors{i});
                 hold(app.uiAxes,'on');
             end
-%{
-            if splineIndex == 0
-            else
-                xx_ONE = linspace(Pn(1,1), Pn(2,1), app.PLOT_RESOLUTION);
-                yy_ONE = subs(y_ONE, x, xx_ONE);
-            end
 
-
-            
-            xx_lim_TWO = [Pn(2,1) Pn(3,1)];
-            xx_TWO = linspace(xx_lim_TWO(1,1),xx_lim_TWO(1,2), app.PLOT_RESOLUTION);
-            yy_TWO = subs(y_TWO, x, xx_TWO);
-            app.splineDrawingData.splineLineHandleCellVector{2} = plot(app.uiAxes, xx_TWO, yy_TWO, spline_colors{2});
-
-            if splineIndex == 0
-                xx_THREE = linspace(Pn(3,1), Pn(4,1), app.PLOT_RESOLUTION);
-                yy_THREE = subs(y_THREE, x, xx_THREE);
-            else
-                xx_THREE = linspace(Pn(3,1), Pn(4,1) + 1, app.PLOT_RESOLUTION);
-                yy_THREE = subs(y_THREE, x, xx_THREE);
-            end
-
-            app.splineDrawingData.splineLineHandleCellVector{3} = plot(app.uiAxes, xx_THREE, yy_THREE, spline_colors{3});
-%}
-            if splineIndex == 0
-                pointLabelHandlesToDelete = splineModel.splinePointLabelHandleVector;
-            else
-%                pointLabelHandlesToDelete = splineModel.additionalSplinePointLabelHandleVector;
-                pointLabelHandlesToDelete = splineModel.splinePointLabelHandleVector;
-            end
-
-            if splineIndex == 0
-                scatteredPointHandleToDelete = splineModel.splineScatteredPointHandleVector;
-            else
-%                scatteredPointHandleToDelete = splineModel.additionalSplineScatteredPointHandleVector;
-                scatteredPointHandleToDelete = splineModel.splineScatteredPointHandleVector;
-            end
+            points_labels = splineModel.splinePointLabelStrCellVector; 
+            pointLabelHandlesToDelete = splineModel.splinePointLabelHandleVector;
+            scatteredPointHandleToDelete = splineModel.splineScatteredPointHandleVector;
 
             [newPointLabelHandles, newScatteredPointHandle] = app.plotPointsAndLabels(Pn,... 
                                                                                   points_labels,...
-                                                                                  splineIndex,...
                                                                                   pointLabelHandlesToDelete,...
                                                                                   scatteredPointHandleToDelete);
 
@@ -227,7 +189,6 @@ classdef SplineView < matlab.apps.AppBase
         function [newPointLabelHandles, newScatteredPointHandle] = plotPointsAndLabels(app,...
                                                                                        Pn,...
                                                                                        pointsLabelStrings,...
-                                                                                       splineIndex,...
                                                                                        pointsLabelHandles,...
                                                                                        scatteredPointsHandle)
             % splineIndex argument == 1 indicaten that the first point label of the
@@ -243,18 +204,10 @@ classdef SplineView < matlab.apps.AppBase
 
             newScatteredPointHandle = scatter(app.uiAxes, Pn(:,1),Pn(:,2), app.SCATTER_POINT_SIZE,'k','filled');
 
-            if splineIndex == 1
-                % in this case, the point label is written in a shifted position
-                % in order to avoid overwrittinf the initial spline last point
-                % label since the two points share the same x-y coordinates
-                newPointLabelHandles{1} = text(app.uiAxes, Pn(1,1)-0.3, Pn(1,2)-0.3, pointsLabelStrings{1});
-            else
-                newPointLabelHandles{1} = text(app.uiAxes, Pn(1,1)+0.1, Pn(1,2)-0.1, pointsLabelStrings{1});
-            end
-
-            newPointLabelHandles{2} = text(app.uiAxes, Pn(2,1)+0.1, Pn(2,2)-0.1, pointsLabelStrings{2});
-            newPointLabelHandles{3} = text(app.uiAxes, Pn(3,1)+0.1, Pn(3,2)-0.1, pointsLabelStrings{3});
-            newPointLabelHandles{4} = text(app.uiAxes, Pn(4,1)+0.1, Pn(4,2)-0.1, pointsLabelStrings{4});
+            newPointLabelHandles{1} = text(app.uiAxes, Pn(1,1)+0.1, Pn(1,2)-0.1, pointsLabelStrings{1});
+            newPointLabelHandles{2} = text(app.uiAxes, Pn(2,1)-0.3, Pn(2,2)-0.3, pointsLabelStrings{2});
+            newPointLabelHandles{3} = text(app.uiAxes, Pn(3,1)-0.3, Pn(3,2)-0.3, pointsLabelStrings{3});
+            newPointLabelHandles{4} = text(app.uiAxes, Pn(4,1)-0.3, Pn(4,2)-0.3, pointsLabelStrings{4});
         end
         function deletePointLabels(app,...
                                    pointLabelHandels)
