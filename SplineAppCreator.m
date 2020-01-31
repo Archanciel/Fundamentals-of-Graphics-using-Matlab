@@ -91,7 +91,7 @@ appView = SplineView(splineCollection, splineController);
 splineController.splineView = appView;
 
 
-appView.drawPiecewiseSpline();
+appView.plotPiecewiseSplines();
 appView.show();
 
 

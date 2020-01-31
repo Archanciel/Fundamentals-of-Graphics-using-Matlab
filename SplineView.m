@@ -122,10 +122,10 @@ classdef SplineView < matlab.apps.AppBase
     % Spline drawing methods
     methods (Access = private)
         
-        function plotPartialPiecewiseSpline(app,...
-                                            splineModel,...
-                                            splineIndex,...
-                                            splineNumber)
+        function plotSpline(app,...
+                            splineModel,...
+                            splineIndex,...
+                            splineNumber)
             %Returns handles on the plotted piecewise splines
             %so that they can be deleted before redrawing them !
             yFuncCellArray = splineModel.computePiecewiseSplineFunctions();
@@ -138,17 +138,25 @@ classdef SplineView < matlab.apps.AppBase
                 y_func = yFuncCellArray{i};
                 
                 if i == 1
+                    % handling first part of the 3 part piecewise spline
                     if splineIndex == 1
                         xx_func = linspace(Pn(i,1) - 1, Pn(i + 1,1), app.PLOT_RESOLUTION);
                     else
                         xx_func = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
                     end
                 elseif i == 3
-                    if splineIndex == 0
+                    % handling last part of the 3 part piecewise spline
+                    if splineIndex == 1
+                        % handling the last part of the first piecewise spline of the
+                        % piecewise spline collection
                         xx_func = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
                     elseif splineIndex == splineNumber
+                        % handling the last part of the the last piecewise spline of the
+                        % piecewise spline collection
                         xx_func = linspace(Pn(i,1), Pn(i + 1,1) + 1, app.PLOT_RESOLUTION);
                     else
+                        % handling the last part of one of the intermediate piecewise spline of the
+                        % piecewise spline collection
                         xx_func = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
                     end
                 else
@@ -478,17 +486,18 @@ classdef SplineView < matlab.apps.AppBase
             app.uiFigure.Visible = 'on';
         end
 
-        function drawPiecewiseSpline(app)
+        function plotPiecewiseSplines(app)
+            % plot all the piecewise splines contained in splineCollection
             splineNumber = length(app.splineCollection.splineModelCellVector);
             
             for i = 1:splineNumber
                 splineIndex = i; % first point label will be shifted to avoid overwritting
-                                        % last point label of initial piecewise spline
+                                 % last point label of initial piecewise spline
                 splineModel = app.splineCollection.getSplineModel(i);
 
-                app.plotPartialPiecewiseSpline(splineModel,...
-                                               splineIndex,...
-                                               splineNumber);
+                app.plotSpline(splineModel,...
+                               splineIndex,...
+                               splineNumber);
             end
 
             xlabel(app.uiAxes,'x');
