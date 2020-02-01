@@ -23,6 +23,10 @@ classdef SplineView < matlab.apps.AppBase
         % other properties
         splineCollection      SplineCollection
         splineController      SplineController
+        splinePointLabelsDic  containers.Map    % dictionary keyed with spline
+                                                % index containing as value
+                                                % a cell array of its point
+                                                % label strings
     end
 
     % Callbacks that handle component events
@@ -166,14 +170,14 @@ classdef SplineView < matlab.apps.AppBase
                 hold(app.uiAxes,'on');
             end
 
-            points_labels = splineModel.splinePointLabelStrCellVector; 
+            points_labels = app.splinePointLabelsDic(splineModel.splineModelName); 
             pointLabelHandlesToDelete = splineModel.splinePointLabelHandleVector;
             scatteredPointHandleToDelete = splineModel.splineScatteredPointHandleVector;
 
             [newPointLabelHandles, newScatteredPointHandle] = app.plotPointsAndLabels(Pn,... 
-                                                                                  points_labels,...
-                                                                                  pointLabelHandlesToDelete,...
-                                                                                  scatteredPointHandleToDelete);
+                                                                                      points_labels,...
+                                                                                      pointLabelHandlesToDelete,...
+                                                                                      scatteredPointHandleToDelete);
 
             if currentSplineIndex == 0
                 splineModel.splinePointLabelHandleVector = newPointLabelHandles;
@@ -419,6 +423,21 @@ classdef SplineView < matlab.apps.AppBase
         function app = SplineView(splineCollection, splineController)
             app.splineCollection = splineCollection;
             app.splineController = splineController;
+            app.splinePointLabelsDic = containers.Map;
+            currentPointIndex = 1;
+            
+            for i = 1:app.splineCollection.getSplineNumber()
+                currentSplineModel = app.splineCollection.getSplineModel(i);
+                currentSplineModelName = currentSplineModel.splineModelName;
+                
+                for j = 1:currentSplineModel.getSplinePointNumber()
+                    currentSplinePointLabelStrCellVector{j} = sprintf('P_{%d}', currentPointIndex);
+                    currentPointIndex = currentPointIndex + 1;
+                end
+                
+                app.splinePointLabelsDic(currentSplineModelName) = currentSplinePointLabelStrCellVector;
+            end           
+            
             % Create UIFigure and components
             createComponents(app)
 

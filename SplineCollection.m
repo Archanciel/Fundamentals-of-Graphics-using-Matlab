@@ -9,13 +9,19 @@ classdef SplineCollection < handle
         splineEndSlope;
     end
     methods
-        function obj = SplineCollection(splineModelCellVector,...
-                                        splineStartSlope,...
+        function obj = SplineCollection(splineStartSlope,...
                                         splineEndSlope)
-            % setting x and y coordinates vector                            
-            obj.splineModelCellVector = splineModelCellVector;
             obj.splineStartSlope = splineStartSlope;
             obj.splineEndSlope = splineEndSlope;
+        end
+        function addSplineModel(obj, splineModel)
+            currentSplineModelNumber = length(obj.splineModelCellVector);
+            currentIndex = currentSplineModelNumber + 1;
+            obj.splineModelCellVector{currentIndex} = splineModel;
+            splineModel.splineModelName = num2str(currentIndex);
+        end
+        function splineNumber = getSplineNumber(obj)
+            splineNumber = length(obj.splineModelCellVector);
         end
         function splineModel = getSplineModel(obj, i)
             splineModel = obj.splineModelCellVector{i};
@@ -50,8 +56,7 @@ classdef SplineCollection < handle
             
             for i = 1:splineNumber
                 currentSpline = obj.splineModelCellVector{i};
-                currentSplinePointLabelStrCellVector = currentSpline.splinePointLabelStrCellVector;
-                for j = 1:length(currentSplinePointLabelStrCellVector)
+                for j = 1:length(currentSpline.splineXpointCoordVector)
                     pIndex = pIndex + 1
                     splinePointSelectionMenuValueStrCellVector{pIndex} = strcat('P', num2str(pIndex));
                 end

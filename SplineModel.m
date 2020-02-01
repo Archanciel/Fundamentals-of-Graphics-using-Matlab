@@ -4,13 +4,15 @@ classdef SplineModel < handle
         % constants
         % none !        
 
+        splineModelName; % set by SplineCollection when adding the 
+                         % SplineModel to it. Equal to the SplineModel
+                         % string index.
         splineXpointCoordVector;
         splineYpointCoordVector;
         splineStartSlope;
         splineEndSlope;
         
         % UI data PUT THEM IN VIEW containers.Map. KEY IS SPLINE MODEL INSTANCE INDEX OR NAME ! 
-        splinePointLabelStrCellVector;
         splineColorCellVector;
         splineLineHandleCellVector;
         splinePointLabelHandleVector;
@@ -20,15 +22,16 @@ classdef SplineModel < handle
         function obj = SplineModel(splinePointVector,...
                                    splineStartSlope,...
                                    splineEndSlope,...
-                                   splinePointLabelStrCellVector,...
                                    splineColorCellVector)
             % setting x and y coordinates vector                            
             obj.splineXpointCoordVector = [splinePointVector(:,1)'];
             obj.splineYpointCoordVector = [splinePointVector(:,2)'];
             obj.splineStartSlope = splineStartSlope;
             obj.splineEndSlope = splineEndSlope;
-            obj.splinePointLabelStrCellVector = splinePointLabelStrCellVector;
             obj.splineColorCellVector = splineColorCellVector;
+        end
+        function pointNumber = getSplinePointNumber(obj)
+            pointNumber = length(obj.splineXpointCoordVector)
         end
         function yFuncCellArray = computePiecewiseSplineFunctions(obj)
             % Returns a 3 elements cell array containing the piecewise spline
