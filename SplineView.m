@@ -413,16 +413,8 @@ classdef SplineView < matlab.apps.AppBase
                 out.newylabel = newylabel;
             end 
         end
-      
-    end
         
-    % App creation and deletion
-    methods (Access = public)
-
-        % Construct app
-        function app = SplineView(splineCollection, splineController)
-            app.splineCollection = splineCollection;
-            app.splineController = splineController;
+        function fillSplinePointLabelDic(app)
             app.splinePointLabelsDic = containers.Map;
             currentPointIndex = 1;
             
@@ -436,7 +428,19 @@ classdef SplineView < matlab.apps.AppBase
                 end
                 
                 app.splinePointLabelsDic(currentSplineModelName) = currentSplinePointLabelStrCellVector;
-            end           
+            end 
+        end   
+        
+    end
+        
+    % App creation and deletion
+    methods (Access = public)
+
+        % Construct app
+        function app = SplineView(splineCollection, splineController)
+            app.splineCollection = splineCollection;
+            app.splineController = splineController;
+            app.fillSplinePointLabelDic()
             
             % Create UIFigure and components
             createComponents(app)
