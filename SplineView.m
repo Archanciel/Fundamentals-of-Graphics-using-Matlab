@@ -117,7 +117,7 @@ classdef SplineView < matlab.apps.AppBase
             app.pointSelectionMenu = uidropdown(app.panel);
             app.pointSelectionMenu.ValueChangedFcn = createCallbackFcn(app, @pointSelectionMenuValueChanged, true);
             app.pointSelectionMenu.Position = [55 92 100 22];
-            menuItemsCellArray = app.splineCollection.getAllSplinePointSelectionMenuValueStr()
+            menuItemsCellArray = app.getAllSplinePointSelectionMenuValueStr()
             app.pointSelectionMenu.Items = menuItemsCellArray;
             app.pointSelectionMenu.Value = menuItemsCellArray{1};
         end
@@ -430,6 +430,22 @@ classdef SplineView < matlab.apps.AppBase
                 app.splinePointLabelsDic(currentSplineModelName) = currentSplinePointLabelStrCellVector;
             end 
         end   
+
+        function splinePointSelectionMenuValueStrCellVector = getAllSplinePointSelectionMenuValueStr(app)
+            splineNumber = app.splineCollection.getSplineNumber()
+            
+            % preallocating cell array
+            splinePointSelectionMenuValueStrCellVector{1,splineNumber} = {}
+            pIndex = 0
+            
+            for i = 1:splineNumber
+                currentSplineModel = app.splineCollection.getSplineModel(i);
+                for j = 1:length(currentSplineModel.splineXpointCoordVector)
+                    pIndex = pIndex + 1
+                    splinePointSelectionMenuValueStrCellVector{pIndex} = strcat('P', num2str(pIndex));
+                end
+            end
+        end
         
     end
         
