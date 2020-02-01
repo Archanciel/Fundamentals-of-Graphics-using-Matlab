@@ -31,7 +31,7 @@ classdef SplineModel < handle
             obj.splineColorCellVector = splineColorCellVector;
         end
         function pointNumber = getSplinePointNumber(obj)
-            pointNumber = length(obj.splineXpointCoordVector)
+            pointNumber = length(obj.splineXpointCoordVector);
         end
         function yFuncCellArray = computePiecewiseSplineFunctions(obj)
             % Returns a 3 elements cell array containing the piecewise spline
