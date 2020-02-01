@@ -124,10 +124,10 @@ classdef SplineView < matlab.apps.AppBase
         
         function plotSpline(app,...
                             splineModel,...
-                            splineIndex,...
-                            splineNumber)
-            %Returns handles on the plotted piecewise splines
-            %so that they can be deleted before redrawing them !
+                            currentSplineIndex,...
+                            maxSplineIndex)
+            % Returns handles on the plotted piecewise splines
+            % so that they can be deleted before redrawing them !
             yFuncCellArray = splineModel.computePiecewiseSplineFunctions();
             Pn = [splineModel.splineXpointCoordVector(1,:)' splineModel.splineYpointCoordVector(1,:)'];
             spline_colors = splineModel.splineColorCellVector; 
@@ -139,7 +139,7 @@ classdef SplineView < matlab.apps.AppBase
                 
                 if i == 1
                     % handling first part of the 3 part piecewise spline
-                    if splineIndex == 1
+                    if currentSplineIndex == 1
                         % handling the first part of the the first piecewise spline of the
                         % piecewise spline collection. xx_func must start at first x minus one.
                         xx_func = linspace(Pn(i,1) - 1, Pn(i + 1,1), app.PLOT_RESOLUTION);
@@ -148,7 +148,7 @@ classdef SplineView < matlab.apps.AppBase
                     end
                 elseif i == 3
                     % handling last part of the 3 part piecewise spline
-                    if splineIndex == splineNumber
+                    if currentSplineIndex == maxSplineIndex
                         % handling the last part of the the last piecewise spline of the
                         % piecewise spline collection. xx_func must exceed last x by one.
                         xx_func = linspace(Pn(i,1), Pn(i + 1,1) + 1, app.PLOT_RESOLUTION);
@@ -175,7 +175,7 @@ classdef SplineView < matlab.apps.AppBase
                                                                                   pointLabelHandlesToDelete,...
                                                                                   scatteredPointHandleToDelete);
 
-            if splineIndex == 0
+            if currentSplineIndex == 0
                 splineModel.splinePointLabelHandleVector = newPointLabelHandles;
                 splineModel.splineScatteredPointHandleVector = newScatteredPointHandle;
             else
@@ -191,7 +191,7 @@ classdef SplineView < matlab.apps.AppBase
                                                                                        pointsLabelStrings,...
                                                                                        pointsLabelHandles,...
                                                                                        scatteredPointsHandle)
-            % splineIndex argument == 1 indicaten that the first point label of the
+            % currentSplineIndex argument == 1 indicaten that the first point label of the
             % additional spline must be shifted in order to avoid overwritting the
             % last point initial sline label
             %
@@ -204,6 +204,8 @@ classdef SplineView < matlab.apps.AppBase
 
             newScatteredPointHandle = scatter(app.uiAxes, Pn(:,1),Pn(:,2), app.SCATTER_POINT_SIZE,'k','filled');
 
+            % first point label is shifted to avoid overwritting the
+            % last point label of the previous piecewise spline
             newPointLabelHandles{1} = text(app.uiAxes, Pn(1,1)+0.1, Pn(1,2)-0.1, pointsLabelStrings{1});
             newPointLabelHandles{2} = text(app.uiAxes, Pn(2,1)-0.3, Pn(2,2)-0.3, pointsLabelStrings{2});
             newPointLabelHandles{3} = text(app.uiAxes, Pn(3,1)-0.3, Pn(3,2)-0.3, pointsLabelStrings{3});
@@ -441,16 +443,14 @@ classdef SplineView < matlab.apps.AppBase
 
         function plotPiecewiseSplines(app)
             % plot all the piecewise splines contained in splineCollection
-            splineNumber = length(app.splineCollection.splineModelCellVector);
+            maxSplineIndex = length(app.splineCollection.splineModelCellVector);
             
-            for i = 1:splineNumber
-                splineIndex = i; % first point label will be shifted to avoid overwritting
-                                 % last point label of initial piecewise spline
+            for i = 1:maxSplineIndex
                 splineModel = app.splineCollection.getSplineModel(i);
 
                 app.plotSpline(splineModel,...
-                               splineIndex,...
-                               splineNumber);
+                               i,...
+                               maxSplineIndex);
             end
 
             xlabel(app.uiAxes,'x');

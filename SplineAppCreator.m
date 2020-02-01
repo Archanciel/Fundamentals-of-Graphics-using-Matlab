@@ -65,10 +65,10 @@ P_9_12 = [p9;p10;p11;p12];
 
 % third piecewise spline drawing parms
 
-points_labels{1} = 'P_9';
-points_labels{2} = 'P_10';
-points_labels{3} = 'P_11';
-points_labels{4} = 'P_12';
+points_labels{1} = 'P_{9}';
+points_labels{2} = 'P_{10}';
+points_labels{3} = 'P_{11}';
+points_labels{4} = 'P_{12}';
 
 spline_colors{1} = 'r';
 spline_colors{2} = 'g';

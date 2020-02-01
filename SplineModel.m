@@ -9,7 +9,7 @@ classdef SplineModel < handle
         splineStartSlope;
         splineEndSlope;
         
-        % UI data
+        % UI data PUT THEM IN VIEW containers.Map. KEY IS SPLINE MODEL INSTANCE INDEX OR NAME ! 
         splinePointLabelStrCellVector;
         splineColorCellVector;
         splineLineHandleCellVector;
