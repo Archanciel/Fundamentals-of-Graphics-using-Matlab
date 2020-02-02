@@ -33,8 +33,8 @@ classdef SplineView < matlab.apps.AppBase
 
         % Value changed function: pointSelectionMenu
         function pointSelectionMenuValueChanged(app, event)
-            value = app.pointSelectionMenu.Value;
-            
+            selectedMenuItemStr = app.pointSelectionMenu.Value;
+            a = 2;
         end
 
         % Value changed function: xCoordSlider
