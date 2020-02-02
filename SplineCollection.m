@@ -4,7 +4,7 @@ classdef SplineCollection < handle
         % constants
         % none !        
 
-        splineModelCellVector;
+        splineModelCellArray;
         splineStartSlope;
         splineEndSlope;
     end
@@ -15,20 +15,29 @@ classdef SplineCollection < handle
             obj.splineEndSlope = splineEndSlope;
         end
         function addSplineModel(obj, splineModel)
-            currentSplineModelNumber = length(obj.splineModelCellVector);
+            currentSplineModelNumber = length(obj.splineModelCellArray);
             currentIndex = currentSplineModelNumber + 1;
-            obj.splineModelCellVector{currentIndex} = splineModel;
+            obj.splineModelCellArray{currentIndex} = splineModel;
             splineModel.splineModelName = num2str(currentIndex);
         end
         function splineNumber = getSplineNumber(obj)
-            splineNumber = length(obj.splineModelCellVector);
+            splineNumber = length(obj.splineModelCellArray);
         end
         function splineModel = getSplineModel(obj, i)
-            splineModel = obj.splineModelCellVector{i};
+            splineModel = obj.splineModelCellArray{i};
+        end
+        function splineNamesCellArray = getSplineNamesCellArray(obj)
+            splineNumber = obj.getSplineNumber();
+            splineNamesCellArray = cell(1,splineNumber);
+            
+            for i = 1:splineNumber
+                splineModel = obj.splineModelCellArray{i};
+                splineNamesCellArray{i} = splineModel.splineModelName ;
+            end
         end
         function [xAxisMin, xAxisMax] = getXAxisLimits(obj)
             startSplineModel = obj.getSplineModel(1);
-            endSplineModel = obj.getSplineModel(length(obj.splineModelCellVector));
+            endSplineModel = obj.getSplineModel(length(obj.splineModelCellArray));
             
             xAxisMin = startSplineModel.splineXpointCoordVector(1, 1) - 1; 
             xAxisMax = endSplineModel.splineXpointCoordVector(1, end) + 1;

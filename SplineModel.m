@@ -13,8 +13,8 @@ classdef SplineModel < handle
         splineEndSlope;
         
         % UI data PUT THEM IN VIEW containers.Map. KEY IS SPLINE MODEL INSTANCE INDEX OR NAME ! 
-        splineColorCellVector;
-        splineLineHandleCellVector;
+        splineColorCellArray;
+        splineLineHandleCellArray;
         splinePointLabelHandleVector;
         splineScatteredPointHandleVector;
     end
@@ -22,13 +22,13 @@ classdef SplineModel < handle
         function obj = SplineModel(splinePointVector,...
                                    splineStartSlope,...
                                    splineEndSlope,...
-                                   splineColorCellVector)
+                                   splineColorCellArray)
             % setting x and y coordinates vector                            
             obj.splineXpointCoordVector = [splinePointVector(:,1)'];
             obj.splineYpointCoordVector = [splinePointVector(:,2)'];
             obj.splineStartSlope = splineStartSlope;
             obj.splineEndSlope = splineEndSlope;
-            obj.splineColorCellVector = splineColorCellVector;
+            obj.splineColorCellArray = splineColorCellArray;
         end
         function pointNumber = getSplinePointNumber(obj)
             pointNumber = length(obj.splineXpointCoordVector);

@@ -12,11 +12,6 @@ P_1_4 = [p1;p2;p3;p4];
 
 % initial piecewise spline drawing parms
 
-points_labels{1} = 'P_1';
-points_labels{2} = 'P_2';
-points_labels{3} = 'P_3';
-points_labels{4} = 'P_4';
-
 spline_colors{1} = 'b';
 spline_colors{2} = 'r';
 spline_colors{3} = 'm';
@@ -39,19 +34,14 @@ P_5_8 = [p5;p6;p7;p8];
 
 % additional piecewise spline drawing parms
 
-points_labels{1} = 'P_5';
-points_labels{2} = 'P_6';
-points_labels{3} = 'P_7';
-points_labels{4} = 'P_8';
-
 spline_colors{1} = 'k';
 spline_colors{2} = 'r';
 spline_colors{3} = 'g';
 
 additionalSplineModel = SplineModel(P_5_8,...
-                                   -2,...
-                                   0,...
-                                   spline_colors);
+                                    -2,...
+                                    0,...
+                                    spline_colors);
 
 splineCollection.addSplineModel(additionalSplineModel);
 
@@ -66,19 +56,14 @@ P_9_12 = [p9;p10;p11;p12];
 
 % third piecewise spline drawing parms
 
-points_labels{1} = 'P_{9}';
-points_labels{2} = 'P_{10}';
-points_labels{3} = 'P_{11}';
-points_labels{4} = 'P_{12}';
-
 spline_colors{1} = 'r';
 spline_colors{2} = 'g';
 spline_colors{3} = 'k';
 
 thirdSplineModel = SplineModel(P_9_12,...
-                                   0,...
-                                   3,...
-                                   spline_colors);
+                               0,...
+                               3,...
+                               spline_colors);
 
 splineCollection.addSplineModel(thirdSplineModel);
 

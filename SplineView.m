@@ -23,10 +23,9 @@ classdef SplineView < matlab.apps.AppBase
         % other properties
         splineCollection      SplineCollection
         splineController      SplineController
-        splinePointLabelsDic  containers.Map    % dictionary keyed with spline
-                                                % index containing as value
-                                                % a cell array of its point
-                                                % label strings
+        splineUIDataDic       containers.Map    % dictionary keyed with spline
+                                                % name containing as value
+                                                % the related SplineUIData
     end
 
     % Callbacks that handle component events
@@ -134,7 +133,7 @@ classdef SplineView < matlab.apps.AppBase
             % so that they can be deleted before redrawing them !
             yFuncCellArray = splineModel.computePiecewiseSplineFunctions();
             Pn = [splineModel.splineXpointCoordVector(1,:)' splineModel.splineYpointCoordVector(1,:)'];
-            spline_colors = splineModel.splineColorCellVector; 
+            spline_colors = splineModel.splineColorCellArray; 
 
             % computing xx_func
             
@@ -166,11 +165,12 @@ classdef SplineView < matlab.apps.AppBase
                 syms x
                 
                 yy_func = subs(y_func, x, xx_func);
-                splineModel.splineLineHandleCellVector{i} = plot(app.uiAxes, xx_func, yy_func, spline_colors{i});
+                splineModel.splineLineHandleCellArray{i} = plot(app.uiAxes, xx_func, yy_func, spline_colors{i});
                 hold(app.uiAxes,'on');
             end
 
-            points_labels = app.splinePointLabelsDic(splineModel.splineModelName); 
+            splineUidata = app.splineUIDataDic(splineModel.splineModelName);
+            points_labels = splineUidata.splinePointLabelStrCellArray; 
             pointLabelHandlesToDelete = splineModel.splinePointLabelHandleVector;
             scatteredPointHandleToDelete = splineModel.splineScatteredPointHandleVector;
 
@@ -414,35 +414,43 @@ classdef SplineView < matlab.apps.AppBase
             end 
         end
         
-        function fillSplinePointLabelDic(app)
-            app.splinePointLabelsDic = containers.Map;
+        function fillSplineUIDataDic(app)
+            keyCellArray = app.splineCollection.getSplineNamesCellArray();
+            splineNumber = app.splineCollection.getSplineNumber();
+            valueCellArray = cell(1, splineNumber);
+            app.splineUIDataDic = containers.Map(keyCellArray, valueCellArray);
             currentPointIndex = 1;
             
-            for i = 1:app.splineCollection.getSplineNumber()
+            for i = 1:splineNumber
                 currentSplineModel = app.splineCollection.getSplineModel(i);
                 currentSplineModelName = currentSplineModel.splineModelName;
+                currentSplineUIData = SplineUIData();
+                currentSplinePointNumber = currentSplineModel.getSplinePointNumber();
+                currentSplinePointLabelStrCellArray = cell(1, currentSplinePointNumber);
                 
-                for j = 1:currentSplineModel.getSplinePointNumber()
-                    currentSplinePointLabelStrCellVector{j} = sprintf('P_{%d}', currentPointIndex);
+                for j = 1:currentSplinePointNumber
+                    currentSplinePointLabelStrCellArray{j} = sprintf('P_{%d}', currentPointIndex);
                     currentPointIndex = currentPointIndex + 1;
                 end
                 
-                app.splinePointLabelsDic(currentSplineModelName) = currentSplinePointLabelStrCellVector;
+                currentSplineUIData.splinePointLabelStrCellArray = currentSplinePointLabelStrCellArray;
+                app.splineUIDataDic(currentSplineModelName) = currentSplineUIData;
             end 
         end   
 
-        function splinePointSelectionMenuValueStrCellVector = getAllSplinePointSelectionMenuValueStr(app)
+        function splinePointSelectionMenuValueStrCellArray = getAllSplinePointSelectionMenuValueStr(app)
             splineNumber = app.splineCollection.getSplineNumber();
             
             % preallocating cell array
-            splinePointSelectionMenuValueStrCellVector{1,splineNumber} = {};
+            splinePointSelectionMenuValueStrCellArray = cell(1,splineNumber);
             pIndex = 0;
             
             for i = 1:splineNumber
                 currentSplineModel = app.splineCollection.getSplineModel(i);
+                
                 for j = 1:length(currentSplineModel.splineXpointCoordVector)
                     pIndex = pIndex + 1;
-                    splinePointSelectionMenuValueStrCellVector{pIndex} = strcat('P', num2str(pIndex));
+                    splinePointSelectionMenuValueStrCellArray{pIndex} = strcat('P', num2str(pIndex));
                 end
             end
         end
@@ -456,7 +464,7 @@ classdef SplineView < matlab.apps.AppBase
         function app = SplineView(splineCollection, splineController)
             app.splineCollection = splineCollection;
             app.splineController = splineController;
-            app.fillSplinePointLabelDic()
+            app.fillSplineUIDataDic()
             
             % Create UIFigure and components
             createComponents(app)
@@ -482,7 +490,7 @@ classdef SplineView < matlab.apps.AppBase
 
         function plotPiecewiseSplines(app)
             % plot all the piecewise splines contained in splineCollection
-            maxSplineIndex = length(app.splineCollection.splineModelCellVector);
+            maxSplineIndex = length(app.splineCollection.splineModelCellArray);
             
             for i = 1:maxSplineIndex
                 splineModel = app.splineCollection.getSplineModel(i);

@@ -3,17 +3,14 @@ classdef SplineUIData < handle
     properties
         % constants
         % none !
-        splinePointLabelStrCellVector;
-        splineColorCellVector;
-        splineLineHandleCellVector;
-        splinePointLabelHandleVector;
-        splineScatteredPointHandleVector;
+        splinePointLabelStrCellArray;
+        splineColorCellArray;
+        splineLineHandleCellArray;
+        splinePointLabelHandleArray;
+        splineScatteredPointHandleArray;
     end
     methods
-        function obj = SplineUIData(splinePointLabelStrCellVector,...
-                                    splineColorCellVector)
-            obj.splinePointLabelStrCellVector = splinePointLabelStrCellVector;
-            obj.splineColorCellVector = splineColorCellVector;
+        function obj = SplineUIData()
         end
     end
 end
