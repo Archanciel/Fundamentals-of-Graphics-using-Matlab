@@ -414,7 +414,10 @@ classdef SplineView < matlab.apps.AppBase
             end 
         end
         
-        function fillSplineUIDataDic(app)
+        function initializeSplineUIDataDic(app)
+            % Initialize the SplineUIDataDic with SplineUIData's keyed
+            % by related SplineModel names. Each SplineUIData is
+            % initialized with the related spline point labels
             keyCellArray = app.splineCollection.getSplineNamesCellArray();
             splineNumber = app.splineCollection.getSplineNumber();
             valueCellArray = cell(1, splineNumber);
@@ -428,6 +431,7 @@ classdef SplineView < matlab.apps.AppBase
                 currentSplinePointNumber = currentSplineModel.getSplinePointNumber();
                 currentSplinePointLabelStrCellArray = cell(1, currentSplinePointNumber);
                 
+                % filling the new SplineUIData with the related spline point labels
                 for j = 1:currentSplinePointNumber
                     currentSplinePointLabelStrCellArray{j} = sprintf('P_{%d}', currentPointIndex);
                     currentPointIndex = currentPointIndex + 1;
@@ -464,7 +468,7 @@ classdef SplineView < matlab.apps.AppBase
         function app = SplineView(splineCollection, splineController)
             app.splineCollection = splineCollection;
             app.splineController = splineController;
-            app.fillSplineUIDataDic()
+            app.initializeSplineUIDataDic()
             
             % Create UIFigure and components
             createComponents(app)

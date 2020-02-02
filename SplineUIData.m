@@ -1,9 +1,12 @@
 classdef SplineUIData < handle
-    % inheriting from handle in order for instances to be passed by reference
+    % Inheriting from handle in order for instances to be passed by
+    % referenceo
+    %
+    % Holds UI only data used by the SplineView class to plot the spline
     properties
         % constants
         % none !
-        splinePointLabelStrCellArray;
+        splinePointLabelStrCellArray; % filled by SplineView
         splineColorCellArray;
         splineLineHandleCellArray;
         splinePointLabelHandleArray;
