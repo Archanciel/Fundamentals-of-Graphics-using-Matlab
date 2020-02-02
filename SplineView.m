@@ -133,7 +133,7 @@ classdef SplineView < matlab.apps.AppBase
             % so that they can be deleted before redrawing them !
             yFuncCellArray = splineModel.computePiecewiseSplineFunctions();
             Pn = [splineModel.splineXpointCoordVector(1,:)' splineModel.splineYpointCoordVector(1,:)'];
-            spline_colors = splineModel.splineColorCellArray; 
+            spline_colors = app.splineUIDataDic(splineModel.splineModelName).splineColorCellArray; 
 
             % computing xx_func
             
@@ -438,6 +438,7 @@ classdef SplineView < matlab.apps.AppBase
                 end
                 
                 currentSplineUIData.splinePointLabelStrCellArray = currentSplinePointLabelStrCellArray;
+                currentSplineUIData.splineColorCellArray = currentSplineModel.getSplineColorCellArray(); 
                 app.splineUIDataDic(currentSplineModelName) = currentSplineUIData;
             end 
         end   

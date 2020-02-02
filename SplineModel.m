@@ -1,6 +1,6 @@
 classdef SplineModel < handle
     % inheriting from handle in order for instances to be passed by reference
-    properties
+    properties (Access = public)
         % constants
         % none !        
 
@@ -12,11 +12,19 @@ classdef SplineModel < handle
         splineStartSlope;
         splineEndSlope;
         
-        splineColorCellArray;
         splineLineHandleCellArray;
         splinePointLabelHandleVector;
         splineScatteredPointHandleVector;
     end
+    
+    properties (Access = private)
+        splineColorCellArray; % will be transfered to the related 
+                              % SplineUIData. Located in SplineModel since
+                              % spline colors are specified in 
+                              % SplineAppCreator where the splines are
+                              % defined.
+    end
+    
     methods
         function obj = SplineModel(splinePointVector,...
                                    splineStartSlope,...
@@ -31,6 +39,9 @@ classdef SplineModel < handle
         end
         function pointNumber = getSplinePointNumber(obj)
             pointNumber = length(obj.splineXpointCoordVector);
+        end
+        function splineColorCellArray = getSplineColorCellArray(obj)
+            splineColorCellArray = obj.splineColorCellArray; 
         end
         function yFuncCellArray = computePiecewiseSplineFunctions(obj)
             % Returns a 3 elements cell array containing the piecewise spline

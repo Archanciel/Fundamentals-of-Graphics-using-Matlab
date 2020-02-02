@@ -7,7 +7,7 @@ classdef SplineUIData < handle
         % constants
         % none !
         splinePointLabelStrCellArray; % filled by SplineView
-        splineColorCellArray;
+        splineColorCellArray;         % obtained from the related SplineModel
         splineLineHandleCellArray;
         splinePointLabelHandleArray;
         splineScatteredPointHandleArray;
