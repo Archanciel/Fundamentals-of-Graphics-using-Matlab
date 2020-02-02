@@ -536,12 +536,12 @@ function menuSelection(hObject, ~)
     global uiData;
     global splineData
     
-    val = get(hObject,'Value');
-    str = get(hObject,'String');
+    menuSelectionIndex = get(hObject,'Value');
+    menuItemsCellArray = get(hObject,'String');
     
     % saving menu selection into uiData so the two slider
     % callback functions can operate on the right point
-    uiData.pointMenuCurrentSelection = str{val};
+    uiData.pointMenuCurrentSelection = menuItemsCellArray{menuSelectionIndex};
     
     % get slider and slider text references
     xSlider = uiData.xSliderHandle;
