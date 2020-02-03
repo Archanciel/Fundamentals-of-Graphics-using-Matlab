@@ -34,7 +34,24 @@ classdef SplineView < matlab.apps.AppBase
         % Value changed function: pointSelectionMenu
         function pointSelectionMenuValueChanged(app, event)
             selectedMenuItemStr = app.pointSelectionMenu.Value;
-            a = 2;
+            menuItemsCellArray = app.pointSelectionMenu.Items;
+            menuSelIndex = find(strcmp(menuItemsCellArray, selectedMenuItemStr));
+
+            app.updateSliderXProperties(menuSelIndex);
+        end
+
+        function updateSliderXProperties(app, pointIndex)
+            sliderHandle = app.xCoordSlider;
+            sliderValueLabelHandle = app.xCoordSliderTxtValue;
+
+            [xSliderMin, xSliderMax] = app.splineCollection.getMinMaxX(pointIndex, app.XY_SLIDER_STEP)
+            return
+            sliderHandle.Max = xSliderMax;
+            sliderHandle.Min = xSliderMin;
+            sliderHandle.SliderStep = [uiData.XY_SLIDER_STEP/(xSliderMax-xSliderMin), uiData.XY_SLIDER_STEP * 5/(xSliderMax-xSliderMin)];
+            xValue = splineData.splineXpointCoordVector(1,pointIndex);
+            sliderHandle.Value = xValue;
+            sliderValueLabelHandle.String = xValue;
         end
 
         % Value changed function: xCoordSlider

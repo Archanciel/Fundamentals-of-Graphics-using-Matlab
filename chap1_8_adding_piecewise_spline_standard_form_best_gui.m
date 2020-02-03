@@ -108,20 +108,20 @@ end
 
 function [minX, maxX] = getMinMaxX(pointIndex, uiData, splineData)
     [xAxisMin, xAxisMax] = getXAxisLimits(splineData);
-    currentX = splineData.splineXpointCoordVector(1, pointIndex);
+    currentPointXValue = splineData.splineXpointCoordVector(1, pointIndex);
         
     if pointIndex == 1
         minX = xAxisMin;
     else    
         prevPointX = splineData.splineXpointCoordVector(1, pointIndex - 1) + uiData.XY_SLIDER_STEP;
-        minX = min(prevPointX, currentX);
+        minX = min(prevPointX, currentPointXValue);
     end
       
     if pointIndex == 8
         maxX = xAxisMax;
     else
         nextPointX = splineData.splineXpointCoordVector(1, pointIndex + 1) - uiData.XY_SLIDER_STEP;
-        maxX = max(nextPointX, currentX);
+        maxX = max(nextPointX, currentPointXValue);
     end
 end 
 

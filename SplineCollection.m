@@ -42,5 +42,44 @@ classdef SplineCollection < handle
             xAxisMin = startSplineModel.splineXpointCoordVector(1, 1) - 1; 
             xAxisMax = endSplineModel.splineXpointCoordVector(1, end) + 1;
         end
+
+        function [minX, maxX] = getMinMaxX(obj, pointIndex, coordVariationMinStep)
+            [xAxisMin, xAxisMax] = obj.getXAxisLimits();
+            [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(pointIndex);
+            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(pointSplineIndex, pointIndex);
+            currentPointXValue = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline);
+
+            if pointIndex == 1
+                minX = xAxisMin;
+            else 
+                if pointIndexInSpline > 1
+                    prevPointX = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline - 1) + coordVariationMinStep;
+                else
+                    prevPointX = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline) + coordVariationMinStep;
+                end
+                minX = min(prevPointX, currentPointXValue);
+            end
+
+            maxPointIndex = length(obj.splineModelCellArray) * 4;
+            
+            if pointIndex == maxPointIndex
+                maxX = xAxisMax;
+            else
+                if pointIndexInSpline < 4
+                    nextPointX = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline + 1) - coordVariationMinStep;
+                else
+                    nextPointX = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline) - coordVariationMinStep;
+                end
+                maxX = max(nextPointX, currentPointXValue);
+            end
+        end 
+        
+        function [pointSplineModel, pointSplineIndex] = getSplineModelContainingPoint(obj, pointIndex)
+            pointSplineIndex = ceil(pointIndex / 4);
+            pointSplineModel = obj.splineModelCellArray{pointSplineIndex};
+        end
+        function pointIndexInSpline = getPointIndexInSplineAtIndex(obj, splineIndex, pointIndex)
+            pointIndexInSpline = pointIndex - ((splineIndex - 1) * 4);
+        end
     end
 end
