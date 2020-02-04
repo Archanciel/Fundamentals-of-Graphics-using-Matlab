@@ -7,6 +7,7 @@ classdef SplineView < matlab.apps.AppBase
         XY_SLIDER_STEP = 0.1;
         XY_SLIDER_ROUND = 1;
         PLOT_RESOLUTION = 100; % linspace 3rd param
+        REPLACE_NUMBER = 6;
 
         % UI controls
         uiFigure              matlab.ui.Figure
@@ -51,11 +52,31 @@ classdef SplineView < matlab.apps.AppBase
             [xSliderMin, xSliderMax] = app.splineCollection.getMinMaxX(pointIndex, app.XY_SLIDER_STEP);
             
             sliderHandle.Limits = [xSliderMin xSliderMax];
+            numericalMajorTickArray = xSliderMin:app.XY_SLIDER_STEP:xSliderMax; 
+            sliderHandle.MajorTicks = numericalMajorTickArray; 
+            stringMajorTickArray = app.computeMajorTickLabelsCellArray(numericalMajorTickArray);
+            sliderHandle.MajorTickLabels = stringMajorTickArray;
             xValue = app.splineCollection.getXValueOfPoint(pointIndex);
             sliderHandle.Value = xValue;
             app.xCoordSliderTxtValue.Text = sprintf('%.2f',xValue);
         end
 
+        function stringMajorTickArray = computeMajorTickLabelsCellArray(app, numericalMajorTickArray)
+            % This function create a string slider major tick labels array
+            % by replacing a number of tick values by an empty string
+            stringMajorTickArray = cellstr(strsplit(num2str(numericalMajorTickArray)));
+
+            n = app.REPLACE_NUMBER;
+            for i = 1:length(stringMajorTickArray)
+                if n < app.REPLACE_NUMBER
+                    stringMajorTickArray{i} = ' ';
+                    n = n + 1;
+                else
+                    n = 0;
+                end
+            end
+        end
+        
         % Value changed function: xCoordSlider
         function xCoordSliderValueChanged(app, event)
             sliderHandle = app.xCoordSlider;
