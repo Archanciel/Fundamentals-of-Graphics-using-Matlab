@@ -36,6 +36,10 @@ classdef SplineCollection < handle
             end
         end
         function [xAxisMin, xAxisMax] = getXAxisLimits(obj)
+            % Returns the minimum and maximum x value that can be set to a 
+            % point. Min x is the x value of the left most point of the
+            % first piecewise spline. Max x is the x value of the right 
+            % most point of the last piecewise spline. 
             startSplineModel = obj.getSplineModel(1);
             endSplineModel = obj.getSplineModel(length(obj.splineModelCellArray));
             
@@ -44,6 +48,10 @@ classdef SplineCollection < handle
         end
 
         function [minX, maxX] = getMinMaxX(obj, pointIndex, coordVariationMinStep)
+            % Returns the x value interval within which a specific point
+            % can be moved. The idea is that a point can not be moved more
+            % left than the x value + min step of its left neighbour or more
+            % right than the x value - min step of its right neighbour.
             [xAxisMin, xAxisMax] = obj.getXAxisLimits();
             [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(pointIndex);
             pointIndexInSpline = obj.getPointIndexInSplineAtIndex(pointSplineIndex, pointIndex);
@@ -73,6 +81,12 @@ classdef SplineCollection < handle
                 maxX = max(nextPointX, currentPointXValue);
             end
         end 
+        
+        function pointXValue = getXValueOfPoint(obj, pointIndex)
+            [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(pointIndex);
+            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(pointSplineIndex, pointIndex);
+            pointXValue = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline);
+        end
         
         function [pointSplineModel, pointSplineIndex] = getSplineModelContainingPoint(obj, pointIndex)
             pointSplineIndex = ceil(pointIndex / 4);

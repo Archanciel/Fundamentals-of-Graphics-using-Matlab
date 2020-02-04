@@ -44,14 +44,13 @@ classdef SplineView < matlab.apps.AppBase
             sliderHandle = app.xCoordSlider;
             sliderValueLabelHandle = app.xCoordSliderTxtValue;
 
-            [xSliderMin, xSliderMax] = app.splineCollection.getMinMaxX(pointIndex, app.XY_SLIDER_STEP)
-            return
-            sliderHandle.Max = xSliderMax;
-            sliderHandle.Min = xSliderMin;
-            sliderHandle.SliderStep = [uiData.XY_SLIDER_STEP/(xSliderMax-xSliderMin), uiData.XY_SLIDER_STEP * 5/(xSliderMax-xSliderMin)];
-            xValue = splineData.splineXpointCoordVector(1,pointIndex);
+            [xSliderMin, xSliderMax] = app.splineCollection.getMinMaxX(pointIndex, app.XY_SLIDER_STEP);
+            
+            sliderHandle.Limits = [xSliderMin xSliderMax];
+%            sliderHandle.SliderStep = [uiData.XY_SLIDER_STEP/(xSliderMax-xSliderMin), uiData.XY_SLIDER_STEP * 5/(xSliderMax-xSliderMin)];
+            xValue = app.splineCollection.getXValueOfPoint(pointIndex);
             sliderHandle.Value = xValue;
-            sliderValueLabelHandle.String = xValue;
+            sliderValueLabelHandle.Text = int2str(xValue);
         end
 
         % Value changed function: xCoordSlider
