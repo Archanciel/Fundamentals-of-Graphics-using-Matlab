@@ -8,6 +8,7 @@ classdef SplineView < matlab.apps.AppBase
         XY_SLIDER_ROUND = 1;
         PLOT_RESOLUTION = 100; % linspace 3rd param
         REPLACE_NUMBER = 6;
+        DISPLAY_XY_VALUE_FORMAT = '%2.1f'
 
         % UI controls
         uiFigure              matlab.ui.Figure
@@ -58,7 +59,7 @@ classdef SplineView < matlab.apps.AppBase
             sliderHandle.MajorTickLabels = stringMajorTickArray;
             xValue = app.splineCollection.getXValueOfPoint(pointIndex);
             sliderHandle.Value = xValue;
-            app.xCoordSliderTxtValue.Text = sprintf('%.2f',xValue);
+            app.xCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,xValue);
         end
 
         function stringMajorTickArray = computeMajorTickLabelsCellArray(app, numericalMajorTickArray)
@@ -83,7 +84,7 @@ classdef SplineView < matlab.apps.AppBase
             value = sliderHandle.Value;
             roundedValue = round(value, app.XY_SLIDER_ROUND)
             sliderHandle.Value = double(roundedValue);
-            app.xCoordSliderTxtValue.Text = sprintf('%2.2f',roundedValue);
+            app.xCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,roundedValue);
             
         end
 
