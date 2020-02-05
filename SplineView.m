@@ -53,28 +53,27 @@ classdef SplineView < matlab.apps.AppBase
             [xSliderMin, xSliderMax] = app.splineCollection.getMinMaxX(pointIndex, app.XY_SLIDER_STEP);
             
             sliderHandle.Limits = [xSliderMin xSliderMax];
-            numericalMajorTickArray = xSliderMin:app.XY_SLIDER_STEP:xSliderMax; 
+            numericalMajorTickArray = app.computeMajorTicksArray(xSliderMin,...
+                                                                 xSliderMax,...
+                                                                 5)
             sliderHandle.MajorTicks = numericalMajorTickArray; 
-            stringMajorTickArray = app.computeMajorTickLabelsCellArray(numericalMajorTickArray);
-            sliderHandle.MajorTickLabels = stringMajorTickArray;
             xValue = app.splineCollection.getXValueOfPoint(pointIndex);
             sliderHandle.Value = xValue;
             app.xCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,xValue);
         end
 
-        function stringMajorTickArray = computeMajorTickLabelsCellArray(app, numericalMajorTickArray)
-            % This function create a string slider major tick labels array
-            % by replacing a number of tick values by an empty string
-            stringMajorTickArray = cellstr(strsplit(num2str(numericalMajorTickArray)));
-
-            n = app.REPLACE_NUMBER;
-            for i = 1:length(stringMajorTickArray)
-                if n < app.REPLACE_NUMBER
-                    stringMajorTickArray{i} = ' ';
-                    n = n + 1;
-                else
-                    n = 0;
-                end
+        function majorTicksArray = computeMajorTicksArray(app,...
+                                                          axMin,...
+                                                          axMax,...
+                                                          majorTicksNumber)
+            axRange = axMax - axMin;
+            majorTicksLength = axRange / majorTicksNumber;
+            majorTicksArray = zeros(1, majorTicksNumber + 1);
+            majorTicksArray(1) = axMin;
+            
+            for i = 1:majorTicksNumber
+                majorTick = axMin + (i * majorTicksLength);
+                majorTicksArray(i + 1) = round(majorTick, 1);
             end
         end
         
@@ -115,15 +114,15 @@ classdef SplineView < matlab.apps.AppBase
 
             % Create panel
             app.panel = uipanel(app.uiFigure);
-            app.panel.Position = [8 18 425 124];
+            app.panel.Position = [8 18 485 124];
 
             % Create xCoordSliderTxtValue
             app.xCoordSliderTxtValue = uilabel(app.panel);
-            app.xCoordSliderTxtValue.Position = [384 92 35 22];
+            app.xCoordSliderTxtValue.Position = [444 92 35 22];
 
             % Create yCoordSliderTxtValue
             app.yCoordSliderTxtValue = uilabel(app.panel);
-            app.yCoordSliderTxtValue.Position = [386 33 35 22];
+            app.yCoordSliderTxtValue.Position = [444 33 35 22];
             app.yCoordSliderTxtValue.Text = '10';
 
             % Create xSliderLabel
@@ -135,7 +134,7 @@ classdef SplineView < matlab.apps.AppBase
             % Create xCoordSlider
             app.xCoordSlider = uislider(app.panel);
             app.xCoordSlider.ValueChangedFcn = createCallbackFcn(app, @xCoordSliderValueChanged, true);
-            app.xCoordSlider.Position = [219 101 150 3];
+            app.xCoordSlider.Position = [219 101 210 3];
 %            app.xCoordSlider.MajorTicks = [10 10.25 10.5 10.75 11 11.25 11.5 11.75 12];
 %            app.xCoordSlider.MajorTickLabels = {'10', '', '10.5', '', '11', '', '11.5', '', '12'};
 
@@ -151,7 +150,7 @@ classdef SplineView < matlab.apps.AppBase
             % Create yCoordSlider
             app.yCoordSlider = uislider(app.panel);
             app.yCoordSlider.ValueChangedFcn = createCallbackFcn(app, @yCoordSliderValueChanged, true);
-            app.yCoordSlider.Position = [219 42 150 3];
+            app.yCoordSlider.Position = [219 42 210 3];
 
             % Create pointDropDownLabel
             app.pointDropDownLabel = uilabel(app.panel);
