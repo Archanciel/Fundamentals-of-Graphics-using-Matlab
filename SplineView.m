@@ -118,7 +118,10 @@ classdef SplineView < matlab.apps.AppBase
         end
 
         function deletePlottedPiecewiseSpline(app, pointIndex)
-            % refactor so that 
+            % refactor so that splineLineHandleCellArray,
+            % splinePointLabelHandleCellArray and 
+            % splineScatteredPointHandleCellArray are relocated in
+            % SplineUIData !
             splineModel = app.splineCollection.getSplineModelContainingPoint(pointIndex);
             plottedPiecewiseSplinesCellArray = splineModel.splineLineHandleCellArray;
             elementNb = size(plottedPiecewiseSplinesCellArray, 2);
