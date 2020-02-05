@@ -14,18 +14,22 @@ classdef SplineCollection < handle
             obj.splineStartSlope = splineStartSlope;
             obj.splineEndSlope = splineEndSlope;
         end
+        
         function addSplineModel(obj, splineModel)
             currentSplineModelNumber = length(obj.splineModelCellArray);
             currentIndex = currentSplineModelNumber + 1;
             obj.splineModelCellArray{currentIndex} = splineModel;
             splineModel.splineModelName = num2str(currentIndex);
         end
+        
         function splineNumber = getSplineNumber(obj)
             splineNumber = length(obj.splineModelCellArray);
         end
+        
         function splineModel = getSplineModel(obj, i)
             splineModel = obj.splineModelCellArray{i};
         end
+        
         function splineNamesCellArray = getSplineNamesCellArray(obj)
             splineNumber = obj.getSplineNumber();
             splineNamesCellArray = cell(1,splineNumber);
@@ -35,6 +39,7 @@ classdef SplineCollection < handle
                 splineNamesCellArray{i} = splineModel.splineModelName ;
             end
         end
+        
         function [xAxisMin, xAxisMax] = getXAxisLimits(obj)
             % Returns the minimum and maximum x value that can be set to a 
             % point. Min x is the x value of the left most point of the
@@ -83,21 +88,54 @@ classdef SplineCollection < handle
         end 
         
         function pointXValue = getXValueOfPoint(obj, pointIndex)
+            % pointIndex is the dropdown menu selection index. This
+            % function first determines in which piecewise spline the
+            % point is contained. It then returns the x coord of the
+            % point.
             [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(pointIndex);
             pointIndexInSpline = obj.getPointIndexInSplineAtIndex(pointSplineIndex, pointIndex);
             pointXValue = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline);
         end
         
+        function setXValueOfPoint(obj, pointIndex, value)
+            % pointIndex is the dropdown menu selection index. This
+            % function first determines in which piecewise spline the
+            % point is contained. It then sets the x coord of the
+            % point to the passed value.
+            [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(pointIndex);
+            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(pointSplineIndex, pointIndex);
+            pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline) = value;
+        end
+        
         function pointYValue = getYValueOfPoint(obj, pointIndex)
+            % pointIndex is the dropdown menu selection index. This
+            % function first determines in which piecewise spline the
+            % point is contained. It then returns the y coord of the
+            % point.
             [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(pointIndex);
             pointIndexInSpline = obj.getPointIndexInSplineAtIndex(pointSplineIndex, pointIndex);
             pointYValue = pointSplineModel.splineYpointCoordVector(1, pointIndexInSpline);
         end
-        
+         
+        function setYValueOfPoint(obj, pointIndex, value)
+            % pointIndex is the dropdown menu selection index. This
+            % function first determines in which piecewise spline the
+            % point is contained. It then sets the y coord of the
+            % point to the passed value.
+            [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(pointIndex);
+            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(pointSplineIndex, pointIndex);
+            pointSplineModel.splineYpointCoordVector(1, pointIndexInSpline) = value;
+        end
+       
         function [pointSplineModel, pointSplineIndex] = getSplineModelContainingPoint(obj, pointIndex)
-            pointSplineIndex = ceil(pointIndex / 4);
+            pointSplineIndex = obj.getSplineIndexOfSplineContainingPoint(pointIndex);
             pointSplineModel = obj.splineModelCellArray{pointSplineIndex};
         end
+       
+        function pointSplineIndex = getSplineIndexOfSplineContainingPoint(obj, pointIndex)
+            pointSplineIndex = ceil(pointIndex / 4);
+        end
+        
         function pointIndexInSpline = getPointIndexInSplineAtIndex(obj, splineIndex, pointIndex)
             pointIndexInSpline = pointIndex - ((splineIndex - 1) * 4);
         end

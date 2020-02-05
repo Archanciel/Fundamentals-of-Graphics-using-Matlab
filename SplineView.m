@@ -103,17 +103,36 @@ classdef SplineView < matlab.apps.AppBase
         function xCoordSliderValueChanged(app, event)
             sliderHandle = app.xCoordSlider;
             value = sliderHandle.Value;
-            roundedValue = round(value, app.XY_SLIDER_ROUND)
+            roundedValue = round(value, app.XY_SLIDER_ROUND);
             sliderHandle.Value = double(roundedValue);
             app.xCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,roundedValue);
+
+            menuSelIndex = app.getPointSelectionMenuIndex();
+            app.splineCollection.setXValueOfPoint(menuSelIndex, roundedValue);
+
+            % replotting the modified spline
+            app.deletePlottedPiecewiseSpline(menuSelIndex);
             
+            maxSplineIndex = length(app.splineCollection.splineModelCellArray);
+            app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(menuSelIndex),...
+                           maxSplineIndex);
+        end
+
+        function deletePlottedPiecewiseSpline(app, pointIndex)
+            splineModel = app.splineCollection.getSplineModelContainingPoint(pointIndex);
+            plottedPiecewiseSplinesCellArray = splineModel.splineLineHandleCellArray;
+            elementNb = size(plottedPiecewiseSplinesCellArray, 2);
+
+            for i = 1:elementNb
+                delete(plottedPiecewiseSplinesCellArray{i});
+            end
         end
 
         % Value changed function: yCoordSlider
         function yCoordSliderValueChanged(app, event)
             sliderHandle = app.yCoordSlider;
             value = sliderHandle.Value;
-            roundedValue = round(value, app.XY_SLIDER_ROUND)
+            roundedValue = round(value, app.XY_SLIDER_ROUND);
             sliderHandle.Value = double(roundedValue);
             app.yCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,roundedValue);
             
@@ -200,11 +219,11 @@ classdef SplineView < matlab.apps.AppBase
     methods (Access = private)
         
         function plotSpline(app,...
-                            splineModel,...
                             currentSplineIndex,...
                             maxSplineIndex)
             % Returns handles on the plotted piecewise splines
             % so that they can be deleted before redrawing them !
+            splineModel = app.splineCollection.getSplineModel(currentSplineIndex);
             yFuncCellArray = splineModel.computePiecewiseSplineFunctions();
             Pn = [splineModel.splineXpointCoordVector(1,:)' splineModel.splineYpointCoordVector(1,:)'];
             spline_colors = app.splineUIDataDic(splineModel.splineModelName).splineColorCellArray; 
@@ -573,10 +592,7 @@ classdef SplineView < matlab.apps.AppBase
             maxSplineIndex = length(app.splineCollection.splineModelCellArray);
             
             for i = 1:maxSplineIndex
-                splineModel = app.splineCollection.getSplineModel(i);
-
-                app.plotSpline(splineModel,...
-                               i,...
+                app.plotSpline(i,...
                                maxSplineIndex);
             end
 
