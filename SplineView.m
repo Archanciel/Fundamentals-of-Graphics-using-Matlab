@@ -9,6 +9,10 @@ classdef SplineView < matlab.apps.AppBase
         PLOT_RESOLUTION = 100; % linspace 3rd param
         REPLACE_NUMBER = 6;
         DISPLAY_XY_VALUE_FORMAT = '%2.1f'
+        X_SLIDER_MAJOR_TICK_LABEL_NUMBER = 5
+        Y_SLIDER_MAJOR_TICK_LABEL_NUMBER = 10
+        Y_SLIDER_MIN = -10
+        Y_SLIDER_MAX = 10
 
         % UI controls
         uiFigure              matlab.ui.Figure
@@ -39,6 +43,7 @@ classdef SplineView < matlab.apps.AppBase
             menuSelIndex = app.getPointSelectionMenuIndex();
 
             app.updateSliderXProperties(menuSelIndex);
+            app.updateSliderYProperties(menuSelIndex);
         end
 
         function menuSelIndex = getPointSelectionMenuIndex(app)
@@ -55,26 +60,43 @@ classdef SplineView < matlab.apps.AppBase
             sliderHandle.Limits = [xSliderMin xSliderMax];
             numericalMajorTickArray = app.computeMajorTicksArray(xSliderMin,...
                                                                  xSliderMax,...
-                                                                 5)
+                                                                 app.X_SLIDER_MAJOR_TICK_LABEL_NUMBER);
             sliderHandle.MajorTicks = numericalMajorTickArray; 
-            xValue = app.splineCollection.getXValueOfPoint(pointIndex);
-            sliderHandle.Value = xValue;
-            app.xCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,xValue);
-        end
+            value = app.splineCollection.getXValueOfPoint(pointIndex);
+            sliderHandle.Value = value;
+            app.xCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,value);
+        end 
 
         function majorTicksArray = computeMajorTicksArray(app,...
                                                           axMin,...
                                                           axMax,...
-                                                          majorTicksNumber)
+                                                          majorTickLabelssNumber)
+            % This function fills a numerical array with the values of the
+            % slider major tick labels. For example, if the slider enables
+            % to select a value between 0 and 100, calling the function with
+            % parms 0, 100, 5 will return [0 20 40 60 80 100]
             axRange = axMax - axMin;
-            majorTicksLength = axRange / majorTicksNumber;
-            majorTicksArray = zeros(1, majorTicksNumber + 1);
+            majorTicksLength = axRange / majorTickLabelssNumber;
+            majorTicksArray = zeros(1, majorTickLabelssNumber + 1);
             majorTicksArray(1) = axMin;
             
-            for i = 1:majorTicksNumber
+            for i = 1:majorTickLabelssNumber
                 majorTick = axMin + (i * majorTicksLength);
                 majorTicksArray(i + 1) = round(majorTick, 1);
             end
+        end
+                
+        function updateSliderYProperties(app, pointIndex)
+            sliderHandle = app.yCoordSlider;
+
+            sliderHandle.Limits = [app.Y_SLIDER_MIN app.Y_SLIDER_MAX];
+            numericalMajorTickArray = app.computeMajorTicksArray(app.Y_SLIDER_MIN,...
+                                                                 app.Y_SLIDER_MAX,...
+                                                                 app.Y_SLIDER_MAJOR_TICK_LABEL_NUMBER);
+            sliderHandle.MajorTicks = numericalMajorTickArray; 
+            value = app.splineCollection.getYValueOfPoint(pointIndex);
+            sliderHandle.Value = value;
+            app.yCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,value);
         end
         
         % Value changed function: xCoordSlider
@@ -89,7 +111,12 @@ classdef SplineView < matlab.apps.AppBase
 
         % Value changed function: yCoordSlider
         function yCoordSliderValueChanged(app, event)
-            value = app.yCoordSlider.Value;
+            sliderHandle = app.yCoordSlider;
+            value = sliderHandle.Value;
+            roundedValue = round(value, app.XY_SLIDER_ROUND)
+            sliderHandle.Value = double(roundedValue);
+            app.yCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,roundedValue);
+            
             
         end
     end
@@ -135,10 +162,8 @@ classdef SplineView < matlab.apps.AppBase
             app.xCoordSlider = uislider(app.panel);
             app.xCoordSlider.ValueChangedFcn = createCallbackFcn(app, @xCoordSliderValueChanged, true);
             app.xCoordSlider.Position = [219 101 210 3];
-%            app.xCoordSlider.MajorTicks = [10 10.25 10.5 10.75 11 11.25 11.5 11.75 12];
-%            app.xCoordSlider.MajorTickLabels = {'10', '', '10.5', '', '11', '', '11.5', '', '12'};
 
-            % initialize x slider limits and value aswell as label xCoordSliderTxtValue
+            % initialize x slider limits, value and major ticks aswell as label xCoordSliderTxtValue
             app.updateSliderXProperties(1);
  
             % Create ySliderLabel
@@ -151,6 +176,9 @@ classdef SplineView < matlab.apps.AppBase
             app.yCoordSlider = uislider(app.panel);
             app.yCoordSlider.ValueChangedFcn = createCallbackFcn(app, @yCoordSliderValueChanged, true);
             app.yCoordSlider.Position = [219 42 210 3];
+
+            % initialize x slider limits, value and major ticks aswell as label yCoordSliderTxtValue
+            app.updateSliderYProperties(1);
 
             % Create pointDropDownLabel
             app.pointDropDownLabel = uilabel(app.panel);
@@ -261,6 +289,7 @@ classdef SplineView < matlab.apps.AppBase
             newPointLabelHandles{3} = text(app.uiAxes, Pn(3,1)-0.3, Pn(3,2)-0.3, pointsLabelStrings{3});
             newPointLabelHandles{4} = text(app.uiAxes, Pn(4,1)-0.3, Pn(4,2)-0.3, pointsLabelStrings{4});
         end
+        
         function deletePointLabels(app,...
                                    pointLabelHandels)
             elementNb = size(pointLabelHandels, 2);

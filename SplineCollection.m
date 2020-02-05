@@ -88,6 +88,12 @@ classdef SplineCollection < handle
             pointXValue = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline);
         end
         
+        function pointYValue = getYValueOfPoint(obj, pointIndex)
+            [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(pointIndex);
+            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(pointSplineIndex, pointIndex);
+            pointYValue = pointSplineModel.splineYpointCoordVector(1, pointIndexInSpline);
+        end
+        
         function [pointSplineModel, pointSplineIndex] = getSplineModelContainingPoint(obj, pointIndex)
             pointSplineIndex = ceil(pointIndex / 4);
             pointSplineModel = obj.splineModelCellArray{pointSplineIndex};
