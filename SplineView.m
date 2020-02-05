@@ -111,8 +111,7 @@ classdef SplineView < matlab.apps.AppBase
             app.splineCollection.setXValueOfPoint(menuSelIndex, roundedValue);
 
             % replotting the modified spline
-            app.deletePlottedPiecewiseSpline(menuSelIndex);
-            
+            app.deletePlottedPiecewiseSpline(menuSelIndex);            
             maxSplineIndex = length(app.splineCollection.splineModelCellArray);
             app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(menuSelIndex),...
                            maxSplineIndex);
@@ -136,6 +135,14 @@ classdef SplineView < matlab.apps.AppBase
             sliderHandle.Value = double(roundedValue);
             app.yCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,roundedValue);
             
+            menuSelIndex = app.getPointSelectionMenuIndex();
+            app.splineCollection.setYValueOfPoint(menuSelIndex, roundedValue);
+
+            % replotting the modified spline
+            app.deletePlottedPiecewiseSpline(menuSelIndex);            
+            maxSplineIndex = length(app.splineCollection.splineModelCellArray);
+            app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(menuSelIndex),...
+                           maxSplineIndex);
             
         end
     end
