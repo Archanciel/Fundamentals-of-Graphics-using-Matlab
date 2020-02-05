@@ -13,8 +13,8 @@ classdef SplineModel < handle
         splineEndSlope;
         
         splineLineHandleCellArray;
-        splinePointLabelHandleVector;
-        splineScatteredPointHandleVector;
+        splinePointLabelHandleCellArray;
+        splineScatteredPointHandleCellArray;
     end
     
     properties (Access = private)

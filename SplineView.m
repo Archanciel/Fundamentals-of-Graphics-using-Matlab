@@ -118,6 +118,7 @@ classdef SplineView < matlab.apps.AppBase
         end
 
         function deletePlottedPiecewiseSpline(app, pointIndex)
+            % refactor so that 
             splineModel = app.splineCollection.getSplineModelContainingPoint(pointIndex);
             plottedPiecewiseSplinesCellArray = splineModel.splineLineHandleCellArray;
             elementNb = size(plottedPiecewiseSplinesCellArray, 2);
@@ -271,8 +272,8 @@ classdef SplineView < matlab.apps.AppBase
 
             splineUidata = app.splineUIDataDic(splineModel.splineModelName);
             points_labels = splineUidata.splinePointLabelStrCellArray; 
-            pointLabelHandlesToDelete = splineModel.splinePointLabelHandleVector;
-            scatteredPointHandleToDelete = splineModel.splineScatteredPointHandleVector;
+            pointLabelHandlesToDelete = splineModel.splinePointLabelHandleCellArray;
+            scatteredPointHandleToDelete = splineModel.splineScatteredPointHandleCellArray;
 
             [newPointLabelHandles, newScatteredPointHandle] = app.plotPointsAndLabels(Pn,... 
                                                                                       points_labels,...
@@ -280,13 +281,13 @@ classdef SplineView < matlab.apps.AppBase
                                                                                       scatteredPointHandleToDelete);
 
             if currentSplineIndex == 0
-                splineModel.splinePointLabelHandleVector = newPointLabelHandles;
-                splineModel.splineScatteredPointHandleVector = newScatteredPointHandle;
+                splineModel.splinePointLabelHandleCellArray = newPointLabelHandles;
+                splineModel.splineScatteredPointHandleCellArray = newScatteredPointHandle;
             else
-%                splineModel.additionalSplinePointLabelHandleVector = newPointLabelHandles;
-%                splineModel.additionalSplineScatteredPointHandleVector = newScatteredPointHandle;
-                splineModel.splinePointLabelHandleVector = newPointLabelHandles;
-                splineModel.splineScatteredPointHandleVector = newScatteredPointHandle;
+%                splineModel.additionalSplinePointLabelHandleCellArray = newPointLabelHandles;
+%                splineModel.additionalSplineScatteredPointHandleCellArray = newScatteredPointHandle;
+                splineModel.splinePointLabelHandleCellArray = newPointLabelHandles;
+                splineModel.splineScatteredPointHandleCellArray = newScatteredPointHandle;
             end
         end
 
