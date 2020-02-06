@@ -9,8 +9,8 @@ classdef SplineUIData < handle
         splinePointLabelStrCellArray; % filled by SplineView
         splineColorCellArray;         % obtained from the related SplineModel
         splineLineHandleCellArray;
-        splinePointLabelHandleArray;
-        splineScatteredPointHandleArray;
+        splinePointLabelHandleCellArray;
+        splineScatteredPointHandleCellArray;
     end
     methods
         function obj = SplineUIData()

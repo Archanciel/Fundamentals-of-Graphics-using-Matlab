@@ -118,12 +118,9 @@ classdef SplineView < matlab.apps.AppBase
         end
 
         function deletePlottedPiecewiseSpline(app, pointIndex)
-            % refactor so that splineLineHandleCellArray,
-            % splinePointLabelHandleCellArray and 
-            % splineScatteredPointHandleCellArray are relocated in
-            % SplineUIData !
             splineModel = app.splineCollection.getSplineModelContainingPoint(pointIndex);
-            plottedPiecewiseSplinesCellArray = splineModel.splineLineHandleCellArray;
+            splineUIData = app.splineUIDataDic(splineModel.splineModelName);
+            plottedPiecewiseSplinesCellArray = splineUIData.splineLineHandleCellArray;
             elementNb = size(plottedPiecewiseSplinesCellArray, 2);
 
             for i = 1:elementNb
@@ -269,29 +266,24 @@ classdef SplineView < matlab.apps.AppBase
                 syms x
                 
                 yy_func = subs(y_func, x, xx_func);
-                splineModel.splineLineHandleCellArray{i} = plot(app.uiAxes, xx_func, yy_func, spline_colors{i});
+                splineUIData = app.splineUIDataDic(splineModel.splineModelName);
+                splineUIData.splineLineHandleCellArray{i} = plot(app.uiAxes, xx_func, yy_func, spline_colors{i});
                 hold(app.uiAxes,'on');
             end
 
             splineUidata = app.splineUIDataDic(splineModel.splineModelName);
             points_labels = splineUidata.splinePointLabelStrCellArray; 
-            pointLabelHandlesToDelete = splineModel.splinePointLabelHandleCellArray;
-            scatteredPointHandleToDelete = splineModel.splineScatteredPointHandleCellArray;
+            splineUIData = app.splineUIDataDic(splineModel.splineModelName);
+            pointLabelHandlesToDelete = splineUIData.splinePointLabelHandleCellArray;
+            scatteredPointHandleToDelete = splineUIData.splineScatteredPointHandleCellArray;
 
             [newPointLabelHandles, newScatteredPointHandle] = app.plotPointsAndLabels(Pn,... 
                                                                                       points_labels,...
                                                                                       pointLabelHandlesToDelete,...
                                                                                       scatteredPointHandleToDelete);
 
-            if currentSplineIndex == 0
-                splineModel.splinePointLabelHandleCellArray = newPointLabelHandles;
-                splineModel.splineScatteredPointHandleCellArray = newScatteredPointHandle;
-            else
-%                splineModel.additionalSplinePointLabelHandleCellArray = newPointLabelHandles;
-%                splineModel.additionalSplineScatteredPointHandleCellArray = newScatteredPointHandle;
-                splineModel.splinePointLabelHandleCellArray = newPointLabelHandles;
-                splineModel.splineScatteredPointHandleCellArray = newScatteredPointHandle;
-            end
+            splineUIData.splinePointLabelHandleCellArray = newPointLabelHandles;
+            splineUIData.splineScatteredPointHandleCellArray = newScatteredPointHandle;
         end
 
         function [newPointLabelHandles, newScatteredPointHandle] = plotPointsAndLabels(app,...

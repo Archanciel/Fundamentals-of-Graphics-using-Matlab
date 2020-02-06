@@ -11,10 +11,6 @@ classdef SplineModel < handle
         splineYpointCoordVector;
         splineStartSlope;
         splineEndSlope;
-        
-        splineLineHandleCellArray;
-        splinePointLabelHandleCellArray;
-        splineScatteredPointHandleCellArray;
     end
     
     properties (Access = private)
