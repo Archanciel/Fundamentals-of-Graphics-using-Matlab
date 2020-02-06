@@ -217,7 +217,7 @@ classdef SplineView < matlab.apps.AppBase
             app.pointSelectionMenu = uidropdown(app.panel);
             app.pointSelectionMenu.ValueChangedFcn = createCallbackFcn(app, @pointSelectionMenuValueChanged, true);
             app.pointSelectionMenu.Position = [55 92 100 22];
-            menuItemsCellArray = app.getAllSplinePointSelectionMenuValueStr();
+            menuItemsCellArray = app.getSplinePointAndSlopeMenuItem();
             app.pointSelectionMenu.Items = menuItemsCellArray;
             app.pointSelectionMenu.Value = menuItemsCellArray{1};
         end
@@ -540,6 +540,38 @@ classdef SplineView < matlab.apps.AppBase
             end 
         end   
 
+        function splinePointAndSlopeMenuItemStrCellArray = getSplinePointAndSlopeMenuItem(app)
+            menuItemCellArray = app.getAllSplinePointSelectionMenuValueStr();
+            itemNumber = length(menuItemCellArray);
+            splinePointAndSlopeMenuItemStrCellArray = cell(1, itemNumber);
+            n = 0;
+            skipItem = 0;
+            for i = 1:itemNumber
+                if i == 1
+                    n = i;
+                    splinePointAndSlopeMenuItemStrCellArray{n} = 'Start slope';
+                    n = n + 1;
+                    splinePointAndSlopeMenuItemStrCellArray{n} = menuItemCellArray{i};
+                    n = n + 1;
+                elseif i == itemNumber
+                    splinePointAndSlopeMenuItemStrCellArray{n} = menuItemCellArray{i};
+                    n = n + 1;
+                    splinePointAndSlopeMenuItemStrCellArray{n} = 'End slope';
+                elseif mod(i, 4) == 0
+                    splinePointAndSlopeMenuItemStrCellArray{n} = sprintf('Point %d-%d slope', i, i + 1);
+                    n = n + 1;
+                    skipItem = 1;
+                else
+                    if skipItem == 0
+                        splinePointAndSlopeMenuItemStrCellArray{n} = menuItemCellArray{i};
+                        n = n + 1;
+                    else
+                        skipItem = 0;
+                    end
+                end
+            end
+        end
+        
         function splinePointSelectionMenuValueStrCellArray = getAllSplinePointSelectionMenuValueStr(app)
             splineNumber = app.splineCollection.getSplineNumber();
             
