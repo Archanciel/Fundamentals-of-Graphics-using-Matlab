@@ -13,6 +13,8 @@ classdef SplineView < matlab.apps.AppBase
         Y_SLIDER_MAJOR_TICK_LABEL_NUMBER = 10
         Y_SLIDER_MIN = -10
         Y_SLIDER_MAX = 10
+        POINT_MENU_INIT_VALUE = 1
+        POINT_MENU_CORRESPONDING_SLOPE_POINT_INIT_VALUE = -1
 
         % UI controls
         uiFigure              matlab.ui.Figure
@@ -39,16 +41,13 @@ classdef SplineView < matlab.apps.AppBase
     % Callbacks that handle component events
     methods (Access = private)
 
-        % Value changed function: pointSe<lectionMenu
+        % Value changed function: pointSelectionMenu
         function pointSelectionMenuValueChanged(app, event)
             menuSelIndex = app.getPointSelectionMenuIndex();
             pointIndex = app.splinePointAndSlopeMenuCorrespondingPointIndex(menuSelIndex);
             
-            if pointIndex > 0 
-                app.updateSliderXProperties(pointIndex);
-                app.updateSliderYProperties(pointIndex);
-            else
-            end
+            app.updateSliderXProperties(pointIndex);
+            app.updateSliderYProperties(pointIndex);
         end
 
         function menuSelIndex = getPointSelectionMenuIndex(app)
@@ -60,14 +59,26 @@ classdef SplineView < matlab.apps.AppBase
         function updateSliderXProperties(app, pointIndex)
             sliderHandle = app.xCoordSlider;
 
-            [xSliderMin, xSliderMax] = app.splineCollection.getMinMaxX(pointIndex, app.XY_SLIDER_STEP);
+            if pointIndex > 0
+                [xSliderMin, xSliderMax] = app.splineCollection.getMinMaxX(pointIndex, app.XY_SLIDER_STEP);
+            else
+                [xSliderMin, xSliderMax] = app.splineCollection.getMinMaxSlope();
+            end
             
             sliderHandle.Limits = [xSliderMin xSliderMax];
             numericalMajorTickArray = app.computeMajorTicksArray(xSliderMin,...
                                                                  xSliderMax,...
                                                                  app.X_SLIDER_MAJOR_TICK_LABEL_NUMBER);
             sliderHandle.MajorTicks = numericalMajorTickArray; 
-            value = app.splineCollection.getXValueOfPoint(pointIndex);
+
+            if pointIndex > 0
+                value = app.splineCollection.getXValueOfPoint(pointIndex);
+                app.xSliderLabel.Text = 'X    ';
+            else
+                value = app.splineCollection.getSlopeValueAtPoint(pointIndex);
+                app.xSliderLabel.Text = 'Slope';
+            end
+            
             sliderHandle.Value = value;
             app.xCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,value);
         end 
@@ -93,15 +104,24 @@ classdef SplineView < matlab.apps.AppBase
                 
         function updateSliderYProperties(app, pointIndex)
             sliderHandle = app.yCoordSlider;
-
             sliderHandle.Limits = [app.Y_SLIDER_MIN app.Y_SLIDER_MAX];
             numericalMajorTickArray = app.computeMajorTicksArray(app.Y_SLIDER_MIN,...
                                                                  app.Y_SLIDER_MAX,...
                                                                  app.Y_SLIDER_MAJOR_TICK_LABEL_NUMBER);
-            sliderHandle.MajorTicks = numericalMajorTickArray; 
-            value = app.splineCollection.getYValueOfPoint(pointIndex);
-            sliderHandle.Value = value;
-            app.yCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,value);
+
+            if pointIndex > 0
+                sliderHandle.MajorTicks = numericalMajorTickArray; 
+                value = app.splineCollection.getYValueOfPoint(pointIndex);
+                sliderHandle.Value = value;
+                app.yCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,value);
+                set(app.yCoordSliderTxtValue, 'visible', 'on');
+                set(sliderHandle, 'visible', 'on')
+                set(app.ySliderLabel, 'visible', 'on');
+            else
+                set(app.yCoordSliderTxtValue, 'visible', 'off');
+                set(sliderHandle, 'visible', 'off');
+                set(app.ySliderLabel, 'visible', 'off');
+            end
         end
         
         % Value changed function: xCoordSlider
@@ -120,10 +140,27 @@ classdef SplineView < matlab.apps.AppBase
 
                 % replotting the modified spline
                 app.deletePlottedPiecewiseSpline(pointIndex);            
-                maxSplineIndex = length(app.splineCollection.splineModelCellArray);
+                maxSplineIndex = app.splineCollection.getSplineNumber();
                 app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
                                maxSplineIndex);
             else
+                % here the slope is modified
+                isContiguousSplineUpdated = app.splineCollection.setSlopeValueAtPoint(pointIndex, roundedValue);
+
+                % replotting the modified spline
+                pointIndex = -pointIndex;
+                app.deletePlottedPiecewiseSpline(pointIndex);            
+                maxSplineIndex = app.splineCollection.getSplineNumber();
+                app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
+                               maxSplineIndex);
+                           
+                if isContiguousSplineUpdated == 1
+                    pointIndex = pointIndex + 1;
+                    app.deletePlottedPiecewiseSpline(pointIndex);            
+                    maxSplineIndex = app.splineCollection.getSplineNumber();
+                    app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
+                                   maxSplineIndex);
+                end
             end
         end
 
@@ -154,7 +191,7 @@ classdef SplineView < matlab.apps.AppBase
 
                 % replotting the modified spline
                 app.deletePlottedPiecewiseSpline(pointIndex);            
-                maxSplineIndex = length(app.splineCollection.splineModelCellArray);
+                maxSplineIndex = app.splineCollection.getSplineNumber();
                 app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
                                maxSplineIndex);
             else
@@ -191,13 +228,11 @@ classdef SplineView < matlab.apps.AppBase
             % Create yCoordSliderTxtValue
             app.yCoordSliderTxtValue = uilabel(app.panel);
             app.yCoordSliderTxtValue.Position = [444 33 35 22];
-            app.yCoordSliderTxtValue.Text = '10';
 
             % Create xSliderLabel
             app.xSliderLabel = uilabel(app.panel);
             app.xSliderLabel.HorizontalAlignment = 'right';
-            app.xSliderLabel.Position = [173 92 25 22];
-            app.xSliderLabel.Text = 'X';
+            app.xSliderLabel.Position = [173 92 35 22];
 
             % Create xCoordSlider
             app.xCoordSlider = uislider(app.panel);
@@ -205,7 +240,7 @@ classdef SplineView < matlab.apps.AppBase
             app.xCoordSlider.Position = [219 101 210 3];
 
             % initialize x slider limits, value and major ticks aswell as label xCoordSliderTxtValue
-            app.updateSliderXProperties(1);
+            app.updateSliderXProperties(app.POINT_MENU_CORRESPONDING_SLOPE_POINT_INIT_VALUE);
  
             % Create ySliderLabel
             app.ySliderLabel = uilabel(app.panel);
@@ -219,7 +254,7 @@ classdef SplineView < matlab.apps.AppBase
             app.yCoordSlider.Position = [219 42 210 3];
 
             % initialize x slider limits, value and major ticks aswell as label yCoordSliderTxtValue
-            app.updateSliderYProperties(1);
+            app.updateSliderYProperties(app.POINT_MENU_CORRESPONDING_SLOPE_POINT_INIT_VALUE);
 
             % Create pointDropDownLabel
             app.pointDropDownLabel = uilabel(app.panel);
@@ -233,7 +268,7 @@ classdef SplineView < matlab.apps.AppBase
             app.pointSelectionMenu.Position = [55 92 100 22];
             menuItemsCellArray = app.getSplinePointAndSlopeMenuItems();
             app.pointSelectionMenu.Items = menuItemsCellArray;
-            app.pointSelectionMenu.Value = menuItemsCellArray{1};
+            app.pointSelectionMenu.Value = menuItemsCellArray{app.POINT_MENU_INIT_VALUE};
         end
     end
     
@@ -646,7 +681,7 @@ classdef SplineView < matlab.apps.AppBase
 
         function plotPiecewiseSplines(app)
             % plot all the piecewise splines contained in splineCollection
-            maxSplineIndex = length(app.splineCollection.splineModelCellArray);
+            maxSplineIndex = app.splineCollection.getSplineNumber();
             
             for i = 1:maxSplineIndex
                 app.plotSpline(i,...
