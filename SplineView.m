@@ -33,17 +33,22 @@ classdef SplineView < matlab.apps.AppBase
         splineUIDataDic       containers.Map    % dictionary keyed with spline
                                                 % name containing as value
                                                 % the related SplineUIData
+        splinePointAndSlopeMenuCorrespondingPointIndex
     end
 
     % Callbacks that handle component events
     methods (Access = private)
 
-        % Value changed function: pointSelectionMenu
+        % Value changed function: pointSe<lectionMenu
         function pointSelectionMenuValueChanged(app, event)
             menuSelIndex = app.getPointSelectionMenuIndex();
-
-            app.updateSliderXProperties(menuSelIndex);
-            app.updateSliderYProperties(menuSelIndex);
+            pointIndex = app.splinePointAndSlopeMenuCorrespondingPointIndex(menuSelIndex);
+            
+            if pointIndex > 0 
+                app.updateSliderXProperties(pointIndex);
+                app.updateSliderYProperties(pointIndex);
+            else
+            end
         end
 
         function menuSelIndex = getPointSelectionMenuIndex(app)
@@ -108,13 +113,18 @@ classdef SplineView < matlab.apps.AppBase
             app.xCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,roundedValue);
 
             menuSelIndex = app.getPointSelectionMenuIndex();
-            app.splineCollection.setXValueOfPoint(menuSelIndex, roundedValue);
+            pointIndex = app.splinePointAndSlopeMenuCorrespondingPointIndex(menuSelIndex);
+            
+            if pointIndex > 0
+                app.splineCollection.setXValueOfPoint(pointIndex, roundedValue);
 
-            % replotting the modified spline
-            app.deletePlottedPiecewiseSpline(menuSelIndex);            
-            maxSplineIndex = length(app.splineCollection.splineModelCellArray);
-            app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(menuSelIndex),...
-                           maxSplineIndex);
+                % replotting the modified spline
+                app.deletePlottedPiecewiseSpline(pointIndex);            
+                maxSplineIndex = length(app.splineCollection.splineModelCellArray);
+                app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
+                               maxSplineIndex);
+            else
+            end
         end
 
         function deletePlottedPiecewiseSpline(app, pointIndex)
@@ -137,14 +147,18 @@ classdef SplineView < matlab.apps.AppBase
             app.yCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,roundedValue);
             
             menuSelIndex = app.getPointSelectionMenuIndex();
-            app.splineCollection.setYValueOfPoint(menuSelIndex, roundedValue);
-
-            % replotting the modified spline
-            app.deletePlottedPiecewiseSpline(menuSelIndex);            
-            maxSplineIndex = length(app.splineCollection.splineModelCellArray);
-            app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(menuSelIndex),...
-                           maxSplineIndex);
+            pointIndex = app.splinePointAndSlopeMenuCorrespondingPointIndex(menuSelIndex);
             
+            if pointIndex > 0
+                app.splineCollection.setYValueOfPoint(pointIndex, roundedValue);
+
+                % replotting the modified spline
+                app.deletePlottedPiecewiseSpline(pointIndex);            
+                maxSplineIndex = length(app.splineCollection.splineModelCellArray);
+                app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
+                               maxSplineIndex);
+            else
+            end
         end
     end
 
@@ -217,7 +231,7 @@ classdef SplineView < matlab.apps.AppBase
             app.pointSelectionMenu = uidropdown(app.panel);
             app.pointSelectionMenu.ValueChangedFcn = createCallbackFcn(app, @pointSelectionMenuValueChanged, true);
             app.pointSelectionMenu.Position = [55 92 100 22];
-            menuItemsCellArray = app.getSplinePointAndSlopeMenuItem();
+            menuItemsCellArray = app.getSplinePointAndSlopeMenuItems();
             app.pointSelectionMenu.Items = menuItemsCellArray;
             app.pointSelectionMenu.Value = menuItemsCellArray{1};
         end
@@ -540,32 +554,40 @@ classdef SplineView < matlab.apps.AppBase
             end 
         end   
 
-        function splinePointAndSlopeMenuItemStrCellArray = getSplinePointAndSlopeMenuItem(app)
+        function splinePointAndSlopeMenuItemStrCellArray = getSplinePointAndSlopeMenuItems(app)
             menuItemCellArray = app.getAllSplinePointSelectionMenuValueStr();
             itemNumber = length(menuItemCellArray);
             splinePointAndSlopeMenuItemStrCellArray = cell(1, itemNumber);
+            app.splinePointAndSlopeMenuCorrespondingPointIndex = zeros(1, itemNumber);
             n = 0;
             skipItem = 0;
             for i = 1:itemNumber
                 if i == 1
                     n = i;
                     splinePointAndSlopeMenuItemStrCellArray{n} = 'Start slope';
+                    app.splinePointAndSlopeMenuCorrespondingPointIndex(n) = -i;
                     n = n + 1;
                     splinePointAndSlopeMenuItemStrCellArray{n} = menuItemCellArray{i};
+                    app.splinePointAndSlopeMenuCorrespondingPointIndex(n) = i;
                     n = n + 1;
                 elseif i == itemNumber
                     splinePointAndSlopeMenuItemStrCellArray{n} = menuItemCellArray{i};
+                    app.splinePointAndSlopeMenuCorrespondingPointIndex(n) = i;
                     n = n + 1;
                     splinePointAndSlopeMenuItemStrCellArray{n} = 'End slope';
+                    app.splinePointAndSlopeMenuCorrespondingPointIndex(n) = -i;
                 elseif mod(i, 4) == 0
                     splinePointAndSlopeMenuItemStrCellArray{n} = sprintf('Point %d-%d slope', i, i + 1);
+                    app.splinePointAndSlopeMenuCorrespondingPointIndex(n) = -i;
                     n = n + 1;
                     skipItem = 1;
                 else
                     if skipItem == 0
                         splinePointAndSlopeMenuItemStrCellArray{n} = menuItemCellArray{i};
+                        app.splinePointAndSlopeMenuCorrespondingPointIndex(n) = i;
                         n = n + 1;
                     else
+                        app.splinePointAndSlopeMenuCorrespondingPointIndex(n) = -i;      
                         skipItem = 0;
                     end
                 end
