@@ -48,16 +48,14 @@ classdef SplineCollection < handle
             end
         end
         
-        function [xAxisMin, xAxisMax] = getXAxisLimits(obj)
-            % Returns the minimum and maximum x value that can be set to a 
-            % point. Min x is the x value of the left most point of the
-            % first piecewise spline. Max x is the x value of the right 
-            % most point of the last piecewise spline. 
+        function [xMin, xMax] = getAllPointsXLimits(obj)
+            % Returns the minimum and maximum x values considering all
+            % the points of the piecewise splines in the SplineCollection
             startSplineModel = obj.getSplineModel(1);
             endSplineModel = obj.getSplineModel(obj.getSplineNumber());
             
-            xAxisMin = startSplineModel.splineXpointCoordVector(1, 1) - 1; 
-            xAxisMax = endSplineModel.splineXpointCoordVector(1, end) + 1;
+            xMin = startSplineModel.splineXpointCoordVector(1, 1) - 1; 
+            xMax = endSplineModel.splineXpointCoordVector(1, end) + 1;
         end
 
         function [minSlope, maxSlope] = getMinMaxSlope(obj)
@@ -65,12 +63,11 @@ classdef SplineCollection < handle
             maxSlope = obj.MAX_SLOPE;
         end
         
-        function [minX, maxX] = getMinMaxX(obj, pointIndex, coordVariationMinStep)
+        function [minX, maxX] = getMinMaxX(obj, pointIndex, xAxisMin, xAxisMax, coordVariationMinStep)
             % Returns the x value interval within which a specific point
             % can be moved. The idea is that a point can not be moved more
             % left than the x value + min step of its left neighbour or more
             % right than the x value - min step of its right neighbour.
-            [xAxisMin, xAxisMax] = obj.getXAxisLimits();
             [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(pointIndex);
             pointIndexInSpline = obj.getPointIndexInSplineAtIndex(pointSplineIndex, pointIndex);
             currentPointXValue = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline);
