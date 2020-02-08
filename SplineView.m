@@ -7,6 +7,7 @@ classdef SplineView < matlab.apps.AppBase
         XY_SLIDER_POINT_STEP = 0.1;
         X_SLIDER_SLOPE_STEP = 1;
         XY_SLIDER_ROUND = 1;
+        SLOPE_SLIDER_ROUND = 0;
         PLOT_RESOLUTION = 100; % linspace 3rd param
         REPLACE_NUMBER = 6;
         DISPLAY_XY_VALUE_FORMAT = '%2.1f'
@@ -133,12 +134,18 @@ classdef SplineView < matlab.apps.AppBase
         function xCoordSliderValueChanged(app, event)
             sliderHandle = app.xCoordSlider;
             value = sliderHandle.Value;
-            roundedValue = round(value, app.XY_SLIDER_ROUND);
-            sliderHandle.Value = double(roundedValue);
-            app.xCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,roundedValue);
 
             menuSelIndex = app.getPointSelectionMenuIndex();
             pointIndex = app.splinePointAndSlopeMenuCorrespondingPointIndex(menuSelIndex);
+            
+            if pointIndex > 0
+                roundedValue = round(value, app.XY_SLIDER_ROUND);
+            else
+                roundedValue = round(value, app.SLOPE_SLIDER_ROUND);
+            end
+            
+            sliderHandle.Value = double(roundedValue);
+            app.xCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,roundedValue);
             
             if pointIndex > 0
                 app.splineCollection.setXValueOfPoint(pointIndex, roundedValue);
