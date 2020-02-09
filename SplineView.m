@@ -46,7 +46,7 @@ classdef SplineView < matlab.apps.AppBase
     methods (Access = private)
 
         % Value changed function: pointSelectionMenu
-        function pointSelectionMenuValueChanged(app, event)
+        function pointSelectionMenuValueChanged(app, ~)
             menuSelIndex = app.getPointSelectionMenuIndex();
             pointIndex = app.splinePointAndSlopeMenuCorrespondingPointIndex(menuSelIndex);
             
@@ -63,8 +63,11 @@ classdef SplineView < matlab.apps.AppBase
         function updateSliderXProperties(app, pointIndex)
             sliderHandle = app.xCoordSlider;
 
-            if pointIndex > 0
-                [xSliderMin, xSliderMax] = app.splineCollection.getMinMaxX(pointIndex, app.X_AXIS_MIN, app.X_AXIS_MAX, app.XY_SLIDER_POINT_STEP);
+            if pointIndex >= 1
+                [xSliderMin, xSliderMax] = app.splineCollection.getMinMaxX(pointIndex, pointIndex, app.X_AXIS_MIN, app.X_AXIS_MAX, app.XY_SLIDER_POINT_STEP);
+            elseif  pointIndex > 0
+                realPointIndex = pointIndex * 1000;
+                [xSliderMin, xSliderMax] = app.splineCollection.getMinMaxX(realPointIndex, realPointIndex + 1, app.X_AXIS_MIN, app.X_AXIS_MAX, app.XY_SLIDER_POINT_STEP);
             else
                 [xSliderMin, xSliderMax] = app.splineCollection.getMinMaxSlope();
             end
@@ -75,7 +78,7 @@ classdef SplineView < matlab.apps.AppBase
                                                                  app.X_SLIDER_MAJOR_TICK_LABEL_NUMBER);
             sliderHandle.MajorTicks = numericalMajorTickArray; 
 
-            if pointIndex > 0
+            if pointIndex >= 1
                 value = app.splineCollection.getXValueOfPoint(pointIndex);
                 app.xSliderLabel.Text = 'X    ';
                 sliderHandle.MinorTicks = [xSliderMin:app.XY_SLIDER_POINT_STEP:xSliderMax];
@@ -96,7 +99,7 @@ classdef SplineView < matlab.apps.AppBase
             % This function fills a numerical array with the values of the
             % slider major tick labels. For example, if the slider enables
             % to select a value between 0 and 100, calling the function with
-            % parms 0, 100, 5 will return [0 20 40 60 80 100]
+            % parms 0 100, 5 will return [0 20 40 60 80 100]
             axRange = axMax - axMin;
             majorTicksLength = axRange / majorTickLabelssNumber;
             majorTicksArray = zeros(1, majorTickLabelssNumber + 1);
@@ -188,7 +191,7 @@ classdef SplineView < matlab.apps.AppBase
         end
 
         % Value changed function: yCoordSlider
-        function yCoordSliderValueChanged(app, event)
+        function yCoordSliderValueChanged(app, ~)
             sliderHandle = app.yCoordSlider;
             value = sliderHandle.Value;
             roundedValue = round(value, app.XY_SLIDER_ROUND);
@@ -399,7 +402,7 @@ classdef SplineView < matlab.apps.AppBase
             % Center the coordinate axes of a plot so that they pass through the 
             % origin.
             %
-            % Input: 0, 1 or 2 arguments
+            % Input: 0 1 or 2 arguments
             %        0: Moves the coordinate axes of 'gca', i.e. the currently active 
             %           axes.
             %        1: ax, a handle to the axes which should be moved.
@@ -420,21 +423,21 @@ classdef SplineView < matlab.apps.AppBase
 
             ax = app.uiAxes;
 
-            if nargin < 2,
+            if nargin < 2
                 fontsize = get(ax,'FontSize');
                 fontname = get(ax,'FontName');
             end
-            if nargin < 1,
+            if nargin < 1
                 ax = gca;
             end
 
-            if nargin == 2,
-                if isfield(opt,'fontsize'),
+            if nargin == 2
+                if isfield(opt,'fontsize')
                     fontsize = opt.fontsize;
                 else
                     fontsize = get(ax,'FontSize');
-                end;
-                if isfield(opt,'fontname'),
+                end
+                if isfield(opt,'fontname')
                     fontname = opt.fontname;
                 else
                     fontname = get(ax,'FontName');
@@ -455,21 +458,21 @@ classdef SplineView < matlab.apps.AppBase
             set(ax,'xlim',xlim);
             set(ax,'ylim',ylim);
 
-            if xlim(1)>0,
+            if xlim(1)>0
                 xlim(1) = 0;
             end
 
-            if ylim(1)>0,
+            if ylim(1)>0
                 ylim(1) = 0;
             end
 
-            if xlim(2) < 0,
+            if xlim(2) < 0
                 xlim(2) = 0;
             end
 
-            if ylim(2) < 0,
+            if ylim(2) < 0
                 ylim(2) = 0;
-            end;
+            end
 
             set(ax,'xlim',xlim,'ylim',ylim);
 
@@ -480,7 +483,7 @@ classdef SplineView < matlab.apps.AppBase
             axpos = get(ax,'position');
             figpos = get(ax,'position');
             if (strcmp(get(ax,'Units'),'normalized')) 
-                screensize = get( 0, 'ScreenSize' ); 
+                screensize = get(0, 'ScreenSize'); 
                 figpos = figpos.*screensize; 
             end
 
@@ -508,9 +511,9 @@ classdef SplineView < matlab.apps.AppBase
             set(yax,'color',[0 0 0])
 
             % Draw x-axis ticks
-            for k = 1:length(xtick),
+            for k = 1:length(xtick)
                 newxtick(k) = line(ax, [xtick(k); xtick(k)],[-xticksize/2; xticksize/2]);
-                if (xtick(k)~=0),
+                if (xtick(k)~=0)
                     newxticklab(k) = text(ax, xtick(k),-1.5*xticksize, strtrim(xticklab(k,:)));
                     set(newxticklab(k),'HorizontalAlignment','center',...
                         'Fontsize',fontsize,'FontName',fontname);
@@ -519,9 +522,9 @@ classdef SplineView < matlab.apps.AppBase
             set(newxtick,'color',[0 0 0]);
 
             % Draw y-axis ticks
-            for k = 1:length(ytick),
+            for k = 1:length(ytick)
                 newytick(k) = line(ax, [-yticksize/2; yticksize/2],[ytick(k); ytick(k)]);
-                if (ytick(k)~=0),
+                if (ytick(k)~=0)
                     newyticklab(k) = text(ax, -.8*yticksize,ytick(k), yticklab(k,:));
                     set(newyticklab(k),'HorizontalAlignment','right',...
                         'FontSize',fontsize,'FontName',fontname);
@@ -560,7 +563,7 @@ classdef SplineView < matlab.apps.AppBase
             % Create output struct
             %--------------------------------------------------------------------------
 
-            if nargout > 0,
+            if nargout > 0
                 out.xaxis = xax;
                 out.yaxis = yax;
                 out.xtick = newxtick;
@@ -602,14 +605,26 @@ classdef SplineView < matlab.apps.AppBase
         end   
 
         function splinePointAndSlopeMenuItemStrCellArray = getSplinePointAndSlopeMenuItems(app)
+            % This function add slope menu items to the point drop down
+            % menu initial item string cell array.
+            %
+            % The splinePointAndSlopeMenuCorrespondingPointIndex instance
+            % variable hosts the SplineCollection point index corresponding
+            % to the point drop down menu item. Slope drop down menu items
+            % by convention have negative indexes, which will be
+            % interpreded to differenciate a slope from a poiht selection
+            % in the drop down menu callback function.
             menuItemCellArray = app.getAllSplinePointSelectionMenuValueStr();
             itemNumber = length(menuItemCellArray);
             splinePointAndSlopeMenuItemStrCellArray = cell(1, itemNumber);
             app.splinePointAndSlopeMenuCorrespondingPointIndex = zeros(1, itemNumber);
             n = 0;
             skipItem = 0;
+            
             for i = 1:itemNumber
                 if i == 1
+                    % here, we add a 'Start slope' menu item followed by
+                    % the 'P1' menu item.
                     n = i;
                     splinePointAndSlopeMenuItemStrCellArray{n} = 'Start slope';
                     app.splinePointAndSlopeMenuCorrespondingPointIndex(n) = -i;
@@ -618,13 +633,25 @@ classdef SplineView < matlab.apps.AppBase
                     app.splinePointAndSlopeMenuCorrespondingPointIndex(n) = i;
                     n = n + 1;
                 elseif i == itemNumber
+                    % here, we add a 'End slope' menu item preceeded by
+                    % the last point menu item.
                     splinePointAndSlopeMenuItemStrCellArray{n} = menuItemCellArray{i};
                     app.splinePointAndSlopeMenuCorrespondingPointIndex(n) = i;
                     n = n + 1;
                     splinePointAndSlopeMenuItemStrCellArray{n} = 'End slope';
                     app.splinePointAndSlopeMenuCorrespondingPointIndex(n) = -i;
                 elseif mod(i, 4) == 0
-                    splinePointAndSlopeMenuItemStrCellArray{n} = sprintf('Point %d-%d slope', i, i + 1);
+                    % here, we add a 'Pi-i + 1 slope' menu item preceeded by
+                    % the 'Pi-i + 1' point menu item. The slope menu item
+                    % enable to modify the slope at this location. On the
+                    % contrary, the 'Pi-i + 1' point menu item is used to
+                    % alter the x or y coordinate of both the i and i + 1
+                    % points. Its associated splinePointAndSlopeMenuCorrespondingPointIndex
+                    % is positive and < 1.
+                    splinePointAndSlopeMenuItemStrCellArray{n} = sprintf('P%d-%d', i, i + 1);
+                    app.splinePointAndSlopeMenuCorrespondingPointIndex(n) = i/1000;
+                    n = n + 1;
+                    splinePointAndSlopeMenuItemStrCellArray{n} = sprintf('P%d-%d slope', i, i + 1);
                     app.splinePointAndSlopeMenuCorrespondingPointIndex(n) = -i;
                     n = n + 1;
                     skipItem = 1;
@@ -639,9 +666,13 @@ classdef SplineView < matlab.apps.AppBase
                     end
                 end
             end
+            
         end
         
         function splinePointSelectionMenuValueStrCellArray = getAllSplinePointSelectionMenuValueStr(app)
+            % This function builds the string cell array used to fill the
+            % point selection drop down menu. For each point in every
+            % spline, a string Pi is created ('P1, P2, ...). 
             splineNumber = app.splineCollection.getSplineNumber();
             
             % preallocating cell array

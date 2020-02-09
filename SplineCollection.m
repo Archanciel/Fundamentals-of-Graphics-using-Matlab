@@ -63,16 +63,18 @@ classdef SplineCollection < handle
             maxSlope = obj.MAX_SLOPE;
         end
         
-        function [minX, maxX] = getMinMaxX(obj, pointIndex, xAxisMin, xAxisMax, coordVariationMinStep)
+        function [minX, maxX] = getMinMaxX(obj, firstPointIndex, secondPointIndex, xAxisMin, xAxisMax, coordVariationMinStep)
             % Returns the x value interval within which a specific point
             % can be moved. The idea is that a point can not be moved more
             % left than the x value + min step of its left neighbour or more
             % right than the x value - min step of its right neighbour.
-            [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(pointIndex);
-            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(pointSplineIndex, pointIndex);
+            %
+            % In case the 
+            [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(firstPointIndex);
+            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(pointSplineIndex, firstPointIndex);
             currentPointXValue = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline);
 
-            if pointIndex == 1
+            if firstPointIndex == 1
                 minX = xAxisMin;
             else 
                 if pointIndexInSpline > 1
@@ -85,7 +87,7 @@ classdef SplineCollection < handle
 
             maxPointIndex = obj.getSplineNumber() * obj.POINT_NUMBER_PER_SPLINE;
             
-            if pointIndex == maxPointIndex
+            if firstPointIndex == maxPointIndex
                 maxX = xAxisMax;
             else
                 if pointIndexInSpline < obj.POINT_NUMBER_PER_SPLINE
@@ -101,7 +103,7 @@ classdef SplineCollection < handle
             % pointIndex is negative when a slope was choosen in the point
             % menu drop down menu.
             slopeIndex = -pointIndex;
-            [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(slopeIndex);
+            [pointSplineModel, ~] = obj.getSplineModelContainingPoint(slopeIndex);
             
             if slopeIndex == 1
                 slopeValue = pointSplineModel.splineStartSlope;
@@ -134,7 +136,7 @@ classdef SplineCollection < handle
             % pointIndex is negative when a slope was choosen in the point
             % menu drop down menu.
             slopeIndex = -pointIndex;
-            [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(slopeIndex);
+            [pointSplineModel, ~] = obj.getSplineModelContainingPoint(slopeIndex);
             isContiguousSplineUpdated = 0;
             
             if slopeIndex == 1
@@ -143,7 +145,7 @@ classdef SplineCollection < handle
                 pointSplineModel.splineEndSlope = value;
             else
                 pointSplineModel.splineEndSlope = value;
-                [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(slopeIndex + 1);
+                [pointSplineModel, ~] = obj.getSplineModelContainingPoint(slopeIndex + 1);
                 pointSplineModel.splineStartSlope = value;
                 isContiguousSplineUpdated = 1;
             end
