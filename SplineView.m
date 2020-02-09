@@ -702,7 +702,7 @@ classdef SplineView < matlab.apps.AppBase
 
             xlabel(app.uiAxes,'x');
             ylabel(app.uiAxes, 'y');
-            title(app.uiAxes, ["Piecewise spline + 1" "standard form - " "partial curves"]);
+            title(app.uiAxes, [sprintf("%d piecewise splines", maxSplineIndex) "in standard form"]);
 
             set(app.uiAxes,'ylim',[app.Y_SLIDER_MIN app.Y_SLIDER_MAX],'xlim',[app.X_AXIS_MIN app.X_AXIS_MAX],'xtick',app.X_AXIS_MIN:app.X_AXIS_MAX,'ytick',-5:10)
             opt.fontname = 'helvetica';
