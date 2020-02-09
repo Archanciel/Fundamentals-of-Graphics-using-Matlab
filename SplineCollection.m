@@ -102,9 +102,16 @@ classdef SplineCollection < handle
                     maxX = max(nextPointX, currentPointXValue);
                 end
             else
-                [firstSplineModel, firstPointSplineIndex] = obj.getSplineModelContainingPoint(firstPointIndex);
-                firstPointIndexInFirstSpline = obj.getPointIndexInSplineAtIndex(firstPointSplineIndex, firstPointIndex);
+                [firstSplineModel, indexOfSplineContainingFirstPoint] = obj.getSplineModelContainingPoint(firstPointIndex);
+                firstPointIndexInFirstSpline = obj.getPointIndexInSplineAtIndex(indexOfSplineContainingFirstPoint, firstPointIndex);
                 currentPointXValue = firstSplineModel.splineXpointCoordVector(1, firstPointIndexInFirstSpline);
+                [secondSplineModel, indexOfSplineContainingSecondPoint] = obj.getSplineModelContainingPoint(secondPointIndex);
+                secondPointIndexInSecondSpline = obj.getPointIndexInSplineAtIndex(indexOfSplineContainingSecondPoint, secondPointIndex);
+
+                prevPointX = firstSplineModel.splineXpointCoordVector(1, firstPointIndexInFirstSpline - 1) + coordVariationMinStep;
+                minX = min(prevPointX, currentPointXValue);
+                nextPointX = secondSplineModel.splineXpointCoordVector(1, secondPointIndexInSecondSpline + 1) - coordVariationMinStep;
+                maxX = max(nextPointX, currentPointXValue);
             end
         end 
         
