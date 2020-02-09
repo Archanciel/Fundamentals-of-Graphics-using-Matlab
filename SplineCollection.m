@@ -69,33 +69,42 @@ classdef SplineCollection < handle
             % left than the x value + min step of its left neighbour or more
             % right than the x value - min step of its right neighbour.
             %
-            % In case the 
-            [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(firstPointIndex);
-            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(pointSplineIndex, firstPointIndex);
-            currentPointXValue = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline);
+            % In case secondPointIndex is different from firstPointIndex,
+            % we are in the case of asking the x min/max value for two
+            % overlapping points, i.e. end point of slope i and begin point
+            % of slope i + 1.
+            if firstPointIndex == secondPointIndex
+                [pointSplineModel, indexOfSplineContainingPoint] = obj.getSplineModelContainingPoint(firstPointIndex);
+                pointIndexInSpline = obj.getPointIndexInSplineAtIndex(indexOfSplineContainingPoint, firstPointIndex);
+                currentPointXValue = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline);
 
-            if firstPointIndex == 1
-                minX = xAxisMin;
-            else 
-                if pointIndexInSpline > 1
-                    prevPointX = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline - 1) + coordVariationMinStep;
-                else
-                    prevPointX = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline) + coordVariationMinStep;
+                if firstPointIndex == 1
+                    minX = xAxisMin;
+                else 
+                    if pointIndexInSpline > 1
+                        prevPointX = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline - 1) + coordVariationMinStep;
+                    else
+                        prevPointX = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline) + coordVariationMinStep;
+                    end
+                    minX = min(prevPointX, currentPointXValue);
                 end
-                minX = min(prevPointX, currentPointXValue);
-            end
 
-            maxPointIndex = obj.getSplineNumber() * obj.POINT_NUMBER_PER_SPLINE;
-            
-            if firstPointIndex == maxPointIndex
-                maxX = xAxisMax;
+                maxPointIndex = obj.getSplineNumber() * obj.POINT_NUMBER_PER_SPLINE;
+
+                if firstPointIndex == maxPointIndex
+                    maxX = xAxisMax;
+                else
+                    if pointIndexInSpline < obj.POINT_NUMBER_PER_SPLINE
+                        nextPointX = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline + 1) - coordVariationMinStep;
+                    else
+                        nextPointX = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline) - coordVariationMinStep;
+                    end
+                    maxX = max(nextPointX, currentPointXValue);
+                end
             else
-                if pointIndexInSpline < obj.POINT_NUMBER_PER_SPLINE
-                    nextPointX = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline + 1) - coordVariationMinStep;
-                else
-                    nextPointX = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline) - coordVariationMinStep;
-                end
-                maxX = max(nextPointX, currentPointXValue);
+                [firstSplineModel, firstPointSplineIndex] = obj.getSplineModelContainingPoint(firstPointIndex);
+                firstPointIndexInFirstSpline = obj.getPointIndexInSplineAtIndex(firstPointSplineIndex, firstPointIndex);
+                currentPointXValue = firstSplineModel.splineXpointCoordVector(1, firstPointIndexInFirstSpline);
             end
         end 
         
@@ -117,8 +126,8 @@ classdef SplineCollection < handle
             % function first determines in which piecewise spline the
             % point is contained. It then returns the x coord of the
             % point.
-            [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(pointIndex);
-            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(pointSplineIndex, pointIndex);
+            [pointSplineModel, indexOfSplineContainingPoint] = obj.getSplineModelContainingPoint(pointIndex);
+            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(indexOfSplineContainingPoint, pointIndex);
             pointXValue = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline);
         end
         
@@ -127,8 +136,8 @@ classdef SplineCollection < handle
             % function first determines in which piecewise spline the
             % point is contained. It then sets the x coord of the
             % point to the passed value.
-            [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(pointIndex);
-            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(pointSplineIndex, pointIndex);
+            [pointSplineModel, indexOfSplineContainingPoint] = obj.getSplineModelContainingPoint(pointIndex);
+            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(indexOfSplineContainingPoint, pointIndex);
             pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline) = value;
         end
         
@@ -156,8 +165,8 @@ classdef SplineCollection < handle
             % function first determines in which piecewise spline the
             % point is contained. It then returns the y coord of the
             % point.
-            [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(pointIndex);
-            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(pointSplineIndex, pointIndex);
+            [pointSplineModel, indexOfSplineContainingPoint] = obj.getSplineModelContainingPoint(pointIndex);
+            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(indexOfSplineContainingPoint, pointIndex);
             pointYValue = pointSplineModel.splineYpointCoordVector(1, pointIndexInSpline);
         end
          
@@ -166,18 +175,18 @@ classdef SplineCollection < handle
             % function first determines in which piecewise spline the
             % point is contained. It then sets the y coord of the
             % point to the passed value.
-            [pointSplineModel, pointSplineIndex] = obj.getSplineModelContainingPoint(pointIndex);
-            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(pointSplineIndex, pointIndex);
+            [pointSplineModel, indexOfSplineContainingPoint] = obj.getSplineModelContainingPoint(pointIndex);
+            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(indexOfSplineContainingPoint, pointIndex);
             pointSplineModel.splineYpointCoordVector(1, pointIndexInSpline) = value;
         end
        
-        function [pointSplineModel, pointSplineIndex] = getSplineModelContainingPoint(obj, pointIndex)
-            pointSplineIndex = obj.getSplineIndexOfSplineContainingPoint(pointIndex);
-            pointSplineModel = obj.splineModelCellArray{pointSplineIndex};
+        function [pointSplineModel, indexOfSplineContainingPoint] = getSplineModelContainingPoint(obj, pointIndex)
+            indexOfSplineContainingPoint = obj.getSplineIndexOfSplineContainingPoint(pointIndex);
+            pointSplineModel = obj.splineModelCellArray{indexOfSplineContainingPoint};
         end
        
-        function pointSplineIndex = getSplineIndexOfSplineContainingPoint(obj, pointIndex)
-            pointSplineIndex = ceil(pointIndex / obj.POINT_NUMBER_PER_SPLINE);
+        function indexOfSplineContainingPoint = getSplineIndexOfSplineContainingPoint(obj, pointIndex)
+            indexOfSplineContainingPoint = ceil(pointIndex / obj.POINT_NUMBER_PER_SPLINE);
         end
         
         function pointIndexInSpline = getPointIndexInSplineAtIndex(obj, splineIndex, pointIndex)
