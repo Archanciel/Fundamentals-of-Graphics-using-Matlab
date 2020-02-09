@@ -167,42 +167,41 @@ classdef SplineView < matlab.apps.AppBase
             app.xCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,roundedValue);
 
             if pointIndex >= 1
-                realPointIndex = pointIndex;
+                app.replotSplineXChanged(pointIndex, roundedValue);
             elseif pointIndex > 0
                 realPointIndex = pointIndex * 1000;
-            else
-                realPointIndex = pointIndex;
-            end
-                        
-            if pointIndex > 0
-                app.splineCollection.setXValueOfPoint(realPointIndex, roundedValue);
-
-                % replotting the modified spline
-                app.deletePlottedPiecewiseSpline(realPointIndex);            
-                maxSplineIndex = app.splineCollection.getSplineNumber();
-                app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(realPointIndex),...
-                               maxSplineIndex);
+                app.replotSplineXChanged(realPointIndex, roundedValue);
+                app.replotSplineXChanged(realPointIndex + 1, roundedValue);
             else
                 % here the slope is modified
-                isContiguousSplineUpdated = app.splineCollection.setSlopeValueAtPoint(realPointIndex, roundedValue);
+                isContiguousSplineUpdated = app.splineCollection.setSlopeValueAtPoint(pointIndex, roundedValue);
 
                 % replotting the modified spline
-                realPointIndex = -realPointIndex;
-                app.deletePlottedPiecewiseSpline(realPointIndex);            
+                pointIndex = -pointIndex;
+                app.deletePlottedPiecewiseSpline(pointIndex);            
                 maxSplineIndex = app.splineCollection.getSplineNumber();
-                app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(realPointIndex),...
+                app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
                                maxSplineIndex);
                            
                 if isContiguousSplineUpdated == 1
-                    realPointIndex = realPointIndex + 1;
-                    app.deletePlottedPiecewiseSpline(realPointIndex);            
+                    pointIndex = pointIndex + 1;
+                    app.deletePlottedPiecewiseSpline(pointIndex);            
                     maxSplineIndex = app.splineCollection.getSplineNumber();
-                    app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(realPointIndex),...
+                    app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
                                    maxSplineIndex);
                 end
             end
         end
 
+        function replotSplineXChanged(app,...
+                                      pointIndex,...
+                                      roundedValue)
+            app.splineCollection.setXValueOfPoint(pointIndex, roundedValue);
+
+            % replotting the modified spline
+            app.replotSpline(pointIndex);            
+        end
+                
         function deletePlottedPiecewiseSpline(app, pointIndex)
             splineModel = app.splineCollection.getSplineModelContainingPoint(pointIndex);
             splineUIData = app.splineUIDataDic(splineModel.splineModelName);
@@ -224,25 +223,39 @@ classdef SplineView < matlab.apps.AppBase
             
             menuSelIndex = app.getPointSelectionMenuIndex();
             pointIndex = app.splinePointAndSlopeMenuCorrespondingPointIndex(menuSelIndex);
-
+           
             if pointIndex >= 1
-                realPointIndex = pointIndex;
+                app.replotSplineYChanged(pointIndex,...
+                                         roundedValue);
             elseif pointIndex > 0
                 realPointIndex = pointIndex * 1000;
-            end
-           
-            if pointIndex > 0
-                app.splineCollection.setYValueOfPoint(realPointIndex, roundedValue);
-
-                % replotting the modified spline
-                app.deletePlottedPiecewiseSpline(realPointIndex);            
-                maxSplineIndex = app.splineCollection.getSplineNumber();
-                app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(realPointIndex),...
-                               maxSplineIndex);
+                app.replotSplineYChanged(realPointIndex,...
+                                         roundedValue);
+                app.replotSplineYChanged(realPointIndex + 1,...
+                                         roundedValue);
             end
         end
-    end
+
+        function replotSplineYChanged(app,...
+                                      pointIndex,...
+                                      roundedValue)
+            app.splineCollection.setYValueOfPoint(pointIndex, roundedValue);
+
+            % replotting the modified spline
+            app.replotSpline(pointIndex);            
+        end
         
+        function replotSpline(app,...
+                              pointIndex)
+            % replotting the modified spline
+            app.deletePlottedPiecewiseSpline(pointIndex);            
+            maxSplineIndex = app.splineCollection.getSplineNumber();
+            app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
+                           maxSplineIndex);
+        end
+        
+    end
+    
     % Component initialization
     methods (Access = private)
 
