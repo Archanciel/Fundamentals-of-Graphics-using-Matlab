@@ -7,9 +7,12 @@ classdef SplineCollection < handle
         MAX_SLOPE = 10;
         
         % none !        
-
+    end
+    
+    properties (Access = private)
         splineModelCellArray;
     end
+    
     methods
         function obj = SplineCollection()
         end
