@@ -1,1 +1,3 @@
-Piecewise spline visualizer Matlab app
+# Piecewise spline visualizer Matlab app
+
+![](SplineVisualizer.gif)
