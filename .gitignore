@@ -1,3 +1,7 @@
 
 *.asv
 *.bak
+SplineVisualizer/.MATLABDriveTag
+SplineVisualizer/+controller/.MATLABDriveTag
+SplineVisualizer/+model/.MATLABDriveTag
+SplineVisualizer/+view/.MATLABDriveTag
