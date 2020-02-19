@@ -9,14 +9,9 @@ classdef SplineCollection < handle
         % none !        
 
         splineModelCellArray;
-        splineStartSlope;
-        splineEndSlope;
     end
     methods
-        function obj = SplineCollection(splineStartSlope,...
-                                        splineEndSlope)
-            obj.splineStartSlope = splineStartSlope;
-            obj.splineEndSlope = splineEndSlope;
+        function obj = SplineCollection()
         end
         
         function addSplineModel(obj, splineModel)

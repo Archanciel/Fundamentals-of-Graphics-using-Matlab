@@ -1,5 +1,4 @@
-splineCollection = model.SplineCollection(4,...
-                                    3);
+splineCollection = model.SplineCollection();
 
 % initial piecewise splines points coordinates
 
