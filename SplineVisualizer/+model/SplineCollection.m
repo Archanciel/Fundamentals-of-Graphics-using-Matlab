@@ -190,6 +190,10 @@ classdef SplineCollection < handle
         function indexOfSplineContainingPoint = getSplineIndexOfSplineContainingPoint(obj, pointIndex)
             indexOfSplineContainingPoint = ceil(pointIndex / obj.POINT_NUMBER_PER_SPLINE);
         end
+
+    end
+    
+    methods (Access = private)
         
         function pointIndexInSpline = getPointIndexInSplineAtIndex(obj, splineIndex, pointIndex)
             pointIndexInSpline = pointIndex - ((splineIndex - 1) * obj.POINT_NUMBER_PER_SPLINE);
