@@ -11,5 +11,10 @@ classdef SplineController < handle
         function obj = SplineController(splineCollection)
             obj.splineCollection = splineCollection;
         end
+        
+        function handle_X_CoordChanged(obj, coord, pointIndex)
+            coord
+            pointIndex
+        end
     end
 end

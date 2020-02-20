@@ -148,9 +148,14 @@ classdef SplineView < matlab.apps.AppBase
                 set(app.ySliderLabel, 'visible', 'off');
             end
         end
+
+        function pointIndex = getPointIndex(app)
+            menuSelIndex = app.getPointSelectionMenuIndex();
+            pointIndex = app.splinePointAndSlopeMenuCorrespondingPointIndex(menuSelIndex);
+        end
         
         % Value changed function: xCoordSlider
-        function xCoordSliderValueChanged(app, event)
+        function xCoordSliderValueChanged(app, ~)
             sliderHandle = app.xCoordSlider;
             value = sliderHandle.Value;
 
@@ -326,6 +331,10 @@ classdef SplineView < matlab.apps.AppBase
             menuItemsCellArray = app.getSplinePointAndSlopeMenuItems();
             app.pointSelectionMenu.Items = menuItemsCellArray;
             app.pointSelectionMenu.Value = menuItemsCellArray{app.POINT_MENU_INIT_VALUE};
+        end
+        
+        function startupFcn(app)
+            s = 'ggggg'
         end
     end
     
@@ -730,6 +739,10 @@ classdef SplineView < matlab.apps.AppBase
                 end
             end
         end
+
+        function attachControllerToSliderChangeEvent(app)
+            addlistener(app.xCoordSlider, 'ValueChanged', @(~,~)app.splineController.handle_X_CoordChanged(get(app.xCoordSlider, 'Value'), app.getPointIndex()));
+        end
         
     end
         
@@ -744,7 +757,8 @@ classdef SplineView < matlab.apps.AppBase
             
             % Create UIFigure and components
             createComponents(app)
-
+            app.attachControllerToSliderChangeEvent()
+            
             % Register the app with App Designer
             registerApp(app, app.uiFigure)
 
