@@ -165,44 +165,34 @@ classdef SplineView < matlab.apps.AppBase
                 roundedValue = round(value, app.SLOPE_SLIDER_ROUND);
             end
         end
-            
-        % Value changed function: xCoordSlider
+
+        function roundedValue = get_y_roundedValue(app)
+            sliderHandle = app.yCoordSlider;
+            value = sliderHandle.Value;
+            roundedValue = round(value, app.XY_SLIDER_ROUND);
+        end
+        
         function xCoordSliderValueChanged(app, ~)
+            % SplineView callback function attached to the x slider
+            % control. This function only updates the SlideView controls
+            % impacted by the slider change. The spline redrawing is
+            % under the responsibility of the SplineController.
+            
             xRoundedValue = app.get_x_roundedValue();
-            sliderHandle = app.xCoordSlider;
-            sliderHandle.Value = double(xRoundedValue);
+            app.xCoordSlider.Value = double(xRoundedValue);
             app.xCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,xRoundedValue);
         end
 
         % Value changed function: yCoordSlider
         function yCoordSliderValueChanged(app, ~)
-            sliderHandle = app.yCoordSlider;
-            value = sliderHandle.Value;
-            roundedValue = round(value, app.XY_SLIDER_ROUND);
-            sliderHandle.Value = double(roundedValue);
-            app.yCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,roundedValue);
+            % SplineView callback function attached to the y slider
+            % control. This function only updates the SlideView controls
+            % impacted by the slider change. The spline redrawing is
+            % under the responsibility of the SplineController.
             
-            pointIndex = app.getPointIndex();
-           
-            if pointIndex >= 1
-                app.replotSplineYChanged(pointIndex,...
-                                         roundedValue);
-            elseif pointIndex > 0
-                realPointIndex = pointIndex * 1000;
-                app.replotSplineYChanged(realPointIndex,...
-                                         roundedValue);
-                app.replotSplineYChanged(realPointIndex + 1,...
-                                         roundedValue);
-            end
-        end
-
-        function replotSplineYChanged(app,...
-                                      pointIndex,...
-                                      roundedValue)
-            app.splineCollection.setYValueOfPoint(pointIndex, roundedValue);
-
-            % replotting the modified spline
-            app.replotSpline(pointIndex);            
+            yRoundedValue = app.get_y_roundedValue();
+            app.yCoordSlider.Value = double(yRoundedValue);
+            app.yCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,yRoundedValue);
         end
         
         function replotSpline(app,...
@@ -625,6 +615,7 @@ classdef SplineView < matlab.apps.AppBase
 
         function attachControllerToSliderChangeEvent(app)
             addlistener(app.xCoordSlider, 'ValueChanged', @(~,~)app.splineController.handle_X_CoordChanged(app.get_x_roundedValue(), app.getPointIndex()));
+            addlistener(app.yCoordSlider, 'ValueChanged', @(~,~)app.splineController.handle_Y_CoordChanged(app.get_y_roundedValue(), app.getPointIndex()));
         end
         
     end
@@ -746,6 +737,15 @@ classdef SplineView < matlab.apps.AppBase
                                       pointIndex,...
                                       roundedValue)
             app.splineCollection.setXValueOfPoint(pointIndex, roundedValue);
+
+            % replotting the modified spline
+            app.replotSpline(pointIndex);            
+        end
+
+        function replotSplineYChanged(app,...
+                                      pointIndex,...
+                                      roundedValue)
+            app.splineCollection.setYValueOfPoint(pointIndex, roundedValue);
 
             % replotting the modified spline
             app.replotSpline(pointIndex);            

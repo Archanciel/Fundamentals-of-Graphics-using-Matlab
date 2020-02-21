@@ -39,5 +39,18 @@ classdef SplineController < handle
                 end
             end
         end
+        
+        function handle_Y_CoordChanged(obj, yRoundedValue, pointIndex)
+            if pointIndex >= 1
+                obj.splineView.replotSplineYChanged(pointIndex,...
+                                         yRoundedValue);
+            elseif pointIndex > 0
+                realPointIndex = pointIndex * 1000;
+                obj.splineView.replotSplineYChanged(realPointIndex,...
+                                         yRoundedValue);
+                obj.splineView.replotSplineYChanged(realPointIndex + 1,...
+                                         yRoundedValue);
+            end
+        end
     end
 end
