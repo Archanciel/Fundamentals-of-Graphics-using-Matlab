@@ -14,13 +14,19 @@ classdef SplineController < handle
         
         function handle_X_CoordChanged(obj, xRoundedValue, pointIndex)
             if pointIndex >= 1
+                % here, a single point is modified. A single point is a
+                % point which is not overlapped by another point with
+                % identical coordinates. 
                 obj.splineView.replotSplineXChanged(pointIndex, xRoundedValue);
             elseif pointIndex > 0
+                % here, a two overlapping points are modified. This happens
+                % when moving points which concatenate two contiguous
+                % splines.
                 realPointIndex = pointIndex * 1000;
                 obj.splineView.replotSplineXChanged(realPointIndex, xRoundedValue);
                 obj.splineView.replotSplineXChanged(realPointIndex + 1, xRoundedValue);
             else
-                % here the slope is modified
+                % here, the slope is modified.
                 isContiguousSplineUpdated = obj.splineCollection.setSlopeValueAtPoint(pointIndex, xRoundedValue);
 
                 % replotting the modified spline
@@ -28,28 +34,34 @@ classdef SplineController < handle
                 obj.splineView.deletePlottedPiecewiseSpline(pointIndex);            
                 maxSplineIndex = obj.splineCollection.getSplineNumber();
                 obj.splineView.plotSpline(obj.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
-                               maxSplineIndex);
+                                          maxSplineIndex);
                            
                 if isContiguousSplineUpdated == 1
                     pointIndex = pointIndex + 1;
                     obj.splineView.deletePlottedPiecewiseSpline(pointIndex);            
                     maxSplineIndex = obj.splineCollection.getSplineNumber();
                     obj.splineView.plotSpline(obj.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
-                                   maxSplineIndex);
+                                              maxSplineIndex);
                 end
             end
         end
         
         function handle_Y_CoordChanged(obj, yRoundedValue, pointIndex)
             if pointIndex >= 1
+                % here, a single point is modified. A single point is a
+                % point which is not overlapped by another point with
+                % identical coordinates. 
                 obj.splineView.replotSplineYChanged(pointIndex,...
-                                         yRoundedValue);
+                                                    yRoundedValue);
             elseif pointIndex > 0
+                % here, a two overlapping points are modified. This happens
+                % when moving points which concatenate two contiguous
+                % splines.
                 realPointIndex = pointIndex * 1000;
                 obj.splineView.replotSplineYChanged(realPointIndex,...
-                                         yRoundedValue);
+                                                    yRoundedValue);
                 obj.splineView.replotSplineYChanged(realPointIndex + 1,...
-                                         yRoundedValue);
+                                                    yRoundedValue);
             end
         end
     end
