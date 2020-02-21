@@ -661,14 +661,16 @@ classdef SplineView < matlab.apps.AppBase
                                maxSplineIndex);
             end
 
-            xlabel(app.uiAxes,'x');
-            ylabel(app.uiAxes, 'y');
+            % Setting spline view title
             title(app.uiAxes, [sprintf("%d piecewise splines", maxSplineIndex) "in standard form"]);
 
+            % Setting graph axis limits and ticks
             set(app.uiAxes,'ylim',[app.Y_SLIDER_MIN app.Y_SLIDER_MAX],'xlim',[app.X_AXIS_MIN app.X_AXIS_MAX],'xtick',app.X_AXIS_MIN:app.X_AXIS_MAX,'ytick',-5:10)
+
+            % Calling axis cerntering code (found on Matworks Community
+            % https://ch.mathworks.com/matlabcentral/fileexchange/22333-centered-coordinate-axes-in-2d-plots)
             opt.fontname = 'helvetica';
             opt.fontsize = 8;
-
             app.centeraxes(opt);
         end
         
