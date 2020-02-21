@@ -195,15 +195,6 @@ classdef SplineView < matlab.apps.AppBase
             app.yCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,yRoundedValue);
         end
         
-        function replotSpline(app,...
-                              pointIndex)
-            % replotting the modified spline
-            app.deletePlottedPiecewiseSpline(pointIndex);            
-            maxSplineIndex = app.splineCollection.getSplineNumber();
-            app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
-                           maxSplineIndex);
-        end
-        
         % Component initialization
         % Create UIFigure and components
         function createComponents(app)
@@ -734,17 +725,14 @@ classdef SplineView < matlab.apps.AppBase
             splineUIData.splinePointLabelHandleCellArray = newPointLabelHandles;
             splineUIData.splineScatteredPointHandleCellArray = newScatteredPointHandle;
         end
-
-        function replotSplineXChanged(app,...
-                                      pointIndex)
+        
+        function replotSpline(app,...
+                              pointIndex)
             % replotting the modified spline
-            app.replotSpline(pointIndex);            
-        end
-
-        function replotSplineYChanged(app,...
-                                      pointIndex)
-            % replotting the modified spline
-            app.replotSpline(pointIndex);            
+            app.deletePlottedPiecewiseSpline(pointIndex);            
+            maxSplineIndex = app.splineCollection.getSplineNumber();
+            app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
+                           maxSplineIndex);
         end
                 
         function deletePlottedPiecewiseSpline(app, pointIndex)

@@ -18,17 +18,17 @@ classdef SplineController < handle
                 % point which is not overlapped by another point with
                 % identical coordinates. 
                 obj.splineCollection.setXValueOfPoint(pointIndex, xRoundedValue);
-                obj.splineView.replotSplineXChanged(pointIndex);
+                obj.splineView.replotSpline(pointIndex);
             elseif pointIndex > 0
                 % here, a two overlapping points are modified. This happens
                 % when moving points which concatenate two contiguous
                 % splines.
                 realPointIndex = pointIndex * 1000;
                 obj.splineCollection.setXValueOfPoint(realPointIndex, xRoundedValue);
-                obj.splineView.replotSplineXChanged(realPointIndex);
+                obj.splineView.replotSpline(realPointIndex);
 
                 obj.splineCollection.setXValueOfPoint(realPointIndex + 1, xRoundedValue);
-                obj.splineView.replotSplineXChanged(realPointIndex + 1);
+                obj.splineView.replotSpline(realPointIndex + 1);
             else
                 % here, the slope is modified.
                 isContiguousSplineUpdated = obj.splineCollection.setSlopeValueAtPoint(pointIndex, xRoundedValue);
@@ -56,17 +56,17 @@ classdef SplineController < handle
                 % point which is not overlapped by another point with
                 % identical coordinates. 
                 obj.splineCollection.setYValueOfPoint(pointIndex, yRoundedValue);
-                obj.splineView.replotSplineYChanged(pointIndex);
+                obj.splineView.replotSpline(pointIndex);
             elseif pointIndex > 0
                 % here, a two overlapping points are modified. This happens
                 % when moving points which concatenate two contiguous
                 % splines.
                 realPointIndex = pointIndex * 1000;
                 obj.splineCollection.setYValueOfPoint(realPointIndex, yRoundedValue);
-                obj.splineView.replotSplineYChanged(realPointIndex);
+                obj.splineView.replotSpline(realPointIndex);
 
                 obj.splineCollection.setYValueOfPoint(realPointIndex + 1, yRoundedValue);
-                obj.splineView.replotSplineYChanged(realPointIndex + 1);
+                obj.splineView.replotSpline(realPointIndex + 1);
             end
         end
     end
