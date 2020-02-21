@@ -47,8 +47,7 @@ classdef SplineView < matlab.apps.AppBase
 
         % Value changed function: pointSelectionMenu
         function pointSelectionMenuValueChanged(app, ~)
-            menuSelIndex = app.getPointSelectionMenuIndex();
-            pointIndex = app.splinePointAndSlopeMenuCorrespondingPointIndex(menuSelIndex);
+            pointIndex = app.getPointIndex();
             
             app.updateSliderXProperties(pointIndex);
             app.updateSliderYProperties(pointIndex);
@@ -153,69 +152,26 @@ classdef SplineView < matlab.apps.AppBase
             menuSelIndex = app.getPointSelectionMenuIndex();
             pointIndex = app.splinePointAndSlopeMenuCorrespondingPointIndex(menuSelIndex);
         end
-        
-        % Value changed function: xCoordSlider
-        function xCoordSliderValueChanged(app, ~)
+
+        function roundedValue = get_x_roundedValue(app)
             sliderHandle = app.xCoordSlider;
             value = sliderHandle.Value;
 
-            menuSelIndex = app.getPointSelectionMenuIndex();
-            pointIndex = app.splinePointAndSlopeMenuCorrespondingPointIndex(menuSelIndex);
+            pointIndex = app.getPointIndex();
             
             if pointIndex > 0
                 roundedValue = round(value, app.XY_SLIDER_ROUND);
             else
                 roundedValue = round(value, app.SLOPE_SLIDER_ROUND);
             end
+        end
             
-            sliderHandle.Value = double(roundedValue);
-            app.xCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,roundedValue);
-
-            if pointIndex >= 1
-                app.replotSplineXChanged(pointIndex, roundedValue);
-            elseif pointIndex > 0
-                realPointIndex = pointIndex * 1000;
-                app.replotSplineXChanged(realPointIndex, roundedValue);
-                app.replotSplineXChanged(realPointIndex + 1, roundedValue);
-            else
-                % here the slope is modified
-                isContiguousSplineUpdated = app.splineCollection.setSlopeValueAtPoint(pointIndex, roundedValue);
-
-                % replotting the modified spline
-                pointIndex = -pointIndex;
-                app.deletePlottedPiecewiseSpline(pointIndex);            
-                maxSplineIndex = app.splineCollection.getSplineNumber();
-                app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
-                               maxSplineIndex);
-                           
-                if isContiguousSplineUpdated == 1
-                    pointIndex = pointIndex + 1;
-                    app.deletePlottedPiecewiseSpline(pointIndex);            
-                    maxSplineIndex = app.splineCollection.getSplineNumber();
-                    app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
-                                   maxSplineIndex);
-                end
-            end
-        end
-
-        function replotSplineXChanged(app,...
-                                      pointIndex,...
-                                      roundedValue)
-            app.splineCollection.setXValueOfPoint(pointIndex, roundedValue);
-
-            % replotting the modified spline
-            app.replotSpline(pointIndex);            
-        end
-                
-        function deletePlottedPiecewiseSpline(app, pointIndex)
-            splineModel = app.splineCollection.getSplineModelContainingPoint(pointIndex);
-            splineUIData = app.splineUIDataDic(splineModel.splineModelName);
-            plottedPiecewiseSplinesCellArray = splineUIData.splineLineHandleCellArray;
-            elementNb = size(plottedPiecewiseSplinesCellArray, 2);
-
-            for i = 1:elementNb
-                delete(plottedPiecewiseSplinesCellArray{i});
-            end
+        % Value changed function: xCoordSlider
+        function xCoordSliderValueChanged(app, ~)
+            xRoundedValue = app.get_x_roundedValue();
+            sliderHandle = app.xCoordSlider;
+            sliderHandle.Value = double(xRoundedValue);
+            app.xCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,xRoundedValue);
         end
 
         % Value changed function: yCoordSlider
@@ -226,8 +182,7 @@ classdef SplineView < matlab.apps.AppBase
             sliderHandle.Value = double(roundedValue);
             app.yCoordSliderTxtValue.Text = sprintf(app.DISPLAY_XY_VALUE_FORMAT,roundedValue);
             
-            menuSelIndex = app.getPointSelectionMenuIndex();
-            pointIndex = app.splinePointAndSlopeMenuCorrespondingPointIndex(menuSelIndex);
+            pointIndex = app.getPointIndex();
            
             if pointIndex >= 1
                 app.replotSplineYChanged(pointIndex,...
@@ -259,11 +214,7 @@ classdef SplineView < matlab.apps.AppBase
                            maxSplineIndex);
         end
         
-    end
-    
-    % Component initialization
-    methods (Access = private)
-
+        % Component initialization
         % Create UIFigure and components
         function createComponents(app)
 
@@ -331,74 +282,6 @@ classdef SplineView < matlab.apps.AppBase
             menuItemsCellArray = app.getSplinePointAndSlopeMenuItems();
             app.pointSelectionMenu.Items = menuItemsCellArray;
             app.pointSelectionMenu.Value = menuItemsCellArray{app.POINT_MENU_INIT_VALUE};
-        end
-        
-        function startupFcn(app)
-            s = 'ggggg'
-        end
-    end
-    
-    % Spline drawing methods
-    methods (Access = private)
-        
-        function plotSpline(app,...
-                            currentSplineIndex,...
-                            maxSplineIndex)
-            % Returns handles on the plotted piecewise splines
-            % so that they can be deleted before redrawing them !
-            splineModel = app.splineCollection.getSplineModel(currentSplineIndex);
-            yFuncCellArray = splineModel.computePiecewiseSplineFunctions();
-            Pn = [splineModel.splineXpointCoordVector(1,:)' splineModel.splineYpointCoordVector(1,:)'];
-            spline_colors = app.splineUIDataDic(splineModel.splineModelName).splineColorCellArray; 
-
-            % computing xx_func
-            
-            for i = 1:length(yFuncCellArray)
-                y_func = yFuncCellArray{i};
-                
-                if i == 1
-                    % handling first part of the 3 part piecewise spline
-                    if currentSplineIndex == 1
-                        % handling the first part of the the first piecewise spline of the
-                        % piecewise spline collection. xx_func must start at first x minus one.
-                        xx_func = linspace(Pn(i,1) - 1, Pn(i + 1,1), app.PLOT_RESOLUTION);
-                    else
-                        xx_func = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
-                    end
-                elseif i == 3
-                    % handling last part of the 3 part piecewise spline
-                    if currentSplineIndex == maxSplineIndex
-                        % handling the last part of the the last piecewise spline of the
-                        % piecewise spline collection. xx_func must exceed last x by one.
-                        xx_func = linspace(Pn(i,1), Pn(i + 1,1) + 1, app.PLOT_RESOLUTION);
-                    else
-                        xx_func = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
-                    end
-                else
-                    xx_func = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
-                end
-                
-                syms x
-                
-                yy_func = subs(y_func, x, xx_func);
-                splineUIData = app.splineUIDataDic(splineModel.splineModelName);
-                splineUIData.splineLineHandleCellArray{i} = plot(app.uiAxes, xx_func, yy_func, spline_colors{i});
-                hold(app.uiAxes,'on');
-            end
-
-            splineUidata = app.splineUIDataDic(splineModel.splineModelName);
-            points_labels = splineUidata.splinePointLabelStrCellArray; 
-            splineUIData = app.splineUIDataDic(splineModel.splineModelName);
-            pointLabelHandlesToDelete = splineUIData.splinePointLabelHandleCellArray;
-            scatteredPointHandleToDelete = splineUIData.splineScatteredPointHandleCellArray;
-
-            [newPointLabelHandles, newScatteredPointHandle] = app.plotPointsAndLabels(Pn,... 
-                                                                                      points_labels,...
-                                                                                      pointLabelHandlesToDelete,...
-                                                                                      scatteredPointHandleToDelete);
-
-            splineUIData.splinePointLabelHandleCellArray = newPointLabelHandles;
-            splineUIData.splineScatteredPointHandleCellArray = newScatteredPointHandle;
         end
 
         function [newPointLabelHandles, newScatteredPointHandle] = plotPointsAndLabels(app,...
@@ -741,7 +624,7 @@ classdef SplineView < matlab.apps.AppBase
         end
 
         function attachControllerToSliderChangeEvent(app)
-            addlistener(app.xCoordSlider, 'ValueChanged', @(~,~)app.splineController.handle_X_CoordChanged(get(app.xCoordSlider, 'Value'), app.getPointIndex()));
+            addlistener(app.xCoordSlider, 'ValueChanged', @(~,~)app.splineController.handle_X_CoordChanged(app.get_x_roundedValue(), app.getPointIndex()));
         end
         
     end
@@ -797,5 +680,87 @@ classdef SplineView < matlab.apps.AppBase
 
             app.centeraxes(opt);
         end
+        
+        % Spline drawing methods
+        function plotSpline(app,...
+                            currentSplineIndex,...
+                            maxSplineIndex)
+            % Returns handles on the plotted piecewise splines
+            % so that they can be deleted before redrawing them !
+            splineModel = app.splineCollection.getSplineModel(currentSplineIndex);
+            yFuncCellArray = splineModel.computePiecewiseSplineFunctions();
+            Pn = [splineModel.splineXpointCoordVector(1,:)' splineModel.splineYpointCoordVector(1,:)'];
+            spline_colors = app.splineUIDataDic(splineModel.splineModelName).splineColorCellArray; 
+
+            % computing xx_func
+            
+            for i = 1:length(yFuncCellArray)
+                y_func = yFuncCellArray{i};
+                
+                if i == 1
+                    % handling first part of the 3 part piecewise spline
+                    if currentSplineIndex == 1
+                        % handling the first part of the the first piecewise spline of the
+                        % piecewise spline collection. xx_func must start at first x minus one.
+                        xx_func = linspace(Pn(i,1) - 1, Pn(i + 1,1), app.PLOT_RESOLUTION);
+                    else
+                        xx_func = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
+                    end
+                elseif i == 3
+                    % handling last part of the 3 part piecewise spline
+                    if currentSplineIndex == maxSplineIndex
+                        % handling the last part of the the last piecewise spline of the
+                        % piecewise spline collection. xx_func must exceed last x by one.
+                        xx_func = linspace(Pn(i,1), Pn(i + 1,1) + 1, app.PLOT_RESOLUTION);
+                    else
+                        xx_func = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
+                    end
+                else
+                    xx_func = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
+                end
+                
+                syms x
+                
+                yy_func = subs(y_func, x, xx_func);
+                splineUIData = app.splineUIDataDic(splineModel.splineModelName);
+                splineUIData.splineLineHandleCellArray{i} = plot(app.uiAxes, xx_func, yy_func, spline_colors{i});
+                hold(app.uiAxes,'on');
+            end
+
+            splineUidata = app.splineUIDataDic(splineModel.splineModelName);
+            points_labels = splineUidata.splinePointLabelStrCellArray; 
+            splineUIData = app.splineUIDataDic(splineModel.splineModelName);
+            pointLabelHandlesToDelete = splineUIData.splinePointLabelHandleCellArray;
+            scatteredPointHandleToDelete = splineUIData.splineScatteredPointHandleCellArray;
+
+            [newPointLabelHandles, newScatteredPointHandle] = app.plotPointsAndLabels(Pn,... 
+                                                                                      points_labels,...
+                                                                                      pointLabelHandlesToDelete,...
+                                                                                      scatteredPointHandleToDelete);
+
+            splineUIData.splinePointLabelHandleCellArray = newPointLabelHandles;
+            splineUIData.splineScatteredPointHandleCellArray = newScatteredPointHandle;
+        end
+
+        function replotSplineXChanged(app,...
+                                      pointIndex,...
+                                      roundedValue)
+            app.splineCollection.setXValueOfPoint(pointIndex, roundedValue);
+
+            % replotting the modified spline
+            app.replotSpline(pointIndex);            
+        end
+                
+        function deletePlottedPiecewiseSpline(app, pointIndex)
+            splineModel = app.splineCollection.getSplineModelContainingPoint(pointIndex);
+            splineUIData = app.splineUIDataDic(splineModel.splineModelName);
+            plottedPiecewiseSplinesCellArray = splineUIData.splineLineHandleCellArray;
+            elementNb = size(plottedPiecewiseSplinesCellArray, 2);
+
+            for i = 1:elementNb
+                delete(plottedPiecewiseSplinesCellArray{i});
+            end
+        end
+        
     end
 end
