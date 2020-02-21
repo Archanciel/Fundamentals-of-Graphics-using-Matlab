@@ -134,6 +134,8 @@ classdef SplineView < matlab.apps.AppBase
             end
             
             if pointIndex > 0
+                % here, a single or overlaping point is selected which is 
+                % controlled by both x and y sliders
                 sliderHandle.MajorTicks = numericalMajorTickArray; 
                 value = app.splineCollection.getYValueOfPoint(realPointIndex);
                 sliderHandle.Value = value;
@@ -142,6 +144,8 @@ classdef SplineView < matlab.apps.AppBase
                 set(sliderHandle, 'visible', 'on')
                 set(app.ySliderLabel, 'visible', 'on');
             else
+                % here, a slope is selected which is controlled by the
+                % x slider only
                 set(app.yCoordSliderTxtValue, 'visible', 'off');
                 set(sliderHandle, 'visible', 'off');
                 set(app.ySliderLabel, 'visible', 'off');
