@@ -17,14 +17,18 @@ classdef SplineController < handle
                 % here, a single point is modified. A single point is a
                 % point which is not overlapped by another point with
                 % identical coordinates. 
-                obj.splineView.replotSplineXChanged(pointIndex, xRoundedValue);
+                obj.splineCollection.setXValueOfPoint(pointIndex, xRoundedValue);
+                obj.splineView.replotSplineXChanged(pointIndex);
             elseif pointIndex > 0
                 % here, a two overlapping points are modified. This happens
                 % when moving points which concatenate two contiguous
                 % splines.
                 realPointIndex = pointIndex * 1000;
-                obj.splineView.replotSplineXChanged(realPointIndex, xRoundedValue);
-                obj.splineView.replotSplineXChanged(realPointIndex + 1, xRoundedValue);
+                obj.splineCollection.setXValueOfPoint(realPointIndex, xRoundedValue);
+                obj.splineView.replotSplineXChanged(realPointIndex);
+
+                obj.splineCollection.setXValueOfPoint(realPointIndex + 1, xRoundedValue);
+                obj.splineView.replotSplineXChanged(realPointIndex + 1);
             else
                 % here, the slope is modified.
                 isContiguousSplineUpdated = obj.splineCollection.setSlopeValueAtPoint(pointIndex, xRoundedValue);
@@ -51,17 +55,18 @@ classdef SplineController < handle
                 % here, a single point is modified. A single point is a
                 % point which is not overlapped by another point with
                 % identical coordinates. 
-                obj.splineView.replotSplineYChanged(pointIndex,...
-                                                    yRoundedValue);
+                obj.splineCollection.setYValueOfPoint(pointIndex, yRoundedValue);
+                obj.splineView.replotSplineYChanged(pointIndex);
             elseif pointIndex > 0
                 % here, a two overlapping points are modified. This happens
                 % when moving points which concatenate two contiguous
                 % splines.
                 realPointIndex = pointIndex * 1000;
-                obj.splineView.replotSplineYChanged(realPointIndex,...
-                                                    yRoundedValue);
-                obj.splineView.replotSplineYChanged(realPointIndex + 1,...
-                                                    yRoundedValue);
+                obj.splineCollection.setYValueOfPoint(realPointIndex, yRoundedValue);
+                obj.splineView.replotSplineYChanged(realPointIndex);
+
+                obj.splineCollection.setYValueOfPoint(realPointIndex + 1, yRoundedValue);
+                obj.splineView.replotSplineYChanged(realPointIndex + 1);
             end
         end
     end

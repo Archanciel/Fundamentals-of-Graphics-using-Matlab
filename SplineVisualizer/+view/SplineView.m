@@ -736,19 +736,13 @@ classdef SplineView < matlab.apps.AppBase
         end
 
         function replotSplineXChanged(app,...
-                                      pointIndex,...
-                                      roundedValue)
-            app.splineCollection.setXValueOfPoint(pointIndex, roundedValue);
-
+                                      pointIndex)
             % replotting the modified spline
             app.replotSpline(pointIndex);            
         end
 
         function replotSplineYChanged(app,...
-                                      pointIndex,...
-                                      roundedValue)
-            app.splineCollection.setYValueOfPoint(pointIndex, roundedValue);
-
+                                      pointIndex)
             % replotting the modified spline
             app.replotSpline(pointIndex);            
         end
