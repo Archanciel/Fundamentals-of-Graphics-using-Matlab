@@ -35,17 +35,11 @@ classdef SplineController < handle
 
                 % replotting the modified spline
                 pointIndex = -pointIndex;
-                obj.splineView.deletePlottedPiecewiseSpline(pointIndex);            
-                maxSplineIndex = obj.splineCollection.getSplineNumber();
-                obj.splineView.plotSpline(obj.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
-                                          maxSplineIndex);
-                           
+                obj.splineView.replotSpline(pointIndex);
+
                 if isContiguousSplineUpdated == 1
                     pointIndex = pointIndex + 1;
-                    obj.splineView.deletePlottedPiecewiseSpline(pointIndex);            
-                    maxSplineIndex = obj.splineCollection.getSplineNumber();
-                    obj.splineView.plotSpline(obj.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
-                                              maxSplineIndex);
+                    obj.splineView.replotSpline(pointIndex);
                 end
             end
         end

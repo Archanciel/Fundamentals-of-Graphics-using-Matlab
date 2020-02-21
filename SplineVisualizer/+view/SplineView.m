@@ -608,61 +608,17 @@ classdef SplineView < matlab.apps.AppBase
             addlistener(app.xCoordSlider, 'ValueChanged', @(~,~)app.splineController.handle_X_CoordChanged(app.get_x_roundedValue(), app.getPointIndex()));
             addlistener(app.yCoordSlider, 'ValueChanged', @(~,~)app.splineController.handle_Y_CoordChanged(app.get_y_roundedValue(), app.getPointIndex()));
         end
-        
-    end
-        
-    % App creation and deletion
-    methods (Access = public)
+                
+        function deletePlottedPiecewiseSpline(app, pointIndex)
+            % Deletes the spline which will be redrawn.
+            splineModel = app.splineCollection.getSplineModelContainingPoint(pointIndex);
+            splineUIData = app.splineUIDataDic(splineModel.splineModelName);
+            plottedPiecewiseSplinesCellArray = splineUIData.splineLineHandleCellArray;
+            elementNb = size(plottedPiecewiseSplinesCellArray, 2);
 
-        % Construct app
-        function app = SplineView(splineCollection, splineController)
-            app.splineCollection = splineCollection;
-            app.splineController = splineController;
-            app.initializeSplineUIDataDic()
-            
-            % Create UIFigure and components
-            createComponents(app)
-            app.attachControllerToSliderChangeEvent()
-            
-            % Register the app with App Designer
-            registerApp(app, app.uiFigure)
-
-            if nargout == 0
-                clear app
+            for i = 1:elementNb
+                delete(plottedPiecewiseSplinesCellArray{i});
             end
-        end
-
-        % Code that executes before app deletion
-        function delete(app)
-
-            % Delete UIFigure when app is deleted
-            delete(app.uiFigure)
-        end
-        
-        function show(app)
-            app.uiFigure.Visible = 'on';
-        end
-
-        function plotPiecewiseSplines(app)
-            % plot all the piecewise splines contained in splineCollection
-            maxSplineIndex = app.splineCollection.getSplineNumber();
-            
-            for i = 1:maxSplineIndex
-                app.plotSpline(i,...
-                               maxSplineIndex);
-            end
-
-            % Setting spline view title
-            title(app.uiAxes, [sprintf("%d piecewise splines", maxSplineIndex) "in standard form"]);
-
-            % Setting graph axis limits and ticks
-            set(app.uiAxes,'ylim',[app.Y_SLIDER_MIN app.Y_SLIDER_MAX],'xlim',[app.X_AXIS_MIN app.X_AXIS_MAX],'xtick',app.X_AXIS_MIN:app.X_AXIS_MAX,'ytick',-5:10)
-
-            % Calling axis cerntering code (found on Matworks Community
-            % https://ch.mathworks.com/matlabcentral/fileexchange/22333-centered-coordinate-axes-in-2d-plots)
-            opt.fontname = 'helvetica';
-            opt.fontsize = 8;
-            app.centeraxes(opt);
         end
         
         % Spline drawing methods
@@ -725,6 +681,62 @@ classdef SplineView < matlab.apps.AppBase
             splineUIData.splinePointLabelHandleCellArray = newPointLabelHandles;
             splineUIData.splineScatteredPointHandleCellArray = newScatteredPointHandle;
         end
+      
+    end % end private methods section
+    
+    % App creation and deletion
+    methods (Access = public)
+
+        % Construct app
+        function app = SplineView(splineCollection, splineController)
+            app.splineCollection = splineCollection;
+            app.splineController = splineController;
+            app.initializeSplineUIDataDic()
+            
+            % Create UIFigure and components
+            createComponents(app)
+            app.attachControllerToSliderChangeEvent()
+            
+            % Register the app with App Designer
+            registerApp(app, app.uiFigure)
+
+            if nargout == 0
+                clear app
+            end
+        end
+
+        % Code that executes before app deletion
+        function delete(app)
+
+            % Delete UIFigure when app is deleted
+            delete(app.uiFigure)
+        end
+        
+        function show(app)
+            app.uiFigure.Visible = 'on';
+        end
+
+        function plotPiecewiseSplines(app)
+            % plot all the piecewise splines contained in splineCollection
+            maxSplineIndex = app.splineCollection.getSplineNumber();
+            
+            for i = 1:maxSplineIndex
+                app.plotSpline(i,...
+                               maxSplineIndex);
+            end
+
+            % Setting spline view title
+            title(app.uiAxes, [sprintf("%d piecewise splines", maxSplineIndex) "in standard form"]);
+
+            % Setting graph axis limits and ticks
+            set(app.uiAxes,'ylim',[app.Y_SLIDER_MIN app.Y_SLIDER_MAX],'xlim',[app.X_AXIS_MIN app.X_AXIS_MAX],'xtick',app.X_AXIS_MIN:app.X_AXIS_MAX,'ytick',-5:10)
+
+            % Calling axis cerntering code (found on Matworks Community
+            % https://ch.mathworks.com/matlabcentral/fileexchange/22333-centered-coordinate-axes-in-2d-plots)
+            opt.fontname = 'helvetica';
+            opt.fontsize = 8;
+            app.centeraxes(opt);
+        end
         
         function replotSpline(app,...
                               pointIndex)
@@ -734,17 +746,6 @@ classdef SplineView < matlab.apps.AppBase
             app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
                            maxSplineIndex);
         end
-                
-        function deletePlottedPiecewiseSpline(app, pointIndex)
-            splineModel = app.splineCollection.getSplineModelContainingPoint(pointIndex);
-            splineUIData = app.splineUIDataDic(splineModel.splineModelName);
-            plottedPiecewiseSplinesCellArray = splineUIData.splineLineHandleCellArray;
-            elementNb = size(plottedPiecewiseSplinesCellArray, 2);
-
-            for i = 1:elementNb
-                delete(plottedPiecewiseSplinesCellArray{i});
-            end
-        end
         
-    end
+    end % end public methods section
 end
