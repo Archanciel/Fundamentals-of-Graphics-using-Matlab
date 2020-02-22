@@ -7,10 +7,14 @@ classdef SplineController < handle
         splineCollection              model.SplineCollection;
         splineView                    view.SplineView; % set in SplineAppCreator !
     end
-    
+    ,
     methods
         function obj = SplineController(splineCollection)
             obj.splineCollection = splineCollection;
+        end
+
+        function addViewAsListenerToModels(obj, view, eventStr)
+            obj.splineCollection.addViewListenerToModels(view, 'SplineComputedEvent');
         end
         
         function handle_X_CoordChanged(obj, xRoundedValue, pointIndex)

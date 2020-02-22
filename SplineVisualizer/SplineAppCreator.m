@@ -70,7 +70,7 @@ splineController = controller.SplineController(splineCollection);
 appView = view.SplineView(splineCollection, splineController);
 splineController.splineView = appView;
 
-splineCollection.addViewListenerToModels(appView, 'SplineComputedEvent');
+splineController.addViewAsListenerToModels(appView, 'SplineComputedEvent');
 appView.plotPiecewiseSplines();
 appView.show();
 
