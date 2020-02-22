@@ -14,14 +14,20 @@ classdef SplineCollection < handle
     end
     
     methods
-        function obj = SplineCollection()
-        end
-        
         function addSplineModel(obj, splineModel)
             currentSplineModelNumber = obj.getSplineNumber();
             currentIndex = currentSplineModelNumber + 1;
             obj.splineModelCellArray{currentIndex} = splineModel;
             splineModel.splineModelName = num2str(currentIndex);
+        end
+
+        function addViewListenerToModels(obj, view, eventStr)
+            splineNumber = obj.getSplineNumber();
+            
+            for i = 1:splineNumber
+                splineModel = obj.splineModelCellArray{i};
+                %splineModel.addlistener(;
+            end
         end
         
         function splineNumber = getSplineNumber(obj)

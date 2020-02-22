@@ -629,8 +629,6 @@ classdef SplineView < matlab.apps.AppBase
         function plotSpline(app,...
                             currentSplineIndex,...
                             maxSplineIndex)
-            % Returns handles on the plotted piecewise splines
-            % so that they can be deleted before redrawing them !
             splineModel = app.splineCollection.getSplineModel(currentSplineIndex);
             yFuncCellArray = splineModel.computePiecewiseSplineFunctions();
             Pn = [splineModel.splineXpointCoordVector(1,:)' splineModel.splineYpointCoordVector(1,:)'];

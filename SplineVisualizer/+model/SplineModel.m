@@ -11,6 +11,8 @@ classdef SplineModel < handle
         splineYpointCoordVector;
         splineStartSlope;
         splineEndSlope;
+        yFuncCellArray; % hosts the 3 y = ax^3 + bx`2 + cx + d functions
+                        % calculated by computePiecewiseSplineFunctions().
     end
     
     properties (Access = private)
@@ -19,6 +21,10 @@ classdef SplineModel < handle
                               % spline colors are specified in 
                               % SplineAppCreator where the splines are
                               % defined.
+    end
+
+    events
+        SplineComputedEvent;
     end
     
     methods
@@ -32,6 +38,7 @@ classdef SplineModel < handle
             obj.splineStartSlope = splineStartSlope;
             obj.splineEndSlope = splineEndSlope;
             obj.splineColorCellArray = splineColorCellArray;
+            obj.yFuncCellArray = cell(1, 3);
         end
         
         function pointNumber = getSplinePointNumber(obj)
@@ -82,9 +89,15 @@ classdef SplineModel < handle
             y_B = A(5,1) * x^3 + A(6,1) * x^2 + A(7,1) * x + A(8,1);
             y_C = A(9,1) * x^3 + A(10,1) * x^2 + A(11,1) * x + A(12,1);
 
+            obj.yFuncCellArray{1} = y_A;
+            obj.yFuncCellArray{2} = y_B;
+            obj.yFuncCellArray{3} = y_C;
+            
             yFuncCellArray{1} = y_A;
             yFuncCellArray{2} = y_B;
             yFuncCellArray{3} = y_C;
+
+            notify(obj,'SplineComputedEvent');
         end
     end
 end
