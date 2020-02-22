@@ -99,5 +99,9 @@ classdef SplineModel < handle
 
             notify(obj,'SplineComputedEvent');
         end
+        
+        function addListenerToEvent(obj, listener, eventStr)        
+            listener.createListenerForEvent(obj, eventStr);
+        end
     end
 end

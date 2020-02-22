@@ -26,7 +26,7 @@ classdef SplineCollection < handle
             
             for i = 1:splineNumber
                 splineModel = obj.splineModelCellArray{i};
-                %splineModel.addlistener(;
+                splineModel.addListenerToEvent(view, eventStr);
             end
         end
         

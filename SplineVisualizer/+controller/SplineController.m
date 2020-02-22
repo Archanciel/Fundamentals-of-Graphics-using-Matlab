@@ -7,6 +7,7 @@ classdef SplineController < handle
         splineCollection              model.SplineCollection;
         splineView                    view.SplineView; % set in SplineAppCreator !
     end
+    
     methods
         function obj = SplineController(splineCollection)
             obj.splineCollection = splineCollection;

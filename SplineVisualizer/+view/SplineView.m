@@ -749,5 +749,15 @@ classdef SplineView < matlab.apps.AppBase
                            maxSplineIndex);
         end
         
+        function createListenerForEvent(obj, eventGenerator, eventStr)
+            % This method is called by the event generator instance which ask the 
+            % current listener instance to add itself as listener to the event generator 
+            % instance.            
+            addlistener(eventGenerator, eventStr, @obj.handleThisEvent);
+        end  
+        
+        function handleThisEvent(obj, modifiedSplineModel, eventData)
+            fprintf('from handleThisEvent. Event = %s, model name = %s. REPLACE WITH REPLOT METHOD !\n', eventData.EventName, modifiedSplineModel.splineModelName);
+        end        
     end % end public methods section
 end
