@@ -21,10 +21,20 @@ classdef SplineController < handle
             % Adding the view as listener to the SplineModel contained
             % in the SplineCollection so that the view is notified
             % each time the SplineModel is recalculated.
+            %
+            % In view/SplineView/createListenerForEvent (line 753)
+            % In model/SplineModel/addListenerToEvent (line 105)
+            % In model/SplineCollection/addViewListenerToModels (line 29)
+            % In controller/SplineController/addView (line 24)
+            % In SplineAppCreator (line 76)
             obj.splineCollection.addViewListenerToModels(view, 'SplineComputedEvent');
 
-            % This ensures the SplineController is triggered each time the
-            % user updates a control in the view.
+            % Ensures the SplineController is triggered each time the
+            % user updates a control in the view. 
+            %
+            % In view/SplineView/attachControllerToSliderChangeEvent (line 761)
+            % In controller/SplineController/addView (line 28)
+            % In SplineAppCreator (line 76)
             view.attachControllerToSliderChangeEvent(obj);
         end
         

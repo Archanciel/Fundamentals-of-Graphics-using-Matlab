@@ -100,7 +100,8 @@ classdef SplineModel < handle
             notify(obj,'SplineComputedEvent');
         end
         
-        function addListenerToEvent(obj, listener, eventStr)        
+        function addListenerToEvent(obj, listener, eventStr)  
+            % Used to add view as listener to model changes. 
             listener.createListenerForEvent(obj, eventStr);
         end
     end

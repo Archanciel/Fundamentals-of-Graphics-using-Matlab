@@ -742,14 +742,13 @@ classdef SplineView < matlab.apps.AppBase
         end
         
         function createListenerForEvent(obj, eventGenerator, eventStr)
-            % This method is called by the event generator (SplineModel) 
-            % instance, which ask the current listener (SplineView)
-            % instance to add itself as listener to the SplineModel 
-            % instance. The SplineModel.addListenerToEvent() which calls
-            % this method is caled itself by
-            % SplineCollection.addViewListenerToModels(), called itself
-            % by SplineController.addViewAsListenerToModels(), called
-            % itself by SplineController.addView().
+            % Used to add view as listener to model changes. 
+            %
+            % In view/SplineView/createListenerForEvent (line 753)
+            % In model/SplineModel/addListenerToEvent (line 105)
+            % In model/SplineCollection/addViewListenerToModels (line 29)
+            % In controller/SplineController/addView (line 24)
+            % In SplineAppCreator (line 76)
             addlistener(eventGenerator, eventStr, @obj.handleThisEvent);
         end  
         
@@ -758,6 +757,12 @@ classdef SplineView < matlab.apps.AppBase
         end        
 
         function attachControllerToSliderChangeEvent(app, splineController)
+            % Ensures the SplineController is triggered each time the
+            % user updates a control in the view. 
+            %
+            % In view/SplineView/attachControllerToSliderChangeEvent (line 761)
+            % In controller/SplineController/addView (line 28)
+            % In SplineAppCreator (line 76)
             addlistener(app.xCoordSlider, 'ValueChanged', @(~,~)splineController.handle_X_CoordChanged(app.get_x_roundedValue(), app.getPointIndex()));
             addlistener(app.yCoordSlider, 'ValueChanged', @(~,~)splineController.handle_Y_CoordChanged(app.get_y_roundedValue(), app.getPointIndex()));
         end
