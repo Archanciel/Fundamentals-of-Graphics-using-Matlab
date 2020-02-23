@@ -18,7 +18,8 @@ classdef SplineCollection < handle
             currentSplineModelNumber = obj.getSplineNumber();
             currentIndex = currentSplineModelNumber + 1;
             obj.splineModelCellArray{currentIndex} = splineModel;
-            splineModel.splineModelName = num2str(currentIndex);
+            % splineModel.splineModelName = num2str(currentIndex);
+            splineModel.splineModelIndex = currentIndex;
         end
 
         function addViewListenerToModels(obj, view, eventStr)
@@ -48,7 +49,7 @@ classdef SplineCollection < handle
             
             for i = 1:splineNumber
                 splineModel = obj.splineModelCellArray{i};
-                splineNamesCellArray{i} = splineModel.splineModelName ;
+                splineNamesCellArray{i} = splineModel.splineModelIndex ;
             end
         end
         

@@ -505,7 +505,7 @@ classdef SplineView < matlab.apps.AppBase
             
             for i = 1:splineNumber
                 currentSplineModel = app.splineCollection.getSplineModel(i);
-                currentSplineModelName = currentSplineModel.splineModelName;
+                currentSplineModelName = currentSplineModel.splineModelIndex;
                 currentSplineUIData = view.SplineUIData();
                 currentSplinePointNumber = currentSplineModel.getSplinePointNumber();
                 currentSplinePointLabelStrCellArray = cell(1, currentSplinePointNumber);
@@ -610,7 +610,7 @@ classdef SplineView < matlab.apps.AppBase
         function deletePlottedPiecewiseSpline(app, pointIndex)
             % Deletes the spline which will be redrawn.
             splineModel = app.splineCollection.getSplineModelContainingPoint(pointIndex);
-            splineUIData = app.splineUIDataDic(splineModel.splineModelName);
+            splineUIData = app.splineUIDataDic(splineModel.splineModelIndex);
             plottedPiecewiseSplinesCellArray = splineUIData.splineLineHandleCellArray;
             elementNb = size(plottedPiecewiseSplinesCellArray, 2);
 
@@ -626,7 +626,7 @@ classdef SplineView < matlab.apps.AppBase
             splineModel = app.splineCollection.getSplineModel(currentSplineIndex);
             yFuncCellArray = splineModel.computePiecewiseSplineFunctions();
             Pn = [splineModel.splineXpointCoordVector(1,:)' splineModel.splineYpointCoordVector(1,:)'];
-            spline_colors = app.splineUIDataDic(splineModel.splineModelName).splineColorCellArray; 
+            spline_colors = app.splineUIDataDic(splineModel.splineModelIndex).splineColorCellArray; 
 
             % computing xx_func
             
@@ -658,14 +658,13 @@ classdef SplineView < matlab.apps.AppBase
                 syms x
                 
                 yy_func = subs(y_func, x, xx_func);
-                splineUIData = app.splineUIDataDic(splineModel.splineModelName);
+                splineUIData = app.splineUIDataDic(splineModel.splineModelIndex);
                 splineUIData.splineLineHandleCellArray{i} = plot(app.uiAxes, xx_func, yy_func, spline_colors{i});
                 hold(app.uiAxes,'on');
             end
 
-            splineUidata = app.splineUIDataDic(splineModel.splineModelName);
+            splineUidata = app.splineUIDataDic(splineModel.splineModelIndex);
             points_labels = splineUidata.splinePointLabelStrCellArray; 
-            splineUIData = app.splineUIDataDic(splineModel.splineModelName);
             pointLabelHandlesToDelete = splineUIData.splinePointLabelHandleCellArray;
             scatteredPointHandleToDelete = splineUIData.splineScatteredPointHandleCellArray;
 
@@ -753,7 +752,7 @@ classdef SplineView < matlab.apps.AppBase
         end  
         
         function handleThisEvent(obj, modifiedSplineModel, eventData)
-            fprintf('from handleThisEvent. Event = %s, model name = %s. REPLACE WITH REPLOT METHOD !\n', eventData.EventName, modifiedSplineModel.splineModelName);
+            fprintf('from handleThisEvent. Event = %s, model index = %d. REPLACE WITH REPLOT METHOD !\n', eventData.EventName, modifiedSplineModel.splineModelIndex);
         end        
 
         function attachControllerToSliderChangeEvent(app, splineController)

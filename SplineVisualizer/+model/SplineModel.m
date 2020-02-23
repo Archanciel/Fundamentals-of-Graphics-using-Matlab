@@ -4,9 +4,8 @@ classdef SplineModel < handle
         % constants
         % none !        
 
-        splineModelName; % set by SplineCollection when adding the 
-                         % SplineModel to it. Equal to the SplineModel
-                         % string index.
+        splineModelIndex; % set by SplineCollection when adding the 
+                          % SplineModel to it.
         splineXpointCoordVector;
         splineYpointCoordVector;
         splineStartSlope;
