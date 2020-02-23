@@ -35,7 +35,6 @@ classdef SplineView < matlab.apps.AppBase
         
         % other properties
         splineCollection      model.SplineCollection
-        splineController      controller.SplineController
         splineUIDataDic       containers.Map    % dictionary keyed with spline
                                                 % name containing as value
                                                 % the related SplineUIData
@@ -607,11 +606,6 @@ classdef SplineView < matlab.apps.AppBase
                 end
             end
         end
-
-        function attachControllerToSliderChangeEvent(app)
-            addlistener(app.xCoordSlider, 'ValueChanged', @(~,~)app.splineController.handle_X_CoordChanged(app.get_x_roundedValue(), app.getPointIndex()));
-            addlistener(app.yCoordSlider, 'ValueChanged', @(~,~)app.splineController.handle_Y_CoordChanged(app.get_y_roundedValue(), app.getPointIndex()));
-        end
                 
         function deletePlottedPiecewiseSpline(app, pointIndex)
             % Deletes the spline which will be redrawn.
@@ -690,14 +684,12 @@ classdef SplineView < matlab.apps.AppBase
     methods (Access = public)
 
         % Construct app
-        function app = SplineView(splineCollection, splineController)
+        function app = SplineView(splineCollection)
             app.splineCollection = splineCollection;
-            app.splineController = splineController;
             app.initializeSplineUIDataDic()
             
             % Create UIFigure and components
             createComponents(app)
-            app.attachControllerToSliderChangeEvent()
             
             % Register the app with App Designer
             registerApp(app, app.uiFigure)
@@ -750,14 +742,25 @@ classdef SplineView < matlab.apps.AppBase
         end
         
         function createListenerForEvent(obj, eventGenerator, eventStr)
-            % This method is called by the event generator instance which ask the 
-            % current listener instance to add itself as listener to the event generator 
-            % instance.            
+            % This method is called by the event generator (SplineModel) 
+            % instance, which ask the current listener (SplineView)
+            % instance to add itself as listener to the SplineModel 
+            % instance. The SplineModel.addListenerToEvent() which calls
+            % this method is caled itself by
+            % SplineCollection.addViewListenerToModels(), called itself
+            % by SplineController.addViewAsListenerToModels(), called
+            % itself by SplineController.addView().
             addlistener(eventGenerator, eventStr, @obj.handleThisEvent);
         end  
         
         function handleThisEvent(obj, modifiedSplineModel, eventData)
             fprintf('from handleThisEvent. Event = %s, model name = %s. REPLACE WITH REPLOT METHOD !\n', eventData.EventName, modifiedSplineModel.splineModelName);
         end        
+
+        function attachControllerToSliderChangeEvent(app, splineController)
+            addlistener(app.xCoordSlider, 'ValueChanged', @(~,~)splineController.handle_X_CoordChanged(app.get_x_roundedValue(), app.getPointIndex()));
+            addlistener(app.yCoordSlider, 'ValueChanged', @(~,~)splineController.handle_Y_CoordChanged(app.get_y_roundedValue(), app.getPointIndex()));
+        end
+        
     end % end public methods section
 end

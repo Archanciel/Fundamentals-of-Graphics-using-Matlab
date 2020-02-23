@@ -66,11 +66,15 @@ thirdSplineModel = model.SplineModel(P_9_12,...
 
 splineCollection.addSplineModel(thirdSplineModel);
 
+% linking model to conroller
 splineController = controller.SplineController(splineCollection);
-appView = view.SplineView(splineCollection, splineController);
-splineController.splineView = appView;
 
-splineController.addViewAsListenerToModels(appView, 'SplineComputedEvent');
+% linking model to view
+appView = view.SplineView(splineCollection);
+
+% linking view to controller
+splineController.addView(appView);
+
 appView.plotPiecewiseSplines();
 appView.show();
 

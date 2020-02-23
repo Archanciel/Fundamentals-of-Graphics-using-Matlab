@@ -7,14 +7,25 @@ classdef SplineController < handle
         splineCollection              model.SplineCollection;
         splineView                    view.SplineView; % set in SplineAppCreator !
     end
-    ,
-    methods
+
+    methods (Access = public)
+
         function obj = SplineController(splineCollection)
             obj.splineCollection = splineCollection;
         end
 
-        function addViewAsListenerToModels(obj, view, eventStr)
+        function addView(obj, view)
+            % Ok since only one view exists in the application.
+            obj.splineView = view;
+
+            % Adding the view as listener to the SplineModel contained
+            % in the SplineCollection so that the view is notified
+            % each time the SplineModel is recalculated.
             obj.splineCollection.addViewListenerToModels(view, 'SplineComputedEvent');
+
+            % This ensures the SplineController is triggered each time the
+            % user updates a control in the view.
+            view.attachControllerToSliderChangeEvent(obj);
         end
         
         function handle_X_CoordChanged(obj, xRoundedValue, pointIndex)
@@ -68,5 +79,7 @@ classdef SplineController < handle
                 obj.splineView.replotSpline(realPointIndex + 1);
             end
         end
+        
     end
+    
 end
