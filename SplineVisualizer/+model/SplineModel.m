@@ -102,6 +102,12 @@ classdef SplineModel < handle
         
         function addListenerToEvent(obj, listener, eventStr)  
             % Used to add view as listener to model changes. 
+            %
+            % In view/SplineView/createListenerForEvent (line 753)
+            % In model/SplineModel/addListenerToEvent (line 105)
+            % In model/SplineCollection/addViewListenerToModels (line 29)
+            % In controller/SplineController/addView (line 24)
+            % In SplineAppCreator (line 76)
             listener.createListenerForEvent(obj, eventStr);
         end
     end
