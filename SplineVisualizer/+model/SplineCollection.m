@@ -43,13 +43,12 @@ classdef SplineCollection < handle
             splineModel = obj.splineModelCellArray{i};
         end
         
-        function splineNamesCellArray = getSplineNamesCellArray(obj)
+        function splineIndexCellArray = getSplineIndexCellArray(obj)
             splineNumber = obj.getSplineNumber();
-            splineNamesCellArray = cell(1,splineNumber);
+            splineIndexCellArray = cell(1,splineNumber);
             
             for i = 1:splineNumber
-                splineModel = obj.splineModelCellArray{i};
-                splineNamesCellArray{i} = splineModel.splineModelIndex ;
+                splineIndexCellArray{i} = i;
             end
         end
         
@@ -196,14 +195,14 @@ classdef SplineCollection < handle
             indexOfSplineContainingPoint = obj.getSplineIndexOfSplineContainingPoint(pointIndex);
             pointSplineModel = obj.splineModelCellArray{indexOfSplineContainingPoint};
         end
-       
-        function indexOfSplineContainingPoint = getSplineIndexOfSplineContainingPoint(obj, pointIndex)
-            indexOfSplineContainingPoint = ceil(pointIndex / obj.POINT_NUMBER_PER_SPLINE);
-        end
 
     end
     
     methods (Access = private)
+       
+        function indexOfSplineContainingPoint = getSplineIndexOfSplineContainingPoint(obj, pointIndex)
+            indexOfSplineContainingPoint = ceil(pointIndex / obj.POINT_NUMBER_PER_SPLINE);
+        end
         
         function pointIndexInSpline = getPointIndexInSplineAtIndex(obj, splineIndex, pointIndex)
             pointIndexInSpline = pointIndex - ((splineIndex - 1) * obj.POINT_NUMBER_PER_SPLINE);

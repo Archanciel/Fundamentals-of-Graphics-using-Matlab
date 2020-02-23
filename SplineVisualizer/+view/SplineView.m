@@ -495,18 +495,27 @@ classdef SplineView < matlab.apps.AppBase
         
         function initializeSplineUIDataDic(app)
             % Initialize the SplineUIDataDic with SplineUIData's keyed
-            % by related SplineModel names. Each SplineUIData is
-            % initialized with the related spline point labels
-            keyCellArray = app.splineCollection.getSplineNamesCellArray();
+            % by related SplineModel index. Each SplineUIData is
+            % initialized with the corresponding spline point labels
+            
+            % creating the app.splineUIDataDic key cell array
+            keyCellArray = app.splineCollection.getSplineIndexCellArray();
             splineNumber = app.splineCollection.getSplineNumber();
+
+            % creating the app.splineUIDataDic value cell array
             valueCellArray = cell(1, splineNumber);
+            
+            % creating the app.splineUIDataDic            
             app.splineUIDataDic = containers.Map(keyCellArray, valueCellArray);
+
             currentPointIndex = 1;
             
             for i = 1:splineNumber
                 currentSplineModel = app.splineCollection.getSplineModel(i);
-                currentSplineModelName = currentSplineModel.splineModelIndex;
+                
+                % instanciating a SplineUIData located in package view
                 currentSplineUIData = view.SplineUIData();
+                
                 currentSplinePointNumber = currentSplineModel.getSplinePointNumber();
                 currentSplinePointLabelStrCellArray = cell(1, currentSplinePointNumber);
                 
@@ -518,7 +527,7 @@ classdef SplineView < matlab.apps.AppBase
                 
                 currentSplineUIData.splinePointLabelStrCellArray = currentSplinePointLabelStrCellArray;
                 currentSplineUIData.splineColorCellArray = currentSplineModel.getSplineColorCellArray(); 
-                app.splineUIDataDic(currentSplineModelName) = currentSplineUIData;
+                app.splineUIDataDic(i) = currentSplineUIData;
             end 
         end   
 
@@ -607,9 +616,8 @@ classdef SplineView < matlab.apps.AppBase
             end
         end
                 
-        function deletePlottedPiecewiseSpline(app, pointIndex)
+        function deletePlottedPiecewiseSpline(app, splineModel)
             % Deletes the spline which will be redrawn.
-            splineModel = app.splineCollection.getSplineModelContainingPoint(pointIndex);
             splineUIData = app.splineUIDataDic(splineModel.splineModelIndex);
             plottedPiecewiseSplinesCellArray = splineUIData.splineLineHandleCellArray;
             elementNb = size(plottedPiecewiseSplinesCellArray, 2);
@@ -621,9 +629,9 @@ classdef SplineView < matlab.apps.AppBase
         
         % Spline drawing methods
         function plotSpline(app,...
-                            currentSplineIndex,...
+                            splineModel,...
                             maxSplineIndex)
-            splineModel = app.splineCollection.getSplineModel(currentSplineIndex);
+            currentSplineIndex = splineModel.splineModelIndex;
             yFuncCellArray = splineModel.computePiecewiseSplineFunctions();
             Pn = [splineModel.splineXpointCoordVector(1,:)' splineModel.splineYpointCoordVector(1,:)'];
             spline_colors = app.splineUIDataDic(splineModel.splineModelIndex).splineColorCellArray; 
@@ -714,7 +722,8 @@ classdef SplineView < matlab.apps.AppBase
             maxSplineIndex = app.splineCollection.getSplineNumber();
             
             for i = 1:maxSplineIndex
-                app.plotSpline(i,...
+                splineModel = app.splineCollection.getSplineModel(i);
+                app.plotSpline(splineModel,...
                                maxSplineIndex);
             end
 
@@ -734,9 +743,10 @@ classdef SplineView < matlab.apps.AppBase
         function replotSpline(app,...
                               pointIndex)
             % replotting the modified spline
-            app.deletePlottedPiecewiseSpline(pointIndex);            
+            splineModel = app.splineCollection.getSplineModelContainingPoint(pointIndex);
+            app.deletePlottedPiecewiseSpline(splineModel);            
             maxSplineIndex = app.splineCollection.getSplineNumber();
-            app.plotSpline(app.splineCollection.getSplineIndexOfSplineContainingPoint(pointIndex),...
+            app.plotSpline(splineModel,...
                            maxSplineIndex);
         end
         
