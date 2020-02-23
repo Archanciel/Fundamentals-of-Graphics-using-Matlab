@@ -741,9 +741,8 @@ classdef SplineView < matlab.apps.AppBase
         end
         
         function replotSpline(app,...
-                              pointIndex)
+                              splineModel)
             % replotting the modified spline
-            splineModel = app.splineCollection.getSplineModelContainingPoint(pointIndex);
             app.deletePlottedPiecewiseSpline(splineModel);            
             maxSplineIndex = app.splineCollection.getSplineNumber();
             app.plotSpline(splineModel,...

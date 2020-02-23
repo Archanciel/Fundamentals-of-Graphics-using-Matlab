@@ -44,28 +44,33 @@ classdef SplineController < handle
                 % point which is not overlapped by another point with
                 % identical coordinates. 
                 obj.splineCollection.setXValueOfPoint(pointIndex, xRoundedValue);
-                obj.splineView.replotSpline(pointIndex);
+                splineModel = obj.splineCollection.getSplineModelContainingPoint(pointIndex);
+                obj.splineView.replotSpline(splineModel);
             elseif pointIndex > 0
                 % here, a two overlapping points are modified. This happens
                 % when moving points which concatenate two contiguous
                 % splines.
                 realPointIndex = pointIndex * 1000;
                 obj.splineCollection.setXValueOfPoint(realPointIndex, xRoundedValue);
-                obj.splineView.replotSpline(realPointIndex);
+                splineModel = obj.splineCollection.getSplineModelContainingPoint(realPointIndex);
+                obj.splineView.replotSpline(splineModel);
 
                 obj.splineCollection.setXValueOfPoint(realPointIndex + 1, xRoundedValue);
-                obj.splineView.replotSpline(realPointIndex + 1);
+                splineModel = obj.splineCollection.getSplineModelContainingPoint(realPointIndex + 1);
+                obj.splineView.replotSpline(splineModel);
             else
                 % here, the slope is modified.
                 isContiguousSplineUpdated = obj.splineCollection.setSlopeValueAtPoint(pointIndex, xRoundedValue);
 
                 % replotting the modified spline
                 pointIndex = -pointIndex;
-                obj.splineView.replotSpline(pointIndex);
+                splineModel = obj.splineCollection.getSplineModelContainingPoint(pointIndex);
+                obj.splineView.replotSpline(splineModel);
 
                 if isContiguousSplineUpdated == 1
                     pointIndex = pointIndex + 1;
-                    obj.splineView.replotSpline(pointIndex);
+                    splineModel = obj.splineCollection.getSplineModelContainingPoint(pointIndex);
+                    obj.splineView.replotSpline(splineModel);
                 end
             end
         end
@@ -76,17 +81,20 @@ classdef SplineController < handle
                 % point which is not overlapped by another point with
                 % identical coordinates. 
                 obj.splineCollection.setYValueOfPoint(pointIndex, yRoundedValue);
-                obj.splineView.replotSpline(pointIndex);
+                splineModel = obj.splineCollection.getSplineModelContainingPoint(pointIndex);
+                obj.splineView.replotSpline(splineModel);
             elseif pointIndex > 0
                 % here, a two overlapping points are modified. This happens
                 % when moving points which concatenate two contiguous
                 % splines.
                 realPointIndex = pointIndex * 1000;
                 obj.splineCollection.setYValueOfPoint(realPointIndex, yRoundedValue);
-                obj.splineView.replotSpline(realPointIndex);
+                splineModel = obj.splineCollection.getSplineModelContainingPoint(realPointIndex);
+                obj.splineView.replotSpline(splineModel);
 
                 obj.splineCollection.setYValueOfPoint(realPointIndex + 1, yRoundedValue);
-                obj.splineView.replotSpline(realPointIndex + 1);
+                splineModel = obj.splineCollection.getSplineModelContainingPoint(realPointIndex + 1);
+                obj.splineView.replotSpline(splineModel);
             end
         end
         
