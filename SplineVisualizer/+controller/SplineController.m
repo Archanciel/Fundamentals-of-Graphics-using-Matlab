@@ -39,13 +39,15 @@ classdef SplineController < handle
         end
         
         function handle_X_CoordChanged(obj, xRoundedValue, pointIndex)
+            isReplot = 1;
             if pointIndex >= 1
                 % here, a single point is modified. A single point is a
                 % point which is not overlapped by another point with
                 % identical coordinates. 
                 obj.splineCollection.setXValueOfPoint(pointIndex, xRoundedValue);
                 splineModel = obj.splineCollection.getSplineModelContainingPoint(pointIndex);
-                obj.splineView.replotSpline(splineModel);
+                splineModel.computePiecewiseSplineFunctions(isReplot);
+%                obj.splineView.replotSpline(splineModel);
             elseif pointIndex > 0
                 % here, a two overlapping points are modified. This happens
                 % when moving points which concatenate two contiguous
@@ -53,11 +55,13 @@ classdef SplineController < handle
                 realPointIndex = pointIndex * 1000;
                 obj.splineCollection.setXValueOfPoint(realPointIndex, xRoundedValue);
                 splineModel = obj.splineCollection.getSplineModelContainingPoint(realPointIndex);
-                obj.splineView.replotSpline(splineModel);
+                splineModel.computePiecewiseSplineFunctions(isReplot);
+%                obj.splineView.replotSpline(splineModel);
 
                 obj.splineCollection.setXValueOfPoint(realPointIndex + 1, xRoundedValue);
                 splineModel = obj.splineCollection.getSplineModelContainingPoint(realPointIndex + 1);
-                obj.splineView.replotSpline(splineModel);
+                splineModel.computePiecewiseSplineFunctions(isReplot);
+%                obj.splineView.replotSpline(splineModel);
             else
                 % here, the slope is modified.
                 isContiguousSplineUpdated = obj.splineCollection.setSlopeValueAtPoint(pointIndex, xRoundedValue);
@@ -65,24 +69,29 @@ classdef SplineController < handle
                 % replotting the modified spline
                 pointIndex = -pointIndex;
                 splineModel = obj.splineCollection.getSplineModelContainingPoint(pointIndex);
-                obj.splineView.replotSpline(splineModel);
+                splineModel.computePiecewiseSplineFunctions(isReplot);
+%                obj.splineView.replotSpline(splineModel);
 
                 if isContiguousSplineUpdated == 1
                     pointIndex = pointIndex + 1;
                     splineModel = obj.splineCollection.getSplineModelContainingPoint(pointIndex);
-                    obj.splineView.replotSpline(splineModel);
+                    splineModel.computePiecewiseSplineFunctions(isReplot);
+%                   obj.splineView.replotSpline(splineModel);
                 end
             end
         end
         
         function handle_Y_CoordChanged(obj, yRoundedValue, pointIndex)
+            isReplot = 1;
+
             if pointIndex >= 1
                 % here, a single point is modified. A single point is a
                 % point which is not overlapped by another point with
                 % identical coordinates. 
                 obj.splineCollection.setYValueOfPoint(pointIndex, yRoundedValue);
                 splineModel = obj.splineCollection.getSplineModelContainingPoint(pointIndex);
-                obj.splineView.replotSpline(splineModel);
+                splineModel.computePiecewiseSplineFunctions(isReplot);
+%                obj.splineView.replotSpline(splineModel);
             elseif pointIndex > 0
                 % here, a two overlapping points are modified. This happens
                 % when moving points which concatenate two contiguous
@@ -90,11 +99,13 @@ classdef SplineController < handle
                 realPointIndex = pointIndex * 1000;
                 obj.splineCollection.setYValueOfPoint(realPointIndex, yRoundedValue);
                 splineModel = obj.splineCollection.getSplineModelContainingPoint(realPointIndex);
-                obj.splineView.replotSpline(splineModel);
+                splineModel.computePiecewiseSplineFunctions(isReplot);
+%                obj.splineView.replotSpline(splineModel);
 
                 obj.splineCollection.setYValueOfPoint(realPointIndex + 1, yRoundedValue);
                 splineModel = obj.splineCollection.getSplineModelContainingPoint(realPointIndex + 1);
-                obj.splineView.replotSpline(splineModel);
+                splineModel.computePiecewiseSplineFunctions(isReplot);
+%                obj.splineView.replotSpline(splineModel);
             end
         end
         

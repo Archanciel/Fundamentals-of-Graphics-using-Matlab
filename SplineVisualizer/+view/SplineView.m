@@ -630,9 +630,10 @@ classdef SplineView < matlab.apps.AppBase
         % Spline drawing methods
         function plotSpline(app,...
                             splineModel,...
-                            maxSplineIndex)
+                            maxSplineIndex,...
+                            isReplot)
             currentSplineIndex = splineModel.splineModelIndex;
-            yFuncCellArray = splineModel.computePiecewiseSplineFunctions();
+            yFuncCellArray = splineModel.computePiecewiseSplineFunctions(isReplot);
             Pn = [splineModel.splineXpointCoordVector(1,:)' splineModel.splineYpointCoordVector(1,:)'];
             spline_colors = app.splineUIDataDic(splineModel.splineModelIndex).splineColorCellArray; 
 
@@ -666,6 +667,10 @@ classdef SplineView < matlab.apps.AppBase
                 syms x
                 
                 yy_func = subs(y_func, x, xx_func);
+                
+                % plotting the spline and storing the plotted line handle
+                % in order to be able to delete it before replotting the
+                % modified spline (see SplineView.replotSpline()).
                 splineUIData = app.splineUIDataDic(splineModel.splineModelIndex);
                 splineUIData.splineLineHandleCellArray{i} = plot(app.uiAxes, xx_func, yy_func, spline_colors{i});
                 hold(app.uiAxes,'on');
@@ -718,13 +723,17 @@ classdef SplineView < matlab.apps.AppBase
         end
 
         function plotPiecewiseSplines(app)
-            % plot all the piecewise splines contained in splineCollection
+            % This method is called by SplineAppCreator right after 
+            % creating the SplineView app in order to plot for the first
+            % time all the piecewise splines.
             maxSplineIndex = app.splineCollection.getSplineNumber();
-            
+            isReplot = 0;
+
             for i = 1:maxSplineIndex
                 splineModel = app.splineCollection.getSplineModel(i);
                 app.plotSpline(splineModel,...
-                               maxSplineIndex);
+                               maxSplineIndex,...
+                               isReplot);
             end
 
             % Setting spline view title
@@ -742,11 +751,14 @@ classdef SplineView < matlab.apps.AppBase
         
         function replotSpline(app,...
                               splineModel)
-            % replotting the modified spline
+            % replotting the modified spline. Before plotting the new
+            % spline, the old one must be deleted.
             app.deletePlottedPiecewiseSpline(splineModel);            
             maxSplineIndex = app.splineCollection.getSplineNumber();
+            isReplot = 1;
             app.plotSpline(splineModel,...
-                           maxSplineIndex);
+                           maxSplineIndex,...
+                           isReplot);
         end
         
         function createListenerForEvent(obj, eventGenerator, eventStr)
@@ -757,11 +769,16 @@ classdef SplineView < matlab.apps.AppBase
             % In model/SplineCollection/addViewListenerToModels (line 29)
             % In controller/SplineController/addView (line 24)
             % In SplineAppCreator (line 76)
-            addlistener(eventGenerator, eventStr, @obj.handleThisEvent);
+            addlistener(eventGenerator, eventStr, @obj.handleSplineModelChangeEvent);
         end  
         
-        function handleThisEvent(obj, modifiedSplineModel, eventData)
-            fprintf('from handleThisEvent. Event = %s, model index = %d. REPLACE WITH REPLOT METHOD !\n', eventData.EventName, modifiedSplineModel.splineModelIndex);
+        function handleSplineModelChangeEvent(app, modifiedSplineModel, eventData)
+            % All callback functions must accept at least two arguments:
+            %
+            % 1/ the handle of the object that is the source of the event
+            % 2/ an event.EventData object or an object that is derived 
+            %    from the event.EventData class.
+            app.replotSpline(modifiedSplineModel);
         end        
 
         function attachControllerToSliderChangeEvent(app, splineController)
