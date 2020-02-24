@@ -633,7 +633,13 @@ classdef SplineView < matlab.apps.AppBase
                             maxSplineIndex,...
                             isReplot)
             currentSplineIndex = splineModel.splineModelIndex;
-            yFuncCellArray = splineModel.computePiecewiseSplineFunctions(isReplot);
+            
+            if isReplot == 1
+                yFuncCellArray = splineModel.reComputePiecewiseSplineFunctions();
+            else
+                yFuncCellArray = splineModel.computePiecewiseSplineFunctions();
+            end
+            
             Pn = [splineModel.splineXpointCoordVector(1,:)' splineModel.splineYpointCoordVector(1,:)'];
             spline_colors = app.splineUIDataDic(splineModel.splineModelIndex).splineColorCellArray; 
 

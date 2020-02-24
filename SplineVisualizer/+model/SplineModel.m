@@ -47,14 +47,20 @@ classdef SplineModel < handle
         function splineColorCellArray = getSplineColorCellArray(obj)
             splineColorCellArray = obj.splineColorCellArray; 
         end
+
         
-        function yFuncCellArray = computePiecewiseSplineFunctions(obj, isReplot)
+        function yFuncCellArray = reComputePiecewiseSplineFunctions(obj)
+            % This method does notifiy the model listeners that the spline
+            % was recomputed. Typically, this means that the listeners
+            % will have to replot the spline ...
+            yFuncCellArray = obj.computePiecewiseSplineFunctions();
+            
+            notify(obj,'SplineComputedEvent');
+        end
+        
+        function yFuncCellArray = computePiecewiseSplineFunctions(obj)
             % Returns a 3 elements cell array containing the piecewise spline
             % y_A, y_B and y_C functions
-            %
-            % isReplot: if not 1, the model does not notify its listeners
-            %           that it has been recomputed. This the case the
-            %           first time the splines are drawn.
 
             Pn = [obj.splineXpointCoordVector(1,:)' obj.splineYpointCoordVector(1,:)'];
 
@@ -99,10 +105,6 @@ classdef SplineModel < handle
             yFuncCellArray{1} = y_A;
             yFuncCellArray{2} = y_B;
             yFuncCellArray{3} = y_C;
-
-            if isReplot == 1
-                notify(obj,'SplineComputedEvent');
-            end
         end
         
         function addListenerToEvent(obj, listener, eventStr)  
