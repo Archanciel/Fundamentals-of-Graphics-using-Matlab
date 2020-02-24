@@ -47,8 +47,7 @@ classdef SplineModel < handle
         function splineColorCellArray = getSplineColorCellArray(obj)
             splineColorCellArray = obj.splineColorCellArray; 
         end
-
-        
+      
         function yFuncCellArray = reComputePiecewiseSplineFunctions(obj)
             % This method does notifiy the model listeners that the spline
             % was recomputed. Typically, this means that the listeners
