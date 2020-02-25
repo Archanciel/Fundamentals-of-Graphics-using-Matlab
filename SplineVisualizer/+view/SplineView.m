@@ -632,18 +632,31 @@ classdef SplineView < matlab.apps.AppBase
                             splineModel,...
                             maxSplineIndex,...
                             isReplot)
+            % A piecewise spline is charactirized by 4 points and is composed
+            % of 3 splines: spline A between point 1 and point 2, spline  B
+            % between point 2 and point 3 and spline C between point 3 and 
+            % point 4. In order to draw the 3 splines, plotSpline() obtains 3 
+            % y = ... functions from the spline model. Then, for each function,
+            % an x coordinates array is created. The x coordinates array is
+            % then used to provide x values to the y function in order to compute
+            % the y value of each x coordinate. The two x and y coordinates array
+            % are then used to plot the spline.
+
             currentSplineIndex = splineModel.splineModelIndex;
             
             if isReplot == 1
+                % here, plotSpline() is called after the user has modified
+                % a spline parameter
                 yFuncCellArray = splineModel.reComputePiecewiseSplineFunctions();
             else
+                % here, plotSpline() is called at application start time
                 yFuncCellArray = splineModel.computePiecewiseSplineFunctions();
             end
             
             Pn = [splineModel.splineXpointCoordVector(1,:)' splineModel.splineYpointCoordVector(1,:)'];
             spline_colors = app.splineUIDataDic(splineModel.splineModelIndex).splineColorCellArray; 
 
-            % computing xx_func
+            % computing xCoordArray
             
             for i = 1:length(yFuncCellArray)
                 y_func = yFuncCellArray{i};
@@ -652,36 +665,41 @@ classdef SplineView < matlab.apps.AppBase
                     % handling first part of the 3 part piecewise spline
                     if currentSplineIndex == 1
                         % handling the first part of the the first piecewise spline of the
-                        % piecewise spline collection. xx_func must start at first x minus one.
-                        xx_func = linspace(Pn(i,1) - 1, Pn(i + 1,1), app.PLOT_RESOLUTION);
+                        % piecewise spline collection. xCoordArray must start at first x minus one.
+                        xCoordArray = linspace(Pn(i,1) - 1, Pn(i + 1,1), app.PLOT_RESOLUTION);
                     else
-                        xx_func = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
+                        xCoordArray = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
                     end
                 elseif i == 3
                     % handling last part of the 3 part piecewise spline
                     if currentSplineIndex == maxSplineIndex
                         % handling the last part of the the last piecewise spline of the
-                        % piecewise spline collection. xx_func must exceed last x by one.
-                        xx_func = linspace(Pn(i,1), Pn(i + 1,1) + 1, app.PLOT_RESOLUTION);
+                        % piecewise spline collection. xCoordArray must exceed last x by one.
+                        xCoordArray = linspace(Pn(i,1), Pn(i + 1,1) + 1, app.PLOT_RESOLUTION);
                     else
-                        xx_func = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
+                        xCoordArray = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
                     end
                 else
-                    xx_func = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
+                    xCoordArray = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
                 end
                 
                 syms x
                 
-                yy_func = subs(y_func, x, xx_func);
+                yCoordArray = subs(y_func, x, xCoordArray);
                 
                 % plotting the spline and storing the plotted line handle
                 % in order to be able to delete it before replotting the
                 % modified spline (see SplineView.replotSpline()).
+                
                 splineUIData = app.splineUIDataDic(splineModel.splineModelIndex);
-                splineUIData.splineLineHandleCellArray{i} = plot(app.uiAxes, xx_func, yy_func, spline_colors{i});
+                splineUIData.splineLineHandleCellArray{i} = plot(app.uiAxes, xCoordArray, yCoordArray, spline_colors{i});
                 hold(app.uiAxes,'on');
             end
 
+            % handling the 4 points and their labels. Storing the point and label
+            % handles is required to be able to delete them before redrawing
+            % the spline.
+            
             splineUidata = app.splineUIDataDic(splineModel.splineModelIndex);
             points_labels = splineUidata.splinePointLabelStrCellArray; 
             pointLabelHandlesToDelete = splineUIData.splinePointLabelHandleCellArray;
