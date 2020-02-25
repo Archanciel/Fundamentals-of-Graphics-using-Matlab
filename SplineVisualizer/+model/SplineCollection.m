@@ -39,7 +39,7 @@ classdef SplineCollection < handle
             splineNumber = length(obj.splineModelCellArray) * obj.POINT_NUMBER_PER_SPLINE;
         end
         
-        function splineModel = getSplineModel(obj, i)
+        function splineModel = getSplineModelForSplineIndex(obj, i)
             splineModel = obj.splineModelCellArray{i};
         end
         

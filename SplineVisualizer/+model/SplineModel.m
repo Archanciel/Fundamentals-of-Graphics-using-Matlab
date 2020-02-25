@@ -5,7 +5,8 @@ classdef SplineModel < handle
         % none !        
 
         splineModelIndex; % set by SplineCollection when adding the 
-                          % SplineModel to it.
+                          % SplineModel to it. Is used as unique identifier
+                          % for the spline model.
         splineXpointCoordVector;
         splineYpointCoordVector;
         splineStartSlope;

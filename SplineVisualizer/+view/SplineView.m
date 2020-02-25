@@ -46,7 +46,7 @@ classdef SplineView < matlab.apps.AppBase
 
         % Value changed function: pointSelectionMenu
         function pointSelectionMenuValueChanged(app, ~)
-            pointIndex = app.getPointIndex();
+            pointIndex = app.convertMenuIndexToPointIndex();
             
             app.updateSliderXProperties(pointIndex);
             app.updateSliderYProperties(pointIndex);
@@ -151,7 +151,7 @@ classdef SplineView < matlab.apps.AppBase
             end
         end
 
-        function pointIndex = getPointIndex(app)
+        function pointIndex = convertMenuIndexToPointIndex(app)
             menuSelIndex = app.getPointSelectionMenuIndex();
             pointIndex = app.splinePointAndSlopeMenuCorrespondingPointIndex(menuSelIndex);
         end
@@ -160,7 +160,7 @@ classdef SplineView < matlab.apps.AppBase
             sliderHandle = app.xCoordSlider;
             value = sliderHandle.Value;
 
-            pointIndex = app.getPointIndex();
+            pointIndex = app.convertMenuIndexToPointIndex();
             
             if pointIndex > 0
                 roundedValue = round(value, app.XY_SLIDER_ROUND);
@@ -511,7 +511,7 @@ classdef SplineView < matlab.apps.AppBase
             currentPointIndex = 1;
             
             for i = 1:splineNumber
-                currentSplineModel = app.splineCollection.getSplineModel(i);
+                currentSplineModel = app.splineCollection.getSplineModelForSplineIndex(i);
                 
                 % instanciating a SplineUIData located in package view
                 currentSplineUIData = view.SplineUIData();
@@ -607,7 +607,7 @@ classdef SplineView < matlab.apps.AppBase
             pIndex = 0;
             
             for i = 1:splineNumber
-                currentSplineModel = app.splineCollection.getSplineModel(i);
+                currentSplineModel = app.splineCollection.getSplineModelForSplineIndex(i);
                 
                 for j = 1:length(currentSplineModel.splineXpointCoordVector)
                     pIndex = pIndex + 1;
@@ -754,7 +754,7 @@ classdef SplineView < matlab.apps.AppBase
             isReplot = 0;
 
             for i = 1:maxSplineIndex
-                splineModel = app.splineCollection.getSplineModel(i);
+                splineModel = app.splineCollection.getSplineModelForSplineIndex(i);
                 app.plotSpline(splineModel,...
                                maxSplineIndex,...
                                isReplot);
@@ -812,8 +812,8 @@ classdef SplineView < matlab.apps.AppBase
             % In view/SplineView/attachControllerToSliderChangeEvent (line 761)
             % In controller/SplineController/addView (line 28)
             % In SplineAppCreator (line 76)
-            addlistener(app.xCoordSlider, 'ValueChanged', @(~,~)splineController.handle_X_CoordChanged(app.get_x_roundedValue(), app.getPointIndex()));
-            addlistener(app.yCoordSlider, 'ValueChanged', @(~,~)splineController.handle_Y_CoordChanged(app.get_y_roundedValue(), app.getPointIndex()));
+            addlistener(app.xCoordSlider, 'ValueChanged', @(~,~)splineController.handle_X_CoordChanged(app.get_x_roundedValue(), app.convertMenuIndexToPointIndex()));
+            addlistener(app.yCoordSlider, 'ValueChanged', @(~,~)splineController.handle_Y_CoordChanged(app.get_y_roundedValue(), app.convertMenuIndexToPointIndex()));
         end
         
     end % end public methods section
