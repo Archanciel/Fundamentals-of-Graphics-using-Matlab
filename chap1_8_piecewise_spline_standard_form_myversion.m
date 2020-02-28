@@ -1,4 +1,8 @@
-DO_SUBPLOT = 1 %if set to 0, only plots the full curve graph
+DO_SUBPLOT = 2 % if set to 0, only plots the full curve graph
+               % if set to 1, plots the full curve graph and the partial curve graph
+               % if set to 2, only plots the partial curve graph
+ADDITIONAL_X_AXIS_SIZE = 0
+
 p1 = [0 1]
 p2 = [2 2]
 p3 = [5 0]
@@ -47,14 +51,20 @@ close all
 figure
 
 %plotting full piecewise curves
+
 if DO_SUBPLOT == 1
     subplot(121);
 end
-xx_lim = [p1(1,1) - 1 p4(1,1)]
-xx_all = linspace(xx_lim(1,1),xx_lim(1,2));
-yy_a = subs(y_a, x, xx_all);
-plot(xx_all, yy_a, 'b')
-hold on
+
+if DO_SUBPLOT ~= 2
+    xx_lim = [p1(1,1) - 1 p4(1,1)]
+    xx_all = linspace(xx_lim(1,1),xx_lim(1,2));
+    yy_a = subs(y_a, x, xx_all);
+    plot(xx_all, yy_a, 'b')
+
+    hold on
+end
+
 yy_b = subs(y_b, x, xx_all);
 plot(xx_all, yy_b, 'r')
 yy_c = subs(y_c, x, xx_all);
@@ -77,13 +87,15 @@ opt.fontsize = 8;
 centeraxes(gca,opt);
 
 %plotting partial piecewise curves
+
 if DO_SUBPLOT == 1
     subplot(122)
-else
+elseif DO_SUBPLOT ~= 2
     return
 end
+
 clear yy_a, yy_b, yy_c
-xx_lim = [p1(1,1) - 1 p4(1,1)]
+xx_lim = [p1(1,1) - 1 p4(1,1) + ADDITIONAL_X_AXIS_SIZE]
 xx_lim_a = [p1(1,1) - 1 p2(1,1)]
 
 xx_a = linspace(xx_lim(1,1),xx_lim_a(1,2));
