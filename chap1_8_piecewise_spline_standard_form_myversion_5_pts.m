@@ -1,3 +1,4 @@
+clear aqll;
 DO_SUBPLOT = 2 % if set to 0, only plots the full curve graph
                % if set to 1, plots the full curve graph and the partial curve graph
                % if set to 2, only plots the partial curve graph
@@ -70,10 +71,11 @@ if DO_SUBPLOT == 1
     subplot(121);
 end
 
+xx_lim = [p1(1,1) - 1 p5(1,1)]
+xx_all = linspace(xx_lim(1,1),xx_lim(1,2),LINE_SPACE_NUMBER);
+yy_a = subs(y_a, x, xx_all);
+
 if DO_SUBPLOT ~= 2
-    xx_lim = [p1(1,1) - 1 p5(1,1)]
-    xx_all = linspace(xx_lim(1,1),xx_lim(1,2),LINE_SPACE_NUMBER);
-    yy_a = subs(y_a, x, xx_all);
     plot(xx_all, yy_a, 'b')
 
     hold on
