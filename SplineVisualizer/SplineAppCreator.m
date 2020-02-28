@@ -1,3 +1,4 @@
+clear all;
 splineCollection = model.SplineCollection();
 
 % initial piecewise splines points coordinates
