@@ -107,8 +107,8 @@ yticklab = get(ax,'YTickLabel');
 
 yax = line([0; 0],[ylim(1)-1; ylim(2)]);
 xax = line([xlim(1); xlim(2)],[0; 0]);
-set(xax,'color',[0 0 0])
-set(yax,'color',[0 0 0])
+set(xax,'color',[0 0 0]);
+set(yax,'color',[0 0 0]);
 
 % Draw x-axis ticks
 for k = 1:length(xtick),
@@ -148,14 +148,14 @@ set(newylabel,'HorizontalAlignment','right','VerticalAlignment','top',...
 %--------------------------------------------------------------------------
 x = [0; -yticksize/4; yticksize/4];
 y = [ylim(2); ylim(2)-xticksize; ylim(2)-xticksize];
-patch(x,y,[0 0 0])
+patch(x,y,[0 0 0]);
 
 x = [xlim(2); xlim(2)-yticksize; xlim(2)-yticksize];
 y = [0; xticksize/4; -xticksize/4];
-patch(x,y,[0 0 0])
+patch(x,y,[0 0 0]);
 
-ax.XGrid = 'on'
-ax.YGrid = 'on'
+ax.XGrid = 'on';
+ax.YGrid = 'on';
 
 axis off;
 box off;

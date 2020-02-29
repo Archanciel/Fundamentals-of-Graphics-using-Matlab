@@ -40,7 +40,7 @@ if DO_SUBPLOT == 1
     subplot(121);
 end
 
-xx_lim = [p1(1,1) - 1 p5(1,1)]
+xx_lim = [p1(1,1) - 1 p5(1,1)];
 xx_all = linspace(xx_lim(1,1),xx_lim(1,2),LINE_SPACE_NUMBER);
 syms x
 yy_a = subs(y_a, x, xx_all);
@@ -65,11 +65,11 @@ text(p3(1,1)+0.1, p3(1,2)-0.1, 'P_3');
 text(p4(1,1)+0.1, p4(1,2)-0.1, 'P_4');
 text(p5(1,1)+0.1, p5(1,2)-0.1, 'P_5');
 
-xlabel('x')
-ylabel('y')
-title(["Piecewise spline" "5 points version" "standard form -" "full curves"])
+xlabel('x');
+ylabel('y');
+title(["Piecewise spline" "5 points version" "standard form -" "full curves"]);
 
-set(gca,'ylim',[-5 10],'xlim',[xx_lim(1,1) xx_lim(1,2)],'xtick',xx_lim(1,1):xx_lim(1,2),'ytick',-5:10)
+set(gca,'ylim',[-5 10],'xlim',[xx_lim(1,1) xx_lim(1,2)],'xtick',xx_lim(1,1):xx_lim(1,2),'ytick',-5:10);
 opt.fontname = 'helvetica';
 opt.fontsize = 8;
 
@@ -84,22 +84,22 @@ elseif DO_SUBPLOT ~= 2
 end
 
 clear yy_a, yy_b, yy_c, yy_d
-xx_lim = [p1(1,1) - 1 p5(1,1) + ADDITIONAL_X_AXIS_SIZE]
-xx_lim_a = [p1(1,1) - 1 p2(1,1)]
+xx_lim = [p1(1,1) - 1 p5(1,1) + ADDITIONAL_X_AXIS_SIZE];
+xx_lim_a = [p1(1,1) - 1 p2(1,1)];
 
 xx_a = linspace(xx_lim(1,1),xx_lim_a(1,2),LINE_SPACE_NUMBER);
 yy_a = subs(y_a, x, xx_a);
 plot(xx_a, yy_a, 'b')
 hold on
-xx_lim_b = [p2(1,1) p3(1,1)]
+xx_lim_b = [p2(1,1) p3(1,1)];
 xx_b = linspace(xx_lim_b(1,1),xx_lim_b(1,2),LINE_SPACE_NUMBER);
 yy_b = subs(y_b, x, xx_b);
 plot(xx_b, yy_b, 'r')
-xx_lim_c = [p3(1,1) p4(1,1)]
+xx_lim_c = [p3(1,1) p4(1,1)];
 xx_c = linspace(xx_lim_c(1,1),xx_lim_c(1,2),LINE_SPACE_NUMBER);
 yy_c = subs(y_c, x, xx_c);
 plot(xx_c, yy_c, 'm')
-xx_lim_d = [p4(1,1) p5(1,1)]
+xx_lim_d = [p4(1,1) p5(1,1)];
 xx_d = linspace(xx_lim_d(1,1),xx_lim_d(1,2),LINE_SPACE_NUMBER);
 yy_d = subs(y_d, x, xx_d);
 plot(xx_d, yy_d, 'g')
@@ -111,11 +111,11 @@ text(p3(1,1)+0.1, p3(1,2)-0.1, 'P_3');
 text(p4(1,1)+0.1, p4(1,2)-0.1, 'P_4');
 text(p5(1,1)+0.1, p5(1,2)-0.1, 'P_5');
 
-xlabel('x')
-ylabel('y')
-title(["Piecewise spline" "5 points version" "standard form - " "partial curves"])
+xlabel('x');
+ylabel('y');
+title(["Piecewise spline" "5 points version" "standard form - " "partial curves"]);
 
-set(gca,'ylim',[-5 10],'xlim',[xx_lim(1,1) xx_lim(1,2)],'xtick',xx_lim(1,1):xx_lim(1,2),'ytick',-5:10)
+set(gca,'ylim',[-5 10],'xlim',[xx_lim(1,1) xx_lim(1,2)],'xtick',xx_lim(1,1):xx_lim(1,2),'ytick',-5:10);
 opt.fontname = 'helvetica';
 opt.fontsize = 8;
 
