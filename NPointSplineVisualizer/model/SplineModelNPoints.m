@@ -9,6 +9,7 @@ classdef SplineModelNPoints < handle
                           % for the spline model.
         splineXpointCoordVector;
         splineYpointCoordVector;
+        Pn;
         splineStartSlope;
         splineEndSlope;
         yFuncCellArray; % hosts the 3 y = ax^3 + bx`2 + cx + d functions
@@ -28,7 +29,8 @@ classdef SplineModelNPoints < handle
         SplineComputedEvent;
     end
     
-    methods
+    methods (Access = public)
+        
         function obj = SplineModelNPoints(splinePointVector,...
                                           splineStartSlope,...
                                           splineEndSlope,...
@@ -36,6 +38,7 @@ classdef SplineModelNPoints < handle
             % setting x and y coordinates vector                            
             obj.splineXpointCoordVector = [splinePointVector(:,1)'];
             obj.splineYpointCoordVector = [splinePointVector(:,2)'];
+            obj.Pn = [obj.splineXpointCoordVector(1,:)' obj.splineYpointCoordVector(1,:)'];            
             obj.splineStartSlope = splineStartSlope;
             obj.splineEndSlope = splineEndSlope;
             obj.splineColorCellArray = splineColorCellArray;
@@ -63,8 +66,8 @@ classdef SplineModelNPoints < handle
             % Returns a 3 elements cell array containing the piecewise spline
             % y_A, y_B, y_C and y_D functions
 
-            Pn = [obj.splineXpointCoordVector(1,:)' obj.splineYpointCoordVector(1,:)'];
-
+            Pn = obj.Pn;
+            
             obj.C = [Pn(1,1)^3 Pn(1,1)^2 Pn(1,1) 1 0 0 0 0 0 0 0 0 0 0 0 0;
                      Pn(2,1)^3 Pn(2,1)^2 Pn(2,1) 1 0 0 0 0 0 0 0 0 0 0 0 0;
                      0 0 0 0 Pn(2,1)^3 Pn(2,1)^2 Pn(2,1) 1 0 0 0 0 0 0 0 0;
@@ -120,6 +123,35 @@ classdef SplineModelNPoints < handle
             yFuncCellArray{4} = y_d;
         end
         
-    end
+        function vector = buildYfunctionMatrixPart(obj, matrixLineCategory, pointIndex, pointNumber) 
+            % matrixLineCategory: values 1, 2 or 3. Indicates if first matrix line, 
+            % second matrix line or last matrix line of y function group.
+            x = obj.Pn(pointIndex, 1);
+            
+            if matrixLineCategory == 1
+                if pointIndex == 1
+                    startZerosVector = zeros(1, (pointIndex - 1) * 4);
+                    endZerosVector = zeros(1, (pointNumber - pointIndex - 1) * 4);
+                else
+                    startZerosVector = zeros(1, (pointIndex - 2) * 4);
+                    endZerosVector = zeros(1, (pointNumber - pointIndex) * 4);
+                end
+                    
+                vector = [startZerosVector x^3 x^2 x 1 endZerosVector]; 
+            elseif matrixLineCategory == 2
+                startZerosVector = zeros(1, (pointIndex - 1) * 4);
+                endZerosVector = zeros(1, (pointNumber - pointIndex - 1) * 4);            
+                vector = [startZerosVector x^3 x^2 x 1 endZerosVector]; 
+            else
+                startZerosVector = zeros(1, (pointIndex - 2) * 4);
+                endZerosVector = zeros(1, (pointNumber - pointIndex) * 4);            
+                vector = [startZerosVector x^3 x^2 x 1 endZerosVector]; 
+            end
+        end
+    end % public methods
     
+    methods (Access = private)
+        
+        
+    end % private methods        
 end
