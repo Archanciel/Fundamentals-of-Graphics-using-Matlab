@@ -142,12 +142,57 @@ classdef SplineModelNPoints < handle
                 startZerosVector = zeros(1, (pointIndex - 1) * 4);
                 endZerosVector = zeros(1, (pointNumber - pointIndex - 1) * 4);            
                 vector = [startZerosVector x^3 x^2 x 1 endZerosVector]; 
-            else
+            else % last matrix line
                 startZerosVector = zeros(1, (pointIndex - 2) * 4);
                 endZerosVector = zeros(1, (pointNumber - pointIndex) * 4);            
                 vector = [startZerosVector x^3 x^2 x 1 endZerosVector]; 
             end
         end
+        
+        function vector = buildYPrimefunctionMatrixPart(obj, pointIndex, pointNumber)             
+            if pointIndex == 1 || pointIndex == pointNumber
+                % first or last point have no ý' constraint
+                vector = [];
+                return
+            else
+                x1 = obj.Pn(pointIndex, 1);
+                startZerosVector = zeros(1, (pointIndex - 2) * 4);
+                endZerosVector = zeros(1, (pointNumber - pointIndex - 1) * 4);
+                vector = [startZerosVector (-3 * x1^2) (-2 * x1) -1 0 (3 * x1^2) (2 * x1) 1 0 endZerosVector]; 
+            end
+        end
+        
+        function vector = buildYSecondfunctionMatrixPart(obj, pointIndex, pointNumber)             
+            if pointIndex == 1 || pointIndex == pointNumber
+                % first or last point have no ý'' constraint
+                vector = [];
+                return
+            else
+                x1 = obj.Pn(pointIndex, 1);
+                startZerosVector = zeros(1, (pointIndex - 2) * 4);
+                endZerosVector = zeros(1, (pointNumber - pointIndex - 1) * 4);
+                vector = [startZerosVector (-6 * x1) -2 0 0 (6 * x1) 2 0 0 endZerosVector]; 
+            end
+        end
+        
+        function vector = buildYPrimeSlopeConstraintfunctionMatrixPart(obj, pointIndex, pointNumber)             
+            x1 = obj.Pn(pointIndex, 1);
+            
+            if pointIndex == 1
+                startZerosVector = [];
+                endZerosVector = zeros(1, (pointNumber - 2) * 4);
+                vector = [startZerosVector (3 * x1^2) (2 * x1) 1 0 endZerosVector]; 
+            elseif pointIndex == pointNumber
+                startZerosVector = zeros(1, (pointIndex - 2) * 4);
+                endZerosVector = [];
+                vector = [startZerosVector (3 * x1^2) (2 * x1) 1 0 endZerosVector]; 
+            else
+                % only first or last point have a ý' slope constraint
+                vector = [];
+                return
+            end
+        end
+        
     end % public methods
     
     methods (Access = private)

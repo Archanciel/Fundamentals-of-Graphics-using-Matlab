@@ -147,6 +147,159 @@ classdef SplineModelNPointsTest < matlab.unittest.TestCase
             testCase.verifyEqual(actual_vector,exp_vector);
 %            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
         end
+        
+        function testBuildYPrimefunctionMatrixPartFirstLinePoint_1(testCase)
+            pointNumber = 5;
+            pointIndex = 1;
+            
+            actual_vector = testCase.splineModelNPoints.buildYPrimefunctionMatrixPart(pointIndex, pointNumber);
+            exp_vector = [];
+            testCase.verifyEqual(actual_vector,exp_vector);
+%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+        end
+        
+        function testBuildYPrimefunctionMatrixPartFirstLinePoint_5(testCase)
+            pointNumber = 5;
+            pointIndex = 5;
+            
+            actual_vector = testCase.splineModelNPoints.buildYPrimefunctionMatrixPart(pointIndex, pointNumber);
+            exp_vector = [];
+            testCase.verifyEqual(actual_vector,exp_vector);
+%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+        end
+        
+        function testBuildYPrimefunctionMatrixPartFirstLinePoint_2(testCase)
+            pointNumber = 5;
+            pointIndex = 2;
+            
+            actual_vector = testCase.splineModelNPoints.buildYPrimefunctionMatrixPart(pointIndex, pointNumber);
+            exp_vector = [-12    -4    -1    0   12    4    1    0    0    0    0    0    0    0    0    0];
+            testCase.verifyEqual(actual_vector,exp_vector);
+%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+        end
+        
+        function testBuildYPrimefunctionMatrixPartFirstLinePoint_3(testCase)
+            pointNumber = 5;
+            pointIndex = 3;
+            
+            actual_vector = testCase.splineModelNPoints.buildYPrimefunctionMatrixPart(pointIndex, pointNumber);
+            exp_vector = [0    0    0    0    -75   -10    -1    0   75   10    1    0    0    0    0    0];
+            testCase.verifyEqual(actual_vector,exp_vector);
+%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+        end
+        
+        function testBuildYPrimefunctionMatrixPartFirstLinePoint_4(testCase)
+            pointNumber = 5;
+            pointIndex = 4;
+            
+            actual_vector = testCase.splineModelNPoints.buildYPrimefunctionMatrixPart(pointIndex, pointNumber);
+            exp_vector = [0    0    0    0    0    0    0    0   -192   -16    -1    0  192   16    1    0];
+            testCase.verifyEqual(actual_vector,exp_vector);
+%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+        end
+
+%ooooo        
+        
+        function testBuildYSecondfunctionMatrixPartFirstLinePoint_1(testCase)
+            pointNumber = 5;
+            pointIndex = 1;
+            
+            actual_vector = testCase.splineModelNPoints.buildYSecondfunctionMatrixPart(pointIndex, pointNumber);
+            exp_vector = [];
+            testCase.verifyEqual(actual_vector,exp_vector);
+%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+        end
+        
+        function testBuildYSecondfunctionMatrixPartFirstLinePoint_5(testCase)
+            pointNumber = 5;
+            pointIndex = 5;
+            
+            actual_vector = testCase.splineModelNPoints.buildYSecondfunctionMatrixPart(pointIndex, pointNumber);
+            exp_vector = [];
+            testCase.verifyEqual(actual_vector,exp_vector);
+%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+        end
+        
+        function testBuildYPrimefunctionMatrixPartSecondLinePoint_2(testCase)
+            pointNumber = 5;
+            pointIndex = 2;
+            
+            actual_vector = testCase.splineModelNPoints.buildYSecondfunctionMatrixPart(pointIndex, pointNumber);
+            exp_vector = [-12    -2     0    0   12    2    0    0    0    0    0    0    0    0    0    0];
+            testCase.verifyEqual(actual_vector,exp_vector);
+%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+        end
+        
+        function testBuildYSecondfunctionMatrixPartFirstLinePoint_3(testCase)
+            pointNumber = 5;
+            pointIndex = 3;
+            
+            actual_vector = testCase.splineModelNPoints.buildYSecondfunctionMatrixPart(pointIndex, pointNumber);
+            exp_vector = [0    0    0    0    -30    -2     0    0   30    2    0    0    0    0    0    0];
+            testCase.verifyEqual(actual_vector,exp_vector);
+%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+        end
+        
+        function testBuildYPrimefunctionMatrixPartSecondLinePoint_4(testCase)
+            pointNumber = 5;
+            pointIndex = 4;
+            
+            actual_vector = testCase.splineModelNPoints.buildYSecondfunctionMatrixPart(pointIndex, pointNumber);
+            exp_vector = [0    0    0    0    0    0    0    0    -48    -2     0    0   48    2    0    0];
+            testCase.verifyEqual(actual_vector,exp_vector);
+%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+        end
+        
+        function testBuildYPrimeSlopeConstraintFuncMatrixPartFirstLinePoint_1(testCase)
+            pointNumber = 5;
+            pointIndex = 1;
+            
+            actual_vector = testCase.splineModelNPoints.buildYPrimeSlopeConstraintfunctionMatrixPart(pointIndex, pointNumber);
+            exp_vector = [0    0    1     0    0    0    0    0    0    0    0    0    0    0    0    0];
+            testCase.verifyEqual(actual_vector,exp_vector);
+%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+        end
+        
+        function testBuildYPrimeSlopeConstraintFuncMatrixPartFirstLinePoint_5(testCase)
+            pointNumber = 5;
+            pointIndex = 5;
+            
+            actual_vector = testCase.splineModelNPoints.buildYPrimeSlopeConstraintfunctionMatrixPart(pointIndex, pointNumber);
+            exp_vector = [0    0    0     0    0    0    0    0    0    0    0    0  363   22    1    0];
+            testCase.verifyEqual(actual_vector,exp_vector);
+%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+        end
+        
+        function testBuildYPrimeSlopeConstraintFuncMatrixPartFirstLinePoint_2(testCase)
+            pointNumber = 5;
+            pointIndex = 2;
+            
+            actual_vector = testCase.splineModelNPoints.buildYPrimeSlopeConstraintfunctionMatrixPart(pointIndex, pointNumber);
+            exp_vector = [];
+            testCase.verifyEqual(actual_vector,exp_vector);
+%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+        end
+        
+        function testBuildYPrimeSlopeConstraintFuncMatrixPartFirstLinePoint_3(testCase)
+            pointNumber = 5;
+            pointIndex = 3;
+            
+            actual_vector = testCase.splineModelNPoints.buildYPrimeSlopeConstraintfunctionMatrixPart(pointIndex, pointNumber);
+            exp_vector = [];
+            testCase.verifyEqual(actual_vector,exp_vector);
+%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+        end
+        
+        function testBuildYPrimeSlopeConstraintFuncMatrixPartFirstLinePoint_4(testCase)
+            pointNumber = 5;
+            pointIndex = 4;
+            
+            actual_vector = testCase.splineModelNPoints.buildYPrimeSlopeConstraintfunctionMatrixPart(pointIndex, pointNumber);
+            exp_vector = [];
+            testCase.verifyEqual(actual_vector,exp_vector);
+%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+        end
+        
     end
     
 end 
