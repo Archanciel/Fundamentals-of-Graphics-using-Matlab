@@ -129,7 +129,7 @@ classdef SplineModelNPoints < handle
         function vector = buildYfunctionMatrixPart(obj, matrixLineCategory, pointIndex, pointNumber) 
             % matrixLineCategory: values 1, 2 or 3. Indicates if first matrix line, 
             % second matrix line or last matrix line of y function group.
-            x = obj.Pn(pointIndex, 1);
+            x = obj.splineXpointCoordVector(pointIndex);
             
             if matrixLineCategory == 1
                 if pointIndex == 1
@@ -152,41 +152,41 @@ classdef SplineModelNPoints < handle
             end
         end
         
-        function vector = buildYPrimefunctionMatrixPart(obj, pointIndex, pointNumber)             
+        function vector = buildYPrimeFunctionMatrixPart(obj, pointIndex, pointNumber)             
             if pointIndex == 1 || pointIndex == pointNumber
                 % first or last point have no y' constraint
-                error('buildYPrimefunctionMatrixPart:NoYprimeConstraintForThisPoint','Calling this method for first or last point is incorrect since those points have no y prime constraint !')
+                error('buildYPrimeFunctionMatrixPart:NoYprimeConstraintForThisPoint','Calling this method for first or last point is incorrect since those points have no y prime constraint !')
             else
-                x1 = obj.Pn(pointIndex, 1);
+                x = obj.splineXpointCoordVector(pointIndex);
                 startZerosVector = zeros(1, (pointIndex - 2) * 4);
                 endZerosVector = zeros(1, (pointNumber - pointIndex - 1) * 4);
-                vector = [startZerosVector (-3 * x1^2) (-2 * x1) -1 0 (3 * x1^2) (2 * x1) 1 0 endZerosVector]; 
+                vector = [startZerosVector (-3 * x^2) (-2 * x) -1 0 (3 * x^2) (2 * x) 1 0 endZerosVector]; 
             end
         end
         
-        function vector = buildYSecondfunctionMatrixPart(obj, pointIndex, pointNumber)             
+        function vector = buildYSecondFunctionMatrixPart(obj, pointIndex, pointNumber)             
             if pointIndex == 1 || pointIndex == pointNumber
                 % first or last point have no ý'' constraint
-                error('buildYSecondfunctionMatrixPart:NoYsecondConstraintForThisPoint','Calling this method for first or last point is incorrect since those points have no y second constraint !')
+                error('buildYSecondFunctionMatrixPart:NoYsecondConstraintForThisPoint','Calling this method for first or last point is incorrect since those points have no y second constraint !')
             else
-                x1 = obj.Pn(pointIndex, 1);
+                x = obj.splineXpointCoordVector(pointIndex);
                 startZerosVector = zeros(1, (pointIndex - 2) * 4);
                 endZerosVector = zeros(1, (pointNumber - pointIndex - 1) * 4);
-                vector = [startZerosVector (-6 * x1) -2 0 0 (6 * x1) 2 0 0 endZerosVector]; 
+                vector = [startZerosVector (-6 * x) -2 0 0 (6 * x) 2 0 0 endZerosVector]; 
             end
         end
         
         function vector = buildYPrimeSlopeConstraintfunctionMatrixPart(obj, pointIndex, pointNumber)             
-            x1 = obj.Pn(pointIndex, 1);
+            x = obj.splineXpointCoordVector(pointIndex);
             
             if pointIndex == 1
                 startZerosVector = [];
                 endZerosVector = zeros(1, (pointNumber - 2) * 4);
-                vector = [startZerosVector (3 * x1^2) (2 * x1) 1 0 endZerosVector]; 
+                vector = [startZerosVector (3 * x^2) (2 * x) 1 0 endZerosVector]; 
             elseif pointIndex == pointNumber
                 startZerosVector = zeros(1, (pointIndex - 2) * 4);
                 endZerosVector = [];
-                vector = [startZerosVector (3 * x1^2) (2 * x1) 1 0 endZerosVector]; 
+                vector = [startZerosVector (3 * x^2) (2 * x) 1 0 endZerosVector]; 
             else
                 % only first or last point have a ý' slope constraint
                 vector = [];
