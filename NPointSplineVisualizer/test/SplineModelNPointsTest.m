@@ -190,9 +190,7 @@ classdef SplineModelNPointsTest < matlab.unittest.TestCase
             exp_vector = [0    0    0    0    0    0    0    0   -192   -16    -1    0  192   16    1    0];
             testCase.verifyEqual(actual_vector,exp_vector);
 %            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
-        end
-
-%ooooo        
+        end       
         
         function testBuildYSecondFunctionMatrixPartFirstLinePoint_1(testCase)
             pointNumber = 5;
@@ -286,6 +284,30 @@ classdef SplineModelNPointsTest < matlab.unittest.TestCase
             exp_vector = [];
             testCase.verifyEqual(actual_vector,exp_vector);
 %            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+        end
+        
+        function testBuildCMatrix(testCase)
+            actual_C_matrix = testCase.splineModelNPoints.buildCMatrix();
+            exp_C_matrix = [0    0    0    1    0    0    0    0    0    0    0    0    0    0    0    0;
+                            8    4    2    1    0    0    0    0    0    0    0    0    0    0    0    0;
+                            0    0    0    0    8    4    2    1    0    0    0    0    0    0    0    0;
+                            0    0    0    0  125   25    5    1    0    0    0    0    0    0    0    0;
+                            0    0    0    0    0    0    0    0  125   25    5    1    0    0    0    0;
+                            0    0    0    0    0    0    0    0  512   64    8    1    0    0    0    0;
+                            0    0    0    0    0    0    0    0    0    0    0    0  512   64    8    1;
+                            0    0    0    0    0    0    0    0    0    0    0    0 1331  121   11    1;
+                          -12   -4   -1    0   12    4    1    0    0    0    0    0    0    0    0    0;
+                            0    0    0    0  -75  -10   -1    0   75   10    1    0    0    0    0    0;
+                            0    0    0    0    0    0    0    0 -192  -16   -1    0  192   16    1    0;
+                          -12   -2    0    0   12    2    0    0    0    0    0    0    0    0    0    0;
+                            0    0    0    0  -30   -2    0    0   30    2    0    0    0    0    0    0;
+                            0    0    0    0    0    0    0    0  -48   -2    0    0   48    2    0    0;
+                            0    0    1    0    0    0    0    0    0    0    0    0    0    0    0    0;
+                            0    0    0    0    0    0    0    0    0    0    0    0  363   22    1    0];
+
+            testCase.verifyEqual(actual_C_matrix,exp_C_matrix);
+             
+%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_C_matrix.')
         end
         
     end

@@ -124,6 +124,38 @@ classdef SplineModelNPoints < handle
         end
 
         function matrix = buildCMatrix(obj) 
+            pointNumber = length(obj.splineXpointCoordVector);
+            matrix = [];
+            
+            % building y function part
+            for i = 1:pointNumber
+                if i == 1
+                    matrix = [obj.buildYfunctionMatrixPart(1, i, pointNumber)];
+                elseif i == pointNumber
+                    matrix = [matrix; obj.buildYfunctionMatrixPart(3, i, pointNumber)];
+                else
+                    matrix = [matrix; obj.buildYfunctionMatrixPart(1, i, pointNumber)];                    
+                    matrix = [matrix; obj.buildYfunctionMatrixPart(2, i, pointNumber)];                    
+                end
+            end
+
+            % building y prime constraint part
+            for i = 2:pointNumber - 1
+                matrix = [matrix; obj.buildYPrimeFunctionMatrixPart(i, pointNumber)];
+            end
+            
+            % building y second constraint part
+            for i = 2:pointNumber - 1
+                matrix = [matrix; obj.buildYSecondFunctionMatrixPart(i, pointNumber)];
+            end
+            
+            % building first slope constraint part
+            matrix = [matrix; obj.buildYPrimeSlopeConstraintfunctionMatrixPart(1, pointNumber)];
+            
+            % building last slope constraint part
+            matrix = [matrix; obj.buildYPrimeSlopeConstraintfunctionMatrixPart(pointNumber, pointNumber)];
+            
+%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', matrix.')
         end
 
         function vector = buildYfunctionMatrixPart(obj, matrixLineCategory, pointIndex, pointNumber) 
