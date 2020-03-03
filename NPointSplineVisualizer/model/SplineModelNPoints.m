@@ -220,7 +220,7 @@ classdef SplineModelNPoints < handle
                 endZerosVector = [];
                 vector = [startZerosVector (3 * x^2) (2 * x) 1 0 endZerosVector]; 
             else
-                % only first or last point have a ý' slope constraint
+                % only first or last point have a y' slope constraint
                 error('buildYPrimeSlopeConstraintfunctionMatrixPart:NoBeginOrEndSlopeConstraintForThisPoint','Calling this method for an intermediate point is incorrect since those points have no slope constraint !')
             end
         end
