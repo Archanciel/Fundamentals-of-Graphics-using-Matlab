@@ -122,7 +122,10 @@ classdef SplineModelNPoints < handle
             yFuncCellArray{3} = y_c;
             yFuncCellArray{4} = y_d;
         end
-        
+
+        function matrix = buildCMatrix(obj) 
+        end
+
         function vector = buildYfunctionMatrixPart(obj, matrixLineCategory, pointIndex, pointNumber) 
             % matrixLineCategory: values 1, 2 or 3. Indicates if first matrix line, 
             % second matrix line or last matrix line of y function group.
@@ -151,9 +154,8 @@ classdef SplineModelNPoints < handle
         
         function vector = buildYPrimefunctionMatrixPart(obj, pointIndex, pointNumber)             
             if pointIndex == 1 || pointIndex == pointNumber
-                % first or last point have no ý' constraint
-                vector = [];
-                return
+                % first or last point have no y' constraint
+                error('buildYPrimefunctionMatrixPart:NoYprimeConstraintForThisPoint','Calling this method for first or last point is incorrect since those points have no y prime constraint !')
             else
                 x1 = obj.Pn(pointIndex, 1);
                 startZerosVector = zeros(1, (pointIndex - 2) * 4);
@@ -165,8 +167,7 @@ classdef SplineModelNPoints < handle
         function vector = buildYSecondfunctionMatrixPart(obj, pointIndex, pointNumber)             
             if pointIndex == 1 || pointIndex == pointNumber
                 % first or last point have no ý'' constraint
-                vector = [];
-                return
+                error('buildYSecondfunctionMatrixPart:NoYsecondConstraintForThisPoint','Calling this method for first or last point is incorrect since those points have no y second constraint !')
             else
                 x1 = obj.Pn(pointIndex, 1);
                 startZerosVector = zeros(1, (pointIndex - 2) * 4);

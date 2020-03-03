@@ -152,20 +152,14 @@ classdef SplineModelNPointsTest < matlab.unittest.TestCase
             pointNumber = 5;
             pointIndex = 1;
             
-            actual_vector = testCase.splineModelNPoints.buildYPrimefunctionMatrixPart(pointIndex, pointNumber);
-            exp_vector = [];
-            testCase.verifyEqual(actual_vector,exp_vector);
-%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+            testCase.assertError(@()testCase.splineModelNPoints.buildYPrimefunctionMatrixPart(pointIndex, pointNumber), 'buildYPrimefunctionMatrixPart:NoYprimeConstraintForThisPoint');
         end
         
         function testBuildYPrimefunctionMatrixPartFirstLinePoint_5(testCase)
             pointNumber = 5;
             pointIndex = 5;
             
-            actual_vector = testCase.splineModelNPoints.buildYPrimefunctionMatrixPart(pointIndex, pointNumber);
-            exp_vector = [];
-            testCase.verifyEqual(actual_vector,exp_vector);
-%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+            testCase.assertError(@()testCase.splineModelNPoints.buildYPrimefunctionMatrixPart(pointIndex, pointNumber), 'buildYPrimefunctionMatrixPart:NoYprimeConstraintForThisPoint');
         end
         
         function testBuildYPrimefunctionMatrixPartFirstLinePoint_2(testCase)
@@ -204,20 +198,14 @@ classdef SplineModelNPointsTest < matlab.unittest.TestCase
             pointNumber = 5;
             pointIndex = 1;
             
-            actual_vector = testCase.splineModelNPoints.buildYSecondfunctionMatrixPart(pointIndex, pointNumber);
-            exp_vector = [];
-            testCase.verifyEqual(actual_vector,exp_vector);
-%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+            testCase.assertError(@()testCase.splineModelNPoints.buildYSecondfunctionMatrixPart(pointIndex, pointNumber), 'buildYSecondfunctionMatrixPart:NoYsecondConstraintForThisPoint');
         end
         
         function testBuildYSecondfunctionMatrixPartFirstLinePoint_5(testCase)
             pointNumber = 5;
             pointIndex = 5;
             
-            actual_vector = testCase.splineModelNPoints.buildYSecondfunctionMatrixPart(pointIndex, pointNumber);
-            exp_vector = [];
-            testCase.verifyEqual(actual_vector,exp_vector);
-%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_vector')
+            testCase.assertError(@()testCase.splineModelNPoints.buildYSecondfunctionMatrixPart(pointIndex, pointNumber), 'buildYSecondfunctionMatrixPart:NoYsecondConstraintForThisPoint');
         end
         
         function testBuildYPrimefunctionMatrixPartSecondLinePoint_2(testCase)
