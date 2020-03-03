@@ -130,12 +130,12 @@ classdef SplineModelNPoints < handle
             % building y function part
             for i = 1:pointNumber
                 if i == 1
-                    matrix = [obj.buildYfunctionMatrixPart(1, i, pointNumber)];
+                    matrix = [obj.buildYFunctionMatrixPart(1, i, pointNumber)];
                 elseif i == pointNumber
-                    matrix = [matrix; obj.buildYfunctionMatrixPart(3, i, pointNumber)];
+                    matrix = [matrix; obj.buildYFunctionMatrixPart(3, i, pointNumber)];
                 else
-                    matrix = [matrix; obj.buildYfunctionMatrixPart(1, i, pointNumber)];                    
-                    matrix = [matrix; obj.buildYfunctionMatrixPart(2, i, pointNumber)];                    
+                    matrix = [matrix; obj.buildYFunctionMatrixPart(1, i, pointNumber)];                    
+                    matrix = [matrix; obj.buildYFunctionMatrixPart(2, i, pointNumber)];                    
                 end
             end
 
@@ -158,7 +158,7 @@ classdef SplineModelNPoints < handle
 %            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', matrix.')
         end
 
-        function vector = buildYfunctionMatrixPart(obj, matrixLineCategory, pointIndex, pointNumber) 
+        function vector = buildYFunctionMatrixPart(obj, matrixLineCategory, pointIndex, pointNumber) 
             % matrixLineCategory: values 1, 2 or 3. Indicates if first matrix line, 
             % second matrix line or last matrix line of y function group.
             x = obj.splineXpointCoordVector(pointIndex);
@@ -221,8 +221,7 @@ classdef SplineModelNPoints < handle
                 vector = [startZerosVector (3 * x^2) (2 * x) 1 0 endZerosVector]; 
             else
                 % only first or last point have a ý' slope constraint
-                vector = [];
-                return
+                error('buildYPrimeSlopeConstraintfunctionMatrixPart:NoBeginOrEndSlopeConstraintForThisPoint','Calling this method for an intermediate point is incorrect since those points have no slope constraint !')
             end
         end
         
