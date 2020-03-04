@@ -29,7 +29,7 @@ C = [p1(1,1)^3 p1(1,1)^2 p1(1,1) 1 0 0 0 0 0 0 0 0 0 0 0 0;
      3 * p1(1,1)^2 2 * p1(1,1) 1 0 0 0 0 0 0 0 0 0 0 0 0 0;
      0 0 0 0 0 0 0 0 0 0 0 0 3 * p5(1,1)^2 2 * p5(1,1) 1 0];
 fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', C.')
-C_i = inv(C)
+C_i = inv(C);
 
 Y = [p1(1,2);
     p2(1,2);
@@ -48,7 +48,7 @@ Y = [p1(1,2);
     4;
     END_SPLINE]
 
-A = C_i * Y
+A = C_i * Y;
 
 syms x
 y_a = A(1,1) * x^3 + A(2,1) * x^2 + A(3,1) * x + A(4,1);
@@ -71,7 +71,7 @@ if DO_SUBPLOT == 1
     subplot(121);
 end
 
-xx_lim = [p1(1,1) - 1 p5(1,1)]
+xx_lim = [p1(1,1) - 1 p5(1,1)];
 xx_all = linspace(xx_lim(1,1),xx_lim(1,2),LINE_SPACE_NUMBER);
 yy_a = subs(y_a, x, xx_all);
 
@@ -114,22 +114,22 @@ elseif DO_SUBPLOT ~= 2
 end
 
 clear yy_a, yy_b, yy_c, yy_d
-xx_lim = [p1(1,1) - 1 p5(1,1) + ADDITIONAL_X_AXIS_SIZE]
-xx_lim_a = [p1(1,1) - 1 p2(1,1)]
+xx_lim = [p1(1,1) - 1 p5(1,1) + ADDITIONAL_X_AXIS_SIZE];
+xx_lim_a = [p1(1,1) - 1 p2(1,1)];
 
 xx_a = linspace(xx_lim(1,1),xx_lim_a(1,2),LINE_SPACE_NUMBER);
 yy_a = subs(y_a, x, xx_a);
 plot(xx_a, yy_a, 'b')
 hold on
-xx_lim_b = [p2(1,1) p3(1,1)]
+xx_lim_b = [p2(1,1) p3(1,1)];
 xx_b = linspace(xx_lim_b(1,1),xx_lim_b(1,2),LINE_SPACE_NUMBER);
 yy_b = subs(y_b, x, xx_b);
 plot(xx_b, yy_b, 'r')
-xx_lim_c = [p3(1,1) p4(1,1)]
+xx_lim_c = [p3(1,1) p4(1,1)];
 xx_c = linspace(xx_lim_c(1,1),xx_lim_c(1,2),LINE_SPACE_NUMBER);
 yy_c = subs(y_c, x, xx_c);
 plot(xx_c, yy_c, 'm')
-xx_lim_d = [p4(1,1) p5(1,1)]
+xx_lim_d = [p4(1,1) p5(1,1)];
 xx_d = linspace(xx_lim_d(1,1),xx_lim_d(1,2),LINE_SPACE_NUMBER);
 yy_d = subs(y_d, x, xx_d);
 plot(xx_d, yy_d, 'g')

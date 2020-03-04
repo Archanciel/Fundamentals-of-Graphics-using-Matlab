@@ -29,7 +29,9 @@ splineModelNPoints = SplineModelNPoints(Pn,...
                                         -2,...
                                         spline_colors);
 
-yFuncCellArray = splineModelNPoints.computePiecewiseSplineFunctions();
+splineModelNPoints.computePiecewiseSplineFunctions();
+
+yFuncCellArray = splineModelNPoints.yFuncCellArray;
 y_a = yFuncCellArray{1};
 y_b = yFuncCellArray{2};
 y_c = yFuncCellArray{3};
