@@ -67,7 +67,7 @@ classdef SplineModelNPoints < handle
             % y_A, y_B, y_C and y_D functions
 
             Pn = obj.Pn;
-            
+%{            
             obj.C = [Pn(1,1)^3 Pn(1,1)^2 Pn(1,1) 1 0 0 0 0 0 0 0 0 0 0 0 0;
                      Pn(2,1)^3 Pn(2,1)^2 Pn(2,1) 1 0 0 0 0 0 0 0 0 0 0 0 0;
                      0 0 0 0 Pn(2,1)^3 Pn(2,1)^2 Pn(2,1) 1 0 0 0 0 0 0 0 0;
@@ -84,7 +84,9 @@ classdef SplineModelNPoints < handle
                      0 0 0 0 0 0 0 0 -6 * Pn(4,1) -2 0 0 6 * Pn(4,1) 2 0 0;
                      3 * Pn(1,1)^2 2 * Pn(1,1) 1 0 0 0 0 0 0 0 0 0 0 0 0 0;
                      0 0 0 0 0 0 0 0 0 0 0 0 3 * Pn(5,1)^2 2 * Pn(5,1) 1 0];
-             
+%}
+            obj.C = obj.buildCMatrix();
+            
             C_i = inv(obj.C);
 
             Y = [Pn(1,2);
@@ -95,6 +97,10 @@ classdef SplineModelNPoints < handle
                 Pn(4,2);
                 Pn(4,2);
                 Pn(5,2);
+                Pn(5,2);
+                Pn(6,2);
+                0;
+                0;
                 0;
                 0;
                 0;
@@ -111,16 +117,19 @@ classdef SplineModelNPoints < handle
             y_b = A(5,1) * x^3 + A(6,1) * x^2 + A(7,1) * x + A(8,1);
             y_c = A(9,1) * x^3 + A(10,1) * x^2 + A(11,1) * x + A(12,1);
             y_d = A(13,1) * x^3 + A(14,1) * x^2 + A(15,1) * x + A(16,1);
+            y_e = A(17,1) * x^3 + A(18,1) * x^2 + A(19,1) * x + A(20,1);
 
             obj.yFuncCellArray{1} = y_a;
             obj.yFuncCellArray{2} = y_b;
             obj.yFuncCellArray{3} = y_c;
             obj.yFuncCellArray{4} = y_d;
+            obj.yFuncCellArray{5} = y_e;
             
             yFuncCellArray{1} = y_a;
             yFuncCellArray{2} = y_b;
             yFuncCellArray{3} = y_c;
             yFuncCellArray{4} = y_d;
+            yFuncCellArray{5} = y_e;
         end
 
         function matrix = buildCMatrix(obj) 
