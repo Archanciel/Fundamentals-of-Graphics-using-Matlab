@@ -62,7 +62,7 @@ classdef SplineModelNPoints < handle
             notify(obj,'SplineComputedEvent');
         end
         
-        function yFuncCellArray = computePiecewiseSplineFunctions(obj)
+        function computePiecewiseSplineFunctions(obj)
             % Returns a 3 elements cell array containing the piecewise spline
             % y_A, y_B, y_C and y_D functions
 
@@ -89,6 +89,8 @@ classdef SplineModelNPoints < handle
             
             C_i = inv(obj.C);
 
+            obj.buildYVector();
+%{            
             Y = [Pn(1,2);
                 Pn(2,2);
                 Pn(2,2);
@@ -109,7 +111,9 @@ classdef SplineModelNPoints < handle
                 0;
                 obj.splineStartSlope;
                 obj.splineEndSlope];
-
+%}
+            Y = obj.buildYVector();
+            
             A = C_i * Y;
 
             syms x
@@ -123,15 +127,42 @@ classdef SplineModelNPoints < handle
             obj.yFuncCellArray{2} = y_b;
             obj.yFuncCellArray{3} = y_c;
             obj.yFuncCellArray{4} = y_d;
-            obj.yFuncCellArray{5} = y_e;
-            
-            yFuncCellArray{1} = y_a;
-            yFuncCellArray{2} = y_b;
-            yFuncCellArray{3} = y_c;
-            yFuncCellArray{4} = y_d;
-            yFuncCellArray{5} = y_e;
+            obj.yFuncCellArray{5} = y_e;            
         end
 
+        function vector = buildYVector(obj) 
+            pointNumber = length(obj.splineYpointCoordVector);
+            vector = [];
+            
+            % building vector Y function part
+            for i = 1:pointNumber
+                if i == 1
+                    vector = [obj.splineYpointCoordVector(1)];
+                elseif i == pointNumber
+                    vector = [vector; obj.splineYpointCoordVector(pointNumber)];
+                else
+                    vector = [vector; obj.splineYpointCoordVector(i)];
+                    vector = [vector; obj.splineYpointCoordVector(i)];
+                end
+            end
+
+            % building vector Y y prime constraint part
+            for i = 2:pointNumber - 1
+                vector = [vector; 0];
+            end
+            
+            % building vector Y y second constraint part
+            for i = 2:pointNumber - 1
+                vector = [vector; 0];
+            end
+            
+            % adding vector Y first slope value
+            vector = [vector; obj.splineStartSlope];
+            
+            % adding vector Y last slope value
+            vector = [vector; obj.splineEndSlope];
+        end
+        
         function matrix = buildCMatrix(obj) 
             pointNumber = length(obj.splineXpointCoordVector);
             matrix = [];

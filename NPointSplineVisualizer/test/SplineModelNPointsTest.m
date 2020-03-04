@@ -16,9 +16,9 @@ classdef SplineModelNPointsTest < matlab.unittest.TestCase
             addpath("../model");
             p1 = [0 1];
             p2 = [2 2];
-            p3 = [5 0];
+            p3 = [5 4];
             p4 = [8 0];
-            p5 = [11 0];
+            p5 = [11 1];
             Pn = [p1;p2;p3;p4;p5];
 
 
@@ -35,6 +35,30 @@ classdef SplineModelNPointsTest < matlab.unittest.TestCase
     end
     
     methods (Test)
+        function testBuildYVector(testCase)
+            actual_Y_vector = testCase.splineModelNPoints.buildYVector();
+            exp_Y_vector = [1;
+                            2;
+                            2;
+                            4;
+                            4;
+                            0;
+                            0;
+                            1;
+                            0;
+                            0;
+                            0;
+                            0;
+                            0;
+                            0;
+                            4;
+                           -2];
+
+            testCase.verifyEqual(actual_Y_vector,exp_Y_vector);
+             
+%            fprintf('%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n', actual_C_matrix.')
+        end
+        
         function testCMatrixConstruction(testCase)
             testCase.splineModelNPoints.computePiecewiseSplineFunctions();
             actual_C_matrix = testCase.splineModelNPoints.C;
