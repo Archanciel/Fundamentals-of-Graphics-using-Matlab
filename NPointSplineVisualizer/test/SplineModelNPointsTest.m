@@ -35,6 +35,26 @@ classdef SplineModelNPointsTest < matlab.unittest.TestCase
     end
     
     methods (Test)
+        function testFillPiecewiseSplineFunctionCellArray(testCase)
+            testCase.splineModelNPoints.computePiecewiseSplineFunctions();
+            actualPiecewiseSplineFunctionCellArray = testCase.splineModelNPoints.yFuncCellArray;
+            funcNumber = length(actualPiecewiseSplineFunctionCellArray);
+            actualPiecewiseSplineFunctionStringCellArray = cell(funcNumber);
+
+            for i = 1:funcNumber
+                func = actualPiecewiseSplineFunctionCellArray(i);
+                actualPiecewiseSplineFunctionStringCellArray{i} = char(vpa(func, 2));
+            end
+            
+            expPiecewiseSplineFunctionStringCellArray = cell(funcNumber);
+            expPiecewiseSplineFunctionStringCellArray{1} = '4.0*x - 3.1*x^2 + 0.68*x^3 + 1.0';
+            expPiecewiseSplineFunctionStringCellArray{2} = '2.3*x^2 - 6.9*x - 0.22*x^3 + 8.2';
+            expPiecewiseSplineFunctionStringCellArray{3} = '27.0*x - 4.6*x^2 + 0.24*x^3 - 49.0';
+            expPiecewiseSplineFunctionStringCellArray{4} = '8.6*x^2 - 78.0*x - 0.31*x^3 + 230.0';
+
+            testCase.verifyEqual(actualPiecewiseSplineFunctionStringCellArray, expPiecewiseSplineFunctionStringCellArray);
+        end
+        
         function testBuildYVector(testCase)
             actual_Y_vector = testCase.splineModelNPoints.buildYVector();
             exp_Y_vector = [1;

@@ -18,6 +18,12 @@ classdef SplineModelNPoints < handle
     end
     
     properties (Access = private)
+        A; % hosts the computed piecewise spline function coefficients.
+           % Using a private instance variable failitates unit testing
+           % the fillPiecewiseSplineFunctionCellArray() method.
+    end
+    
+    properties (Access = private)
         splineColorCellArray; % will be transfered to the related 
                               % SplineUIData. Located in SplineModel since
                               % spline colors are specified in 
@@ -63,73 +69,28 @@ classdef SplineModelNPoints < handle
         end
         
         function computePiecewiseSplineFunctions(obj)
-            % Returns a 3 elements cell array containing the piecewise spline
-            % y_A, y_B, y_C and y_D functions
-
-            Pn = obj.Pn;
-%{            
-            obj.C = [Pn(1,1)^3 Pn(1,1)^2 Pn(1,1) 1 0 0 0 0 0 0 0 0 0 0 0 0;
-                     Pn(2,1)^3 Pn(2,1)^2 Pn(2,1) 1 0 0 0 0 0 0 0 0 0 0 0 0;
-                     0 0 0 0 Pn(2,1)^3 Pn(2,1)^2 Pn(2,1) 1 0 0 0 0 0 0 0 0;
-                     0 0 0 0 Pn(3,1)^3 Pn(3,1)^2 Pn(3,1) 1 0 0 0 0 0 0 0 0;
-                     0 0 0 0 0 0 0 0 Pn(3,1)^3 Pn(3,1)^2 Pn(3,1) 1 0 0 0 0;
-                     0 0 0 0 0 0 0 0 Pn(4,1)^3 Pn(4,1)^2 Pn(4,1) 1 0 0 0 0;
-                     0 0 0 0 0 0 0 0 0 0 0 0 Pn(4,1)^3 Pn(4,1)^2 Pn(4,1) 1;
-                     0 0 0 0 0 0 0 0 0 0 0 0 Pn(5,1)^3 Pn(5,1)^2 Pn(5,1) 1;
-                     -3 * Pn(2,1)^2 -2 * Pn(2,1) -1 0 3 * Pn(2,1)^2 2 * Pn(2,1) 1 0 0 0 0 0 0 0 0 0;
-                     0 0 0 0 -3 * Pn(3,1)^2 -2 * Pn(3,1) -1 0 3 * Pn(3,1)^2 2 * Pn(3,1) 1 0 0 0 0 0;
-                     0 0 0 0 0 0 0 0 -3 * Pn(4,1)^2 -2 * Pn(4,1) -1 0 3 * Pn(4,1)^2 2 * Pn(4,1) 1 0;
-                     -6 * Pn(2,1) -2 0 0 6 * Pn(2,1) 2 0 0 0 0 0 0 0 0 0 0;
-                     0 0 0 0 -6 * Pn(3,1) -2 0 0 6 * Pn(3,1) 2 0 0 0 0 0 0;
-                     0 0 0 0 0 0 0 0 -6 * Pn(4,1) -2 0 0 6 * Pn(4,1) 2 0 0;
-                     3 * Pn(1,1)^2 2 * Pn(1,1) 1 0 0 0 0 0 0 0 0 0 0 0 0 0;
-                     0 0 0 0 0 0 0 0 0 0 0 0 3 * Pn(5,1)^2 2 * Pn(5,1) 1 0];
-%}
-            obj.C = obj.buildCMatrix();
-            
+            obj.C = obj.buildCMatrix();            
             C_i = inv(obj.C);
-
-            obj.buildYVector();
-%{            
-            Y = [Pn(1,2);
-                Pn(2,2);
-                Pn(2,2);
-                Pn(3,2);
-                Pn(3,2);
-                Pn(4,2);
-                Pn(4,2);
-                Pn(5,2);
-                Pn(5,2);
-                Pn(6,2);
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                0;
-                obj.splineStartSlope;
-                obj.splineEndSlope];
-%}
-            Y = obj.buildYVector();
-            
-            A = C_i * Y;
-
-            syms x
-            y_a = A(1,1) * x^3 + A(2,1) * x^2 + A(3,1) * x + A(4,1);
-            y_b = A(5,1) * x^3 + A(6,1) * x^2 + A(7,1) * x + A(8,1);
-            y_c = A(9,1) * x^3 + A(10,1) * x^2 + A(11,1) * x + A(12,1);
-            y_d = A(13,1) * x^3 + A(14,1) * x^2 + A(15,1) * x + A(16,1);
-            y_e = A(17,1) * x^3 + A(18,1) * x^2 + A(19,1) * x + A(20,1);
-
-            obj.yFuncCellArray{1} = y_a;
-            obj.yFuncCellArray{2} = y_b;
-            obj.yFuncCellArray{3} = y_c;
-            obj.yFuncCellArray{4} = y_d;
-            obj.yFuncCellArray{5} = y_e;            
+            Y = obj.buildYVector();            
+            obj.A = C_i * Y;
+            obj.fillPiecewiseSplineFunctionCellArray();
         end
 
+        function fillPiecewiseSplineFunctionCellArray(obj) 
+            matrixA = obj.A;
+            lineNumber = size(matrixA, 1);
+            
+            syms x;
+            j = 1;
+            
+            for i = 1:4:lineNumber - 3
+               yFunction = matrixA(i,1) * x^3 + matrixA(i + 1,1) * x^2 + matrixA(i + 2,1) * x + matrixA(i + 3,1);
+%               char(vpa(yFunction, 2))
+               obj.yFuncCellArray{j} = yFunction;
+               j = j + 1;
+            end
+        end
+        
         function vector = buildYVector(obj) 
             pointNumber = length(obj.splineYpointCoordVector);
             vector = [];
