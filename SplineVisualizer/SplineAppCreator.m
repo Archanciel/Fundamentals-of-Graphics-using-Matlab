@@ -1,5 +1,10 @@
 clear all;
-splineCollection = model.SplineCollection();
+% he path added are accessible for all classes directly or indiorectly used
+% by SplineAppCreator
+addpath("./model");
+addpath("./view");
+addpath("./controller");
+splineCollection = SplineCollection();
 
 % initial piecewise splines points coordinates
 
@@ -16,7 +21,7 @@ spline_colors{1} = 'b';
 spline_colors{2} = 'r';
 spline_colors{3} = 'm';
 
-splineModel = model.SplineModel(P_1_4,...
+splineModel = SplineModel(P_1_4,...
                           4,...
                           -2,...
                           spline_colors);
@@ -38,7 +43,7 @@ spline_colors{1} = 'k';
 spline_colors{2} = 'r';
 spline_colors{3} = 'g';
 
-additionalSplineModel = model.SplineModel(P_5_8,...
+additionalSplineModel = SplineModel(P_5_8,...
                                     -2,...
                                     0,...
                                     spline_colors);
@@ -60,7 +65,7 @@ spline_colors{1} = 'r';
 spline_colors{2} = 'g';
 spline_colors{3} = 'k';
 
-thirdSplineModel = model.SplineModel(P_9_12,...
+thirdSplineModel = SplineModel(P_9_12,...
                                0,...
                                3,...
                                spline_colors);
@@ -68,10 +73,10 @@ thirdSplineModel = model.SplineModel(P_9_12,...
 splineCollection.addSplineModel(thirdSplineModel);
 
 % linking model to conroller
-splineController = controller.SplineController(splineCollection);
+splineController = SplineController(splineCollection);
 
 % linking model to view
-appView = view.SplineView(splineCollection);
+appView = SplineView(splineCollection);
 
 % linking view to controller
 splineController.addView(appView);

@@ -15,3 +15,6 @@ NPointSplineVisualizer/model/.MATLABDriveTag
 NPointSplineVisualizer/test/.MATLABDriveTag
 NPointSplineVisualizer/+view/.MATLABDriveTag
 NPointSplineVisualizer/+controller/.MATLABDriveTag
+SplineVisualizer/controller/.MATLABDriveTag
+SplineVisualizer/model/.MATLABDriveTag
+SplineVisualizer/view/.MATLABDriveTag

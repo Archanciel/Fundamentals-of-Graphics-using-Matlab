@@ -4,8 +4,8 @@ classdef SplineController < handle
         % constants
         % none !
         
-        splineCollection              model.SplineCollection;
-        splineView                    view.SplineView; % set in SplineAppCreator !
+        splineCollection              SplineCollection;
+        splineView                    SplineView; % set in SplineAppCreator !
     end
 
     methods (Access = public)

@@ -34,7 +34,7 @@ classdef SplineView < matlab.apps.AppBase
         pointSelectionMenu    matlab.ui.control.DropDown
         
         % other properties
-        splineCollection      model.SplineCollection
+        splineCollection      SplineCollection
         splineUIDataDic       containers.Map    % dictionary keyed with spline
                                                 % name containing as value
                                                 % the related SplineUIData
@@ -514,7 +514,7 @@ classdef SplineView < matlab.apps.AppBase
                 currentSplineModel = app.splineCollection.getSplineModelForSplineIndex(i);
                 
                 % instanciating a SplineUIData located in package view
-                currentSplineUIData = view.SplineUIData();
+                currentSplineUIData = SplineUIData();
                 
                 currentSplinePointNumber = currentSplineModel.getSplinePointNumber();
                 currentSplinePointLabelStrCellArray = cell(1, currentSplinePointNumber);
