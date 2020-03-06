@@ -1,19 +1,9 @@
-classdef SplineModelNPoints < handle
+classdef SplineModelNPoints < SplineModel
     % inheriting from handle in order for instances to be passed by reference
     properties (Access = public)
         % constants
         % none !        
 
-        splineModelIndex; % set by SplineCollection when adding the 
-                          % SplineModel to it. Is used as unique identifier
-                          % for the spline model.
-        splineXpointCoordVector;
-        splineYpointCoordVector;
-        Pn;
-        splineStartSlope;
-        splineEndSlope;
-        yFuncCellArray; % hosts the 3 y = ax^3 + bx`2 + cx + d functions
-                        % calculated by computePiecewiseSplineFunctions().
         C;
     end
     
@@ -23,49 +13,16 @@ classdef SplineModelNPoints < handle
            % the fillPiecewiseSplineFunctionCellArray() method.
     end
     
-    properties (Access = private)
-        splineColorCellArray; % will be transfered to the related 
-                              % SplineUIData. Located in SplineModel since
-                              % spline colors are specified in 
-                              % SplineAppCreator where the splines are
-                              % defined.
-    end
-
-    events
-        SplineComputedEvent;
-    end
-    
     methods (Access = public)
         
         function obj = SplineModelNPoints(splinePointVector,...
                                           splineStartSlope,...
                                           splineEndSlope,...
                                           splineColorCellArray)
-            % setting x and y coordinates vector                            
-            obj.splineXpointCoordVector = [splinePointVector(:,1)'];
-            obj.splineYpointCoordVector = [splinePointVector(:,2)'];
-            obj.Pn = [obj.splineXpointCoordVector(1,:)' obj.splineYpointCoordVector(1,:)'];            
-            obj.splineStartSlope = splineStartSlope;
-            obj.splineEndSlope = splineEndSlope;
-            obj.splineColorCellArray = splineColorCellArray;
-            obj.yFuncCellArray = cell(1, 3);
-        end
-        
-        function pointNumber = getSplinePointNumber(obj)
-            pointNumber = length(obj.splineXpointCoordVector);
-        end
-        
-        function splineColorCellArray = getSplineColorCellArray(obj)
-            splineColorCellArray = obj.splineColorCellArray; 
-        end
-      
-        function yFuncCellArray = reComputePiecewiseSplineFunctions(obj)
-            % This method does notifiy the model listeners that the spline
-            % was recomputed. Typically, this means that the listeners
-            % will have to replot the spline ...
-            yFuncCellArray = obj.computePiecewiseSplineFunctions();
-            
-            notify(obj,'SplineComputedEvent');
+            obj@SplineModel(splinePointVector,...
+                            splineStartSlope,...
+                            splineEndSlope,...
+                            splineColorCellArray);                                          
         end
         
         function computePiecewiseSplineFunctions(obj)
