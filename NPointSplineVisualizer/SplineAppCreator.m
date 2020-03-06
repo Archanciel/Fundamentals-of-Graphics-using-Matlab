@@ -1,4 +1,7 @@
 clear all;
+
+% he path added are accessible for all classes directly or indiorectly used
+% by SplineAppCreator
 addpath("./model");
 addpath("./view");
 addpath("./controller");

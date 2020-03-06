@@ -647,10 +647,10 @@ classdef SplineView < matlab.apps.AppBase
             if isReplot == 1
                 % here, plotSpline() is called after the user has modified
                 % a spline parameter
-                yFuncCellArray = splineModel.reComputePiecewiseSplineFunctions();
+                splineModel.reComputePiecewiseSplineFunctions();
             else
                 % here, plotSpline() is called at application start time
-                yFuncCellArray = splineModel.computePiecewiseSplineFunctions();
+                splineModel.computePiecewiseSplineFunctions();
             end
             
             Pn = [splineModel.splineXpointCoordVector(1,:)' splineModel.splineYpointCoordVector(1,:)'];
@@ -658,8 +658,8 @@ classdef SplineView < matlab.apps.AppBase
 
             % computing xCoordArray
             
-            for i = 1:length(yFuncCellArray)
-                y_func = yFuncCellArray{i};
+            for i = 1:length(splineModel.yFuncCellArray)
+                y_func = splineModel.yFuncCellArray{i};
                 
                 if i == 1
                     % handling first part of the 3 part piecewise spline

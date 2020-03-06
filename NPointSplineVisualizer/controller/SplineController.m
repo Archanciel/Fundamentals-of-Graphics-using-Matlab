@@ -11,9 +11,6 @@ classdef SplineController < handle
     methods (Access = public)
 
         function obj = SplineController(splineCollection)
-%            addpath('model');
-%            addpath('view');
-
             obj.splineCollection = splineCollection;
         end
 
