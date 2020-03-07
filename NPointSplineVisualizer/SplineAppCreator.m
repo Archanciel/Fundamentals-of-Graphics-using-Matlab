@@ -38,15 +38,17 @@ splineCollection.addSplineModel(splineModel);
 p5 = [8 0];
 p6 = [9 -1];
 p7 = [10 3];
+p75 = [10.5 3];
 p8 = [11 2];
 
-P_5_8 = [p5;p6;p7;p8];
+P_5_8 = [p5;p6;p7;p75;p8];
 
 % additional piecewise spline drawing parms
 
 spline_colors{1} = 'k--';
 spline_colors{2} = 'r--';
 spline_colors{3} = 'g--';
+spline_colors{4} = 'y--';
 
 additionalSplineModel = SplineModelNPoints(P_5_8,...
                                     -2,...

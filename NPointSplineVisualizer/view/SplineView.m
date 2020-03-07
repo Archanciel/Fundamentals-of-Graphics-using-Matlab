@@ -291,13 +291,13 @@ classdef SplineView < matlab.apps.AppBase
                     % first point label is shifted to avoid overwritting the
                     % last point label of the previous piecewise spline
                     xShift = 0.1;
-                    yShift = -0.1
+                    yShift = -0.1;
                 else
                     xShift = -0.3;
-                    yShift = -0.3
+                    yShift = -0.3;
                 end
                 
-                newPointLabelHandles{i} = text(app.uiAxes, Pn(i,1)+xShift, Pn(i,2)+yShift, pointsLabelStrings{2});
+                newPointLabelHandles{i} = text(app.uiAxes, Pn(i,1)+xShift, Pn(i,2)+yShift, pointsLabelStrings{i});
             end
         end
         
@@ -577,7 +577,7 @@ classdef SplineView < matlab.apps.AppBase
                     n = n + 1;
                     splinePointAndSlopeMenuItemStrCellArray{n} = 'End slope';
                     app.splinePointAndSlopeMenuCorrespondingPointIndex(n) = -i;
-                elseif mod(i, currentSplinePointNumber) == 0
+                elseif mod(i, currentSplinePointNumber) == 0 % THIS IS NOT CORRECT !
                     % here, we add a 'Pi-i + 1 slope' menu item preceeded by
                     % the 'Pi-i + 1' point menu item. The slope menu item
                     % enable to modify the slope at this location. On the
