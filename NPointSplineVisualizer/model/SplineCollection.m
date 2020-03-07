@@ -201,11 +201,33 @@ classdef SplineCollection < handle
     methods (Access = private)
        
         function indexOfSplineContainingPoint = getSplineIndexOfSplineContainingPoint(obj, pointIndex)
-            indexOfSplineContainingPoint = ceil(pointIndex / obj.POINT_NUMBER_PER_SPLINE);
+            splineNumber = obj.getSplineNumber();
+            currentSplineEndPointIndex = 0;
+            
+            for i = 1:splineNumber
+                splineModel = obj.splineModelCellArray{i};
+                currentSplineEndPointIndex = currentSplineEndPointIndex + splineModel.getSplinePointNumber();
+
+                if pointIndex <= currentSplineEndPointIndex
+                    indexOfSplineContainingPoint = i;
+                    break;
+                end
+            end
         end
         
         function pointIndexInSpline = getPointIndexInSplineAtIndex(obj, splineIndex, pointIndex)
-            pointIndexInSpline = pointIndex - ((splineIndex - 1) * obj.POINT_NUMBER_PER_SPLINE);
+            if splineIndex == 1
+                pointIndexInSpline = pointIndex;
+            else
+                previousSplinePointNumber = 0;
+                
+                for i = 1:splineIndex - 1
+                    splineModel = obj.splineModelCellArray{i};
+                    previousSplinePointNumber = previousSplinePointNumber + splineModel.getSplinePointNumber();
+                end
+                
+                pointIndexInSpline = pointIndex - previousSplinePointNumber;
+            end
         end
     end
 end

@@ -14,17 +14,19 @@ splineCollection = SplineCollection();
 p1 = [0 1];
 p2 = [2 2];
 p3 = [5 0];
+p35 = [6 -2];
 p4 = [8 0];
 
-P_1_4 = [p1;p2;p3;p4];
+P_1_4 = [p1;p2;p3;p35;p4];
 
 % initial piecewise spline drawing parms
 
 spline_colors{1} = 'b';
 spline_colors{2} = 'r';
-spline_colors{3} = 'm';
+spline_colors{3} = 'y';
+spline_colors{4} = 'm';
 
-splineModel = SplineModel(P_1_4,...
+splineModel = SplineModelNPoints(P_1_4,...
                           4,...
                           -2,...
                           spline_colors);
@@ -42,11 +44,11 @@ P_5_8 = [p5;p6;p7;p8];
 
 % additional piecewise spline drawing parms
 
-spline_colors{1} = 'k';
-spline_colors{2} = 'r';
-spline_colors{3} = 'g';
+spline_colors{1} = 'k--';
+spline_colors{2} = 'r--';
+spline_colors{3} = 'g--';
 
-additionalSplineModel = SplineModel(P_5_8,...
+additionalSplineModel = SplineModelNPoints(P_5_8,...
                                     -2,...
                                     0,...
                                     spline_colors);
@@ -64,11 +66,11 @@ P_9_12 = [p9;p10;p11;p12];
 
 % third piecewise spline drawing parms
 
-spline_colors{1} = 'r';
-spline_colors{2} = 'g';
-spline_colors{3} = 'k';
+spline_colors{1} = 'r-.';
+spline_colors{2} = 'g-.';
+spline_colors{3} = 'k-.';
 
-thirdSplineModel = SplineModel(P_9_12,...
+thirdSplineModel = SplineModelNPoints(P_9_12,...
                                0,...
                                3,...
                                spline_colors);

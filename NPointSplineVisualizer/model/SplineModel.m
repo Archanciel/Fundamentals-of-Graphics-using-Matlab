@@ -38,7 +38,7 @@ classdef SplineModel < handle
             obj.splineStartSlope = splineStartSlope;
             obj.splineEndSlope = splineEndSlope;
             obj.splineColorCellArray = splineColorCellArray;
-            obj.yFuncCellArray = cell(1, 3);
+            obj.yFuncCellArray = cell(1, obj.getSplinePointNumber() - 1);
         end
         
         function pointNumber = getSplinePointNumber(obj)

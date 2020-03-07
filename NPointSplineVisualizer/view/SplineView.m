@@ -286,12 +286,19 @@ classdef SplineView < matlab.apps.AppBase
 
             newScatteredPointHandle = scatter(app.uiAxes, Pn(:,1),Pn(:,2), app.SCATTER_POINT_SIZE,'k','filled');
 
-            % first point label is shifted to avoid overwritting the
-            % last point label of the previous piecewise spline
-            newPointLabelHandles{1} = text(app.uiAxes, Pn(1,1)+0.1, Pn(1,2)-0.1, pointsLabelStrings{1});
-            newPointLabelHandles{2} = text(app.uiAxes, Pn(2,1)-0.3, Pn(2,2)-0.3, pointsLabelStrings{2});
-            newPointLabelHandles{3} = text(app.uiAxes, Pn(3,1)-0.3, Pn(3,2)-0.3, pointsLabelStrings{3});
-            newPointLabelHandles{4} = text(app.uiAxes, Pn(4,1)-0.3, Pn(4,2)-0.3, pointsLabelStrings{4});
+            for i = 1:length(Pn)
+                if i == 1
+                    % first point label is shifted to avoid overwritting the
+                    % last point label of the previous piecewise spline
+                    xShift = 0.1;
+                    yShift = -0.1
+                else
+                    xShift = -0.3;
+                    yShift = -0.3
+                end
+                
+                newPointLabelHandles{i} = text(app.uiAxes, Pn(i,1)+xShift, Pn(i,2)+yShift, pointsLabelStrings{2});
+            end
         end
         
         function deletePointLabels(app,...
@@ -549,6 +556,9 @@ classdef SplineView < matlab.apps.AppBase
             skipItem = 0;
             
             for i = 1:itemNumber
+                [pointSplineModel, ~] = app.splineCollection.getSplineModelContainingPoint(i);
+                currentSplinePointNumber = pointSplineModel.getSplinePointNumber();
+                
                 if i == 1
                     % here, we add a 'Start slope' menu item followed by
                     % the 'P1' menu item.
@@ -567,7 +577,7 @@ classdef SplineView < matlab.apps.AppBase
                     n = n + 1;
                     splinePointAndSlopeMenuItemStrCellArray{n} = 'End slope';
                     app.splinePointAndSlopeMenuCorrespondingPointIndex(n) = -i;
-                elseif mod(i, 4) == 0
+                elseif mod(i, currentSplinePointNumber) == 0
                     % here, we add a 'Pi-i + 1 slope' menu item preceeded by
                     % the 'Pi-i + 1' point menu item. The slope menu item
                     % enable to modify the slope at this location. On the
@@ -609,7 +619,7 @@ classdef SplineView < matlab.apps.AppBase
             for i = 1:splineNumber
                 currentSplineModel = app.splineCollection.getSplineModelForSplineIndex(i);
                 
-                for j = 1:length(currentSplineModel.splineXpointCoordVector)
+                for j = 1:currentSplineModel.getSplinePointNumber()
                     pIndex = pIndex + 1;
                     splinePointSelectionMenuValueStrCellArray{pIndex} = strcat('P', num2str(pIndex));
                 end
