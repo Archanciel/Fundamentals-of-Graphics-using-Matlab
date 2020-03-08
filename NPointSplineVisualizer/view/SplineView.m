@@ -556,9 +556,6 @@ classdef SplineView < matlab.apps.AppBase
             skipItem = 0;
             
             for i = 1:itemNumber
-                [pointSplineModel, ~] = app.splineCollection.getSplineModelContainingPoint(i);
-                currentSplinePointNumber = pointSplineModel.getSplinePointNumber();
-                
                 if i == 1
                     % here, we add a 'Start slope' menu item followed by
                     % the 'P1' menu item.
@@ -577,7 +574,7 @@ classdef SplineView < matlab.apps.AppBase
                     n = n + 1;
                     splinePointAndSlopeMenuItemStrCellArray{n} = 'End slope';
                     app.splinePointAndSlopeMenuCorrespondingPointIndex(n) = -i;
-                elseif mod(i, currentSplinePointNumber) == 0 % THIS IS NOT CORRECT !
+                elseif app.splineCollection.isPointLastInHisSpline(i)
                     % here, we add a 'Pi-i + 1 slope' menu item preceeded by
                     % the 'Pi-i + 1' point menu item. The slope menu item
                     % enable to modify the slope at this location. On the

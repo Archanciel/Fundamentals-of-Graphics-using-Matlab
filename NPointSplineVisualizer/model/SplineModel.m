@@ -58,6 +58,10 @@ classdef SplineModel < handle
             notify(obj,'SplineComputedEvent');
         end
         
+        function answer = isLastPoint(obj, pointIndex)
+            answer = pointIndex == obj.getSplinePointNumber(); 
+        end
+        
         function computePiecewiseSplineFunctions(obj)
             % Returns a 3 elements cell array containing the piecewise spline
             % y_A, y_B and y_C functions

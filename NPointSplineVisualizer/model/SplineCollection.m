@@ -35,8 +35,14 @@ classdef SplineCollection < handle
             splineNumber = length(obj.splineModelCellArray);
         end
         
-        function splineNumber = getTotalPointNumber(obj)
-            splineNumber = length(obj.splineModelCellArray) * obj.POINT_NUMBER_PER_SPLINE;
+        function totalPointNumber = getTotalPointNumber(obj)
+            splineNumber = length(obj.splineModelCellArray);
+            totalPointNumber = 0;
+            
+            for i = 1:splineNumber
+                splineModel = obj.splineModelCellArray{i};
+                totalPointNumber = totalPointNumber + splineModel.getSplinePointNumber();
+            end
         end
         
         function splineModel = getSplineModelForSplineIndex(obj, i)
@@ -79,7 +85,7 @@ classdef SplineCollection < handle
             % of slope i + 1.
             if firstPointIndex == secondPointIndex
                 [pointSplineModel, indexOfSplineContainingPoint] = obj.getSplineModelContainingPoint(firstPointIndex);
-                pointIndexInSpline = obj.getPointIndexInSplineAtIndex(indexOfSplineContainingPoint, firstPointIndex);
+                pointIndexInSpline = obj.getPointIndexInSplineForGlobalPointIndex(indexOfSplineContainingPoint, firstPointIndex);
                 currentPointXValue = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline);
 
                 if firstPointIndex == 1
@@ -107,10 +113,10 @@ classdef SplineCollection < handle
                 end
             else
                 [firstSplineModel, indexOfSplineContainingFirstPoint] = obj.getSplineModelContainingPoint(firstPointIndex);
-                firstPointIndexInFirstSpline = obj.getPointIndexInSplineAtIndex(indexOfSplineContainingFirstPoint, firstPointIndex);
+                firstPointIndexInFirstSpline = obj.getPointIndexInSplineForGlobalPointIndex(indexOfSplineContainingFirstPoint, firstPointIndex);
                 currentPointXValue = firstSplineModel.splineXpointCoordVector(1, firstPointIndexInFirstSpline);
                 [secondSplineModel, indexOfSplineContainingSecondPoint] = obj.getSplineModelContainingPoint(secondPointIndex);
-                secondPointIndexInSecondSpline = obj.getPointIndexInSplineAtIndex(indexOfSplineContainingSecondPoint, secondPointIndex);
+                secondPointIndexInSecondSpline = obj.getPointIndexInSplineForGlobalPointIndex(indexOfSplineContainingSecondPoint, secondPointIndex);
 
                 prevPointX = firstSplineModel.splineXpointCoordVector(1, firstPointIndexInFirstSpline - 1) + coordVariationMinStep;
                 minX = min(prevPointX, currentPointXValue);
@@ -119,80 +125,96 @@ classdef SplineCollection < handle
             end
         end 
         
-        function slopeValue = getSlopeValueAtPoint(obj, pointIndex)
-            % pointIndex is negative when a slope was choosen in the point
+        function slopeValue = getSlopeValueAtPoint(obj, pointIndexGlobal)
+            % pointIndexGlobal is negative when a slope was choosen in the point
             % menu drop down menu.
-            slopeIndex = -pointIndex;
-            [pointSplineModel, ~] = obj.getSplineModelContainingPoint(slopeIndex);
+            pointIndexGlobal = -pointIndexGlobal;
+            pointSplineModel = obj.getSplineModelContainingPoint(pointIndexGlobal);
             
-            if slopeIndex == 1
+            if pointIndexGlobal == 1
                 slopeValue = pointSplineModel.splineStartSlope;
             else
                 slopeValue = pointSplineModel.splineEndSlope;
             end
         end
         
-        function pointXValue = getXValueOfPoint(obj, pointIndex)
-            % pointIndex is the dropdown menu selection index. This
+        function pointXValue = getXValueOfPoint(obj, pointIndexGlobal)
+            % pointIndexGlobal is the dropdown menu selection index. This
             % function first determines in which piecewise spline the
             % point is contained. It then returns the x coord of the
             % point.
-            [pointSplineModel, indexOfSplineContainingPoint] = obj.getSplineModelContainingPoint(pointIndex);
-            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(indexOfSplineContainingPoint, pointIndex);
+            [pointSplineModel, indexOfSplineContainingPoint] = obj.getSplineModelContainingPoint(pointIndexGlobal);
+            pointIndexInSpline = obj.getPointIndexInSplineForGlobalPointIndex(indexOfSplineContainingPoint, pointIndexGlobal);
             pointXValue = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline);
         end
         
-        function setXValueOfPoint(obj, pointIndex, value)
-            % pointIndex is the dropdown menu selection index. This
+        function setXValueOfPoint(obj, pointIndexGlobal, value)
+            % pointIndexGlobal is the dropdown menu selection index. This
             % function first determines in which piecewise spline the
             % point is contained. It then sets the x coord of the
             % point to the passed value.
-            [pointSplineModel, indexOfSplineContainingPoint] = obj.getSplineModelContainingPoint(pointIndex);
-            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(indexOfSplineContainingPoint, pointIndex);
+            [pointSplineModel, indexOfSplineContainingPoint] = obj.getSplineModelContainingPoint(pointIndexGlobal);
+            pointIndexInSpline = obj.getPointIndexInSplineForGlobalPointIndex(indexOfSplineContainingPoint, pointIndexGlobal);
             pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline) = value;
         end
+       
+        function answer = isPointLastInHisSpline(obj, pointIndexGlobal)
+            % pointIndexGlobal: "global point index: if we have 3 piecewise
+            % splines with 4 points in each, pointIndexGlobal = 12 is contained
+            % in 3rd SplineModel and is the last point of the spline.
+            %
+            % The function first determines in which piecewise spline the
+            % point is contained. It then ash the SplineModel if is is the 
+            % last point.
+            [pointSplineModel, indexOfSplineContainingPoint] = obj.getSplineModelContainingPoint(pointIndexGlobal);
+            pointIndexInSpline = obj.getPointIndexInSplineForGlobalPointIndex(indexOfSplineContainingPoint, pointIndexGlobal);
+            answer = pointSplineModel.isLastPoint(pointIndexInSpline);
+        end
         
-        function isContiguousSplineUpdated = setSlopeValueAtPoint(obj, pointIndex, value)
-            % pointIndex is negative when a slope was choosen in the point
+        function isContiguousSplineUpdated = setSlopeValueAtPoint(obj, pointIndexGlobal, value)
+            % pointIndexGlobal is negative when a slope was choosen in the point
             % menu drop down menu.
-            slopeIndex = -pointIndex;
-            [pointSplineModel, ~] = obj.getSplineModelContainingPoint(slopeIndex);
+            pointIndexGlobal = -pointIndexGlobal;
+            pointSplineModel = obj.getSplineModelContainingPoint(pointIndexGlobal);
             isContiguousSplineUpdated = 0;
             
-            if slopeIndex == 1
+            if pointIndexGlobal == 1
                 pointSplineModel.splineStartSlope = value;
-            elseif slopeIndex == obj.getTotalPointNumber()
+            elseif pointIndexGlobal == obj.getTotalPointNumber()
                 pointSplineModel.splineEndSlope = value;
             else
                 pointSplineModel.splineEndSlope = value;
-                [pointSplineModel, ~] = obj.getSplineModelContainingPoint(slopeIndex + 1);
+                pointSplineModel = obj.getSplineModelContainingPoint(pointIndexGlobal + 1);
                 pointSplineModel.splineStartSlope = value;
                 isContiguousSplineUpdated = 1;
             end
         end
         
-        function pointYValue = getYValueOfPoint(obj, pointIndex)
-            % pointIndex is the dropdown menu selection index. This
+        function pointYValue = getYValueOfPoint(obj, pointIndexGlobal)
+            % pointIndexGlobal is the dropdown menu selection index. This
             % function first determines in which piecewise spline the
             % point is contained. It then returns the y coord of the
             % point.
-            [pointSplineModel, indexOfSplineContainingPoint] = obj.getSplineModelContainingPoint(pointIndex);
-            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(indexOfSplineContainingPoint, pointIndex);
+            [pointSplineModel, indexOfSplineContainingPoint] = obj.getSplineModelContainingPoint(pointIndexGlobal);
+            pointIndexInSpline = obj.getPointIndexInSplineForGlobalPointIndex(indexOfSplineContainingPoint, pointIndexGlobal);
             pointYValue = pointSplineModel.splineYpointCoordVector(1, pointIndexInSpline);
         end
          
-        function setYValueOfPoint(obj, pointIndex, value)
-            % pointIndex is the dropdown menu selection index. This
+        function setYValueOfPoint(obj, pointIndexGlobal, value)
+            % pointIndexGlobal is the dropdown menu selection index. This
             % function first determines in which piecewise spline the
             % point is contained. It then sets the y coord of the
             % point to the passed value.
-            [pointSplineModel, indexOfSplineContainingPoint] = obj.getSplineModelContainingPoint(pointIndex);
-            pointIndexInSpline = obj.getPointIndexInSplineAtIndex(indexOfSplineContainingPoint, pointIndex);
+            [pointSplineModel, indexOfSplineContainingPoint] = obj.getSplineModelContainingPoint(pointIndexGlobal);
+            pointIndexInSpline = obj.getPointIndexInSplineForGlobalPointIndex(indexOfSplineContainingPoint, pointIndexGlobal);
             pointSplineModel.splineYpointCoordVector(1, pointIndexInSpline) = value;
         end
        
-        function [pointSplineModel, indexOfSplineContainingPoint] = getSplineModelContainingPoint(obj, pointIndex)
-            indexOfSplineContainingPoint = obj.getSplineIndexOfSplineContainingPoint(pointIndex);
+        function [pointSplineModel, indexOfSplineContainingPoint] = getSplineModelContainingPoint(obj, pointIndexGlobal)
+            % pointIndexGlobal: "global point index: if we have 3 piecewise
+            % splines with 4 points in each, pointIndexGlobal = 12 is contained
+            % in 3rd SplineModel.
+            indexOfSplineContainingPoint = obj.getIndexOfSplineContainingPoint(pointIndexGlobal);
             pointSplineModel = obj.splineModelCellArray{indexOfSplineContainingPoint};
         end
 
@@ -200,7 +222,10 @@ classdef SplineCollection < handle
     
     methods (Access = private)
        
-        function indexOfSplineContainingPoint = getSplineIndexOfSplineContainingPoint(obj, pointIndex)
+        function indexOfSplineContainingPoint = getIndexOfSplineContainingPoint(obj, pointIndexGlobal)
+            % pointIndexGlobal: "global point index: if we have 3 piecewise
+            % splines with 5 points, 4 points and six points respectively,
+            % pointIndexGlobal = 6 is contained in 2nd SplineModel.
             splineNumber = obj.getSplineNumber();
             currentSplineEndPointIndex = 0;
             
@@ -208,16 +233,16 @@ classdef SplineCollection < handle
                 splineModel = obj.splineModelCellArray{i};
                 currentSplineEndPointIndex = currentSplineEndPointIndex + splineModel.getSplinePointNumber();
 
-                if pointIndex <= currentSplineEndPointIndex
+                if pointIndexGlobal <= currentSplineEndPointIndex
                     indexOfSplineContainingPoint = i;
                     break;
                 end
             end
         end
         
-        function pointIndexInSpline = getPointIndexInSplineAtIndex(obj, splineIndex, pointIndex)
+        function pointIndexInSpline = getPointIndexInSplineForGlobalPointIndex(obj, splineIndex, pointIndexGlobal)
             if splineIndex == 1
-                pointIndexInSpline = pointIndex;
+                pointIndexInSpline = pointIndexGlobal;
             else
                 previousSplinePointNumber = 0;
                 
@@ -226,7 +251,7 @@ classdef SplineCollection < handle
                     previousSplinePointNumber = previousSplinePointNumber + splineModel.getSplinePointNumber();
                 end
                 
-                pointIndexInSpline = pointIndex - previousSplinePointNumber;
+                pointIndexInSpline = pointIndexGlobal - previousSplinePointNumber;
             end
         end
     end
