@@ -59,6 +59,7 @@ classdef SplineModel < handle
         end
         
         function answer = isLastPoint(obj, pointIndex)
+            % Returns 1 if true, 0 else.
             answer = pointIndex == obj.getSplinePointNumber(); 
         end
         

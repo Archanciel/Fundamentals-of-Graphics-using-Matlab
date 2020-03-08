@@ -166,6 +166,8 @@ classdef SplineCollection < handle
             % The function first determines in which piecewise spline the
             % point is contained. It then ash the SplineModel if is is the 
             % last point.
+            %
+            % Returns 1 if true, 0 else.
             [pointSplineModel, indexOfSplineContainingPoint] = obj.getSplineModelContainingPoint(pointIndexGlobal);
             pointIndexInSpline = obj.getPointIndexInSplineForGlobalPointIndex(indexOfSplineContainingPoint, pointIndexGlobal);
             answer = pointSplineModel.isLastPoint(pointIndexInSpline);
