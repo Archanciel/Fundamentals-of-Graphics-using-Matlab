@@ -98,13 +98,14 @@ classdef SplineCollection < handle
                     end
                     minX = min(prevPointX, currentPointXValue);
                 end
-
-                maxPointIndex = obj.getSplineNumber() * obj.POINT_NUMBER_PER_SPLINE;
+                
+                maxPointIndex = obj.getTotalPointNumber();
 
                 if firstPointIndex == maxPointIndex
                     maxX = xAxisMax;
                 else
-                    if pointIndexInSpline < obj.POINT_NUMBER_PER_SPLINE
+                    splinePointNumber = pointSplineModel.getSplinePointNumber();
+                    if pointIndexInSpline < splinePointNumber
                         nextPointX = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline + 1) - coordVariationMinStep;
                     else
                         nextPointX = pointSplineModel.splineXpointCoordVector(1, pointIndexInSpline) - coordVariationMinStep;
