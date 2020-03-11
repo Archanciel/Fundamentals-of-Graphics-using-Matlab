@@ -34,11 +34,22 @@ classdef SplineModel < handle
                                    splineColorCellArray)
             % setting x and y coordinates vector                            
             obj.splineXpointCoordVector = [splinePointVector(:,1)'];
+            
+            obj.ensureXOoordinatesAreIncreasing();
+            
             obj.splineYpointCoordVector = [splinePointVector(:,2)'];
             obj.splineStartSlope = splineStartSlope;
             obj.splineEndSlope = splineEndSlope;
             obj.splineColorCellArray = splineColorCellArray;
             obj.yFuncCellArray = cell(1, obj.getSplinePointNumber() - 1);
+        end
+        
+        function ensureXOoordinatesAreIncreasing(obj)
+            try
+                validateattributes(obj.splineXpointCoordVector, {'double'},{'increasing'});
+            catch
+                error('SplineModel:NotAllPointXCoordinatesAreIncreasing','Not all points satisfy the X coordinate increasing value constraint !');       
+            end
         end
         
         function pointNumber = getSplinePointNumber(obj)
