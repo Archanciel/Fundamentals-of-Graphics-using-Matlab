@@ -16,7 +16,7 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
         end
     end
 
-    methods
+    methods (Access = private) % utiliy methods
         function splineCollection = fill3SameSizeSplineCollection(testCase)
             splineCollection = SplineCollection();
 
