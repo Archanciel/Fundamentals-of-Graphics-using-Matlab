@@ -164,6 +164,20 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
     end
     
     methods (Test)
+        function testFillColorCellArray(testCase)
+            splineCollection = SplineCollection();
+            actual_color_cellArray = splineCollection.fillColorCellArray(6);
+            exp_color_cellArray{1} = 'r';
+            exp_color_cellArray{2} = 'y';
+            exp_color_cellArray{3} = 'm';
+            exp_color_cellArray{4} = 'k';
+            exp_color_cellArray{5} = 'g';
+            exp_color_cellArray{6} = 'b';
+            testCase.verifyEqual(actual_color_cellArray, exp_color_cellArray);
+            
+            celldisp(actual_color_cellArray);
+        end
+
         function testGetMinMaxX_3SameSizeSplineCollection_P1(testCase)
             splineCollection = testCase.fill3SameSizeSplineCollection;
             
