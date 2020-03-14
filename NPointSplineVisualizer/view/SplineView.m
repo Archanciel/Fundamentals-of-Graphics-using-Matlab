@@ -729,7 +729,7 @@ classdef SplineView < matlab.apps.AppBase
         % Construct app
         function app = SplineView(splineCollection)
             app.splineCollection = splineCollection;
-            app.initializeSplineUIDataDic()
+            app.initializeSplineUIDataDic();
             
             % Create UIFigure and components
             createComponents(app)

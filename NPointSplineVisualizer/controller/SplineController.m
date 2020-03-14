@@ -5,7 +5,6 @@ classdef SplineController < handle
         % none !
         
         splineCollection              SplineCollection;
-        splineView                    SplineView; % set in SplineAppCreator !
     end
 
     methods (Access = public)
@@ -16,8 +15,6 @@ classdef SplineController < handle
 
         function addView(obj, view)
             % Ok since only one view exists in the application.
-            obj.splineView = view;
-
             % Adding the view as listener to the SplineModel contained
             % in the SplineCollection so that the view is notified
             % each time the SplineModel is recalculated.
