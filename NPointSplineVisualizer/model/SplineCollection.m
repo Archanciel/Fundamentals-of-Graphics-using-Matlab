@@ -9,7 +9,6 @@ classdef SplineCollection < handle
         Y_MAX = 10
         SPLINE_START_SLOPE = 0;
         SPLINE_END_SLOPE = 0;
-        SPLINE_POSSIBLE_COLORS_NUMBER = 6;
         
         % none !        
     end
@@ -27,6 +26,7 @@ classdef SplineCollection < handle
             obj.splinePossibleColorsCellArray{4} = 'm';
             obj.splinePossibleColorsCellArray{5} = 'k';
             obj.splinePossibleColorsCellArray{6} = 'g';
+            obj.splinePossibleColorsCellArray{7} = 'c';
         end
         
         function createFilledSplineCollection(obj,...
@@ -44,19 +44,21 @@ classdef SplineCollection < handle
                 splinePointNumber = splinePointNumbersArray(1);
                 
                 for i = 1:piecewiseSplineNumber
-                    obj.createAndStoreSplineModels(startX, splinePointNumber);
+                    lineStyle = '';
+                    obj.createAndStoreSplineModels(startX, splinePointNumber, lineStyle);
                 end
             else
                 for i = 1:piecewiseSplineNumber
+                    lineStyle = '';
                     splinePointNumber = splinePointNumbersArray(i);
-                    obj.createAndStoreSplineModels(startX, splinePointNumber);
+                    obj.createAndStoreSplineModels(startX, splinePointNumber, lineStyle);
                 end
             end
         end
 
-        function createAndStoreSplineModels(obj, startX, splinePointNumber)
+        function createAndStoreSplineModels(obj, startX, splinePointNumber, lineStyle)
             splinePointArray = obj.fillPointArray(startX, splinePointNumber);
-            splineColorCellArray = obj.fillColorCellArray(splinePointNumber);
+            splineColorCellArray = obj.fillColorCellArray(splinePointNumber, lineStyle);
             splineModel = SplineModelNPoints(splinePointArray,...
                                              obj.SPLINE_START_SLOPE,...
                                              obj.SPLINE_END_SLOPE,...
@@ -80,13 +82,14 @@ classdef SplineCollection < handle
             end
         end
         
-        function colorCellArray = fillColorCellArray(obj, pointNumber)
+        function colorCellArray = fillColorCellArray(obj, pointNumber, lineStyle)
             colorCellArray = {};
+            possibleColorNumber = length(obj.splinePossibleColorsCellArray);
             
             for i = 1:pointNumber
-                splineColorIndex = mod(i,6) + 1;
+                splineColorIndex = mod(i, possibleColorNumber) + 1;
                 splineColor = cell2mat(obj.splinePossibleColorsCellArray(splineColorIndex));
-                colorCellArray{i} = splineColor;
+                colorCellArray{i} = strcat(splineColor, lineStyle);
             end
         end
         

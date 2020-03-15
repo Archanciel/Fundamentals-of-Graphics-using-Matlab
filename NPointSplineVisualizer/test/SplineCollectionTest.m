@@ -165,14 +165,16 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
     
     methods (Test)
         function testFillColorCellArray(testCase)
+            lineStyle = '-';
             splineCollection = SplineCollection();
-            actual_color_cellArray = splineCollection.fillColorCellArray(6);
-            exp_color_cellArray{1} = 'r';
-            exp_color_cellArray{2} = 'y';
-            exp_color_cellArray{3} = 'm';
-            exp_color_cellArray{4} = 'k';
-            exp_color_cellArray{5} = 'g';
-            exp_color_cellArray{6} = 'b';
+            actual_color_cellArray = splineCollection.fillColorCellArray(7, lineStyle);
+            exp_color_cellArray{1} = 'r-';
+            exp_color_cellArray{2} = 'y-';
+            exp_color_cellArray{3} = 'm-';
+            exp_color_cellArray{4} = 'k-';
+            exp_color_cellArray{5} = 'g-';
+            exp_color_cellArray{6} = 'c-';
+            exp_color_cellArray{7} = 'b-';
             testCase.verifyEqual(actual_color_cellArray, exp_color_cellArray);
             
 %            celldisp(actual_color_cellArray);
