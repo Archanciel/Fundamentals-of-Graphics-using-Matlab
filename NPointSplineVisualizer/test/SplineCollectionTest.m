@@ -164,7 +164,7 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
     end
     
     methods (Test)
-        function testFillColorCellArray(testCase)
+        function testFillColorCellArray_7_points(testCase)
             lineStyle = '-';
             splineCollection = SplineCollection();
             actual_color_cellArray = splineCollection.fillColorCellArray(7, lineStyle);
@@ -176,6 +176,53 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             exp_color_cellArray{6} = 'c-';
             exp_color_cellArray{7} = 'b-';
             testCase.verifyEqual(actual_color_cellArray, exp_color_cellArray);
+            
+%            celldisp(actual_color_cellArray);
+        end
+
+        function testFillColorCellArray_1_points(testCase)
+            lineStyle = '-';
+            splineCollection = SplineCollection();
+            actual_color_cellArray = splineCollection.fillColorCellArray(1, lineStyle);
+            exp_color_cellArray{1} = 'r-';
+            testCase.verifyEqual(actual_color_cellArray, exp_color_cellArray);
+            
+%            celldisp(actual_color_cellArray);
+        end
+
+        function testFillColorCellArray_6_points(testCase)
+            lineStyle = '-';
+            splineCollection = SplineCollection();
+            actual_color_cellArray = splineCollection.fillColorCellArray(6, lineStyle);
+            exp_color_cellArray{1} = 'r-';
+            exp_color_cellArray{2} = 'y-';
+            exp_color_cellArray{3} = 'm-';
+            exp_color_cellArray{4} = 'k-';
+            exp_color_cellArray{5} = 'g-';
+            exp_color_cellArray{6} = 'c-';
+            testCase.verifyEqual(actual_color_cellArray, exp_color_cellArray);
+            
+%            celldisp(actual_color_cellArray);
+        end
+
+        function testFillPointArray_7_points(testCase)
+            startX = 1;
+            pointNumber = 7;
+            splineCollection = SplineCollection();
+            actual_pointArray = splineCollection.fillPointArray(startX, pointNumber);
+            exp_pointArray = [1 2 3 4 5 6 7];
+            testCase.verifyEqual(actual_pointArray(:,1), exp_pointArray');
+            
+            actual_pointArray
+        end
+
+        function testFillPointArray_1_points(testCase)
+            startX = 1;
+            pointNumber = 1;
+            splineCollection = SplineCollection();
+            actual_pointArray = splineCollection.fillPointArray(startX, pointNumber);
+            exp_pointArray = [1];
+            testCase.verifyEqual(actual_pointArray(:,1), exp_pointArray');
             
 %            celldisp(actual_color_cellArray);
         end
