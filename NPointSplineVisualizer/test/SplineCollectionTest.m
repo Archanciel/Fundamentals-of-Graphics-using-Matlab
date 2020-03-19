@@ -172,9 +172,11 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             exp_splineXpointCoordVector_3 = [8 9 10 11];
 
             splinePointNumbersArray = [4];
+            isRandomX = 0;
             splineCollection = SplineCollection();
             splineCollection.createFilledSplineCollection(exp_splineNumber,...
-                                                          splinePointNumbersArray);
+                                                          splinePointNumbersArray,...
+                                                          isRandomX);
             actual_splineNumber = splineCollection.getSplineNumber();
             actual_totalPointNumber = splineCollection.getTotalPointNumber();
             actual_piecewiseSpline_1 = splineCollection.getSplineModelForSplineIndex(1);
@@ -197,9 +199,11 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             exp_splineXpointCoordVector_3 = [2];
 
             splinePointNumbersArray = [1];
+            isRandomX = 0;
             splineCollection = SplineCollection();
             splineCollection.createFilledSplineCollection(exp_splineNumber,...
-                                                          splinePointNumbersArray);
+                                                          splinePointNumbersArray,...
+                                                          isRandomX);
             actual_splineNumber = splineCollection.getSplineNumber();
             actual_totalPointNumber = splineCollection.getTotalPointNumber();
             actual_piecewiseSpline_1 = splineCollection.getSplineModelForSplineIndex(1);
@@ -222,9 +226,11 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             exp_splineXpointCoordVector_3 = [12 13 14 15 16 17];
 
             splinePointNumbersArray = [6];
+            isRandomX = 0;
             splineCollection = SplineCollection();
             splineCollection.createFilledSplineCollection(exp_splineNumber,...
-                                                          splinePointNumbersArray);
+                                                          splinePointNumbersArray,...
+                                                          isRandomX);
             actual_splineNumber = splineCollection.getSplineNumber();
             actual_totalPointNumber = splineCollection.getTotalPointNumber();
             actual_piecewiseSpline_1 = splineCollection.getSplineModelForSplineIndex(1);
@@ -248,9 +254,11 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             exp_splineXpointCoordVector_4 = [15 16 17 18];
 
             splinePointNumbersArray = [4 5 6 4];
+            isRandomX = 0;
             splineCollection = SplineCollection();
             splineCollection.createFilledSplineCollection(exp_splineNumber,...
-                                                          splinePointNumbersArray);
+                                                          splinePointNumbersArray,...
+                                                          isRandomX);
             actual_splineNumber = splineCollection.getSplineNumber();
             actual_totalPointNumber = splineCollection.getTotalPointNumber();
             actual_piecewiseSpline_1 = splineCollection.getSplineModelForSplineIndex(1);
@@ -308,22 +316,48 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
 %            celldisp(actual_color_cellArray);
         end
 
-        function testFillPointArray_7_points(testCase)
+        function testFillPointArray_7_points_x_regularly_spaced(testCase)
             startX = 1;
             pointNumber = 7;
+            isRandomX = 0;
             splineCollection = SplineCollection();
-            actual_pointArray = splineCollection.fillPointArray(startX, pointNumber);
+            actual_pointArray = splineCollection.fillPointArray(startX, pointNumber, isRandomX);
             exp_pointArray = [1 2 3 4 5 6 7];
             testCase.verifyEqual(actual_pointArray(:,1), exp_pointArray');
             
 %            actual_pointArray
         end
 
-        function testFillPointArray_1_points(testCase)
+        function testFillPointArray_1_points_x_regularly_spaced(testCase)
             startX = 1;
             pointNumber = 1;
+            isRandomX = 0;
             splineCollection = SplineCollection();
-            actual_pointArray = splineCollection.fillPointArray(startX, pointNumber);
+            actual_pointArray = splineCollection.fillPointArray(startX, pointNumber, isRandomX);
+            exp_pointArray = [1];
+            testCase.verifyEqual(actual_pointArray(:,1), exp_pointArray');
+            
+%            actual_pointArray
+        end
+
+        function testFillPointArray_7_points_x_randomly_spaced(testCase)
+            startX = 1;
+            pointNumber = 7;
+            isRandomX = 0;
+            splineCollection = SplineCollection();
+            actual_pointArray = splineCollection.fillPointArray(startX, pointNumber, isRandomX);
+            exp_pointArray = [1 2 3 4 5 6 7];
+            testCase.verifyEqual(actual_pointArray(:,1), exp_pointArray');
+            
+%            actual_pointArray
+        end
+
+        function testFillPointArray_1_points_x_randomly_spaced(testCase)
+            startX = 1;
+            pointNumber = 1;
+            isRandomX = 0;
+            splineCollection = SplineCollection();
+            actual_pointArray = splineCollection.fillPointArray(startX, pointNumber, isRandomX);
             exp_pointArray = [1];
             testCase.verifyEqual(actual_pointArray(:,1), exp_pointArray');
             

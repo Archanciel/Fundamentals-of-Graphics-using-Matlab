@@ -37,12 +37,24 @@ classdef SplineCollection < handle
         
         function createFilledSplineCollection(obj,...
                                               piecewiseSplineNumber,...
-                                              splinePointNumbersArray)
+                                              splinePointNumbersArray,...
+                                              isRandomX)
             % Creates a SplineCollection filled with piecewiseSplineNumber
             % splines. The splinePointNumbersArray contains one point number
             % for each created spline. In case the array contains only one 
             % number, the effect is that all the created splines contains this
-            % point number.
+            % same point number.
+            %
+            % piecewiseSplineNumber: number of created piecewise splines
+            %
+            % splinePointNumbersArray: contains one point number
+            % for each created spline. In case the array contains only one 
+            % number, the effect is that all the created splines contains this
+            % same point number.
+            %
+            % isRandomX: if 0, the spline points x cooordinates all separated
+            %            by 1. If 1, the spline points x cooordinates separated
+            %            randomly by a value between 0.1 and 1.
             splinePointNumbersArraySize = length(splinePointNumbersArray);
             startX = 0;
             
@@ -51,23 +63,24 @@ classdef SplineCollection < handle
                 
                 for i = 1:piecewiseSplineNumber
                     lineStyle = '';
-                    obj.createAndStoreSplineModels(i, startX, splinePointNumber, lineStyle);
-                    startX = startX + splinePointNumber;
+                    endX = obj.createAndStoreSplineModels(i, startX, splinePointNumber, lineStyle, isRandomX);
+                    startX = endX + 1;
                 end
             else
                 possibleLineStyleNumber = length(obj.splinePossibleLineStyleCellArray);
+                
                 for i = 1:piecewiseSplineNumber
                     splineLineStyleIndex = mod(i, possibleLineStyleNumber) + 1;
                     lineStyle = cell2mat(obj.splinePossibleLineStyleCellArray(splineLineStyleIndex));
                     splinePointNumber = splinePointNumbersArray(i);
-                    obj.createAndStoreSplineModels(i, startX, splinePointNumber, lineStyle);
-                    startX = startX + splinePointNumber;
+                    endX = obj.createAndStoreSplineModels(i, startX, splinePointNumber, lineStyle, isRandomX);
+                    startX = endX + 1;
                 end
             end
         end
 
-        function createAndStoreSplineModels(obj, splineModelIndex, startX, splinePointNumber, lineStyle)
-            splinePointArray = obj.fillPointArray(startX, splinePointNumber);
+        function endX = createAndStoreSplineModels(obj, splineModelIndex, startX, splinePointNumber, lineStyle, isRandomX)
+            splinePointArray = obj.fillPointArray(startX, splinePointNumber, isRandomX);
             splineColorCellArray = obj.fillColorCellArray(splinePointNumber, lineStyle);
             splineModel = SplineModelNPoints(splinePointArray,...
                                              obj.SPLINE_START_SLOPE,...
@@ -75,11 +88,12 @@ classdef SplineCollection < handle
                                              splineColorCellArray);
             obj.splineModelCellArray{splineModelIndex} = splineModel;
             splineModel.splineModelIndex = splineModelIndex;
+            endX = splinePointArray(splinePointNumber, 1);
         end
         
-        function pointArray = fillPointArray(obj, startX, pointNumber)
+        function pointArray = fillPointArray(obj, startX, pointNumber, isRandomX)
             pointArray = [];
-            endX = startX + pointNumber;
+            %endX = startX + pointNumber;
             currentX = startX;
             currentY = randi([obj.Y_MIN, obj.Y_MAX],1,1);
             
