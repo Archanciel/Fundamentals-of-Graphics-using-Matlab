@@ -74,7 +74,7 @@ classdef SplineCollection < handle
                     lineStyle = cell2mat(obj.splinePossibleLineStyleCellArray(splineLineStyleIndex));
                     splinePointNumber = splinePointNumbersArray(i);
                     endX = obj.createAndStoreSplineModels(i, startX, splinePointNumber, lineStyle, isRandomX);
-                    startX = endX + 1;
+                    startX = endX;
                 end
             end
         end
@@ -93,15 +93,48 @@ classdef SplineCollection < handle
         
         function pointArray = fillPointArray(obj, startX, pointNumber, isRandomX)
             pointArray = [];
-            %endX = startX + pointNumber;
-            currentX = startX;
             currentY = randi([obj.Y_MIN, obj.Y_MAX],1,1);
             
+            if isRandomX
+                endX = startX + pointNumber;
+                [nextStartX, xArray] = obj.createRandomXArray(startX, endX, pointNumber);
+                
+                for i = 1:pointNumber
+                    newPoint = [xArray(i) currentY];
+                    pointArray = [pointArray; newPoint];
+                    currentY = randi([obj.Y_MIN, obj.Y_MAX], 1, 1);               
+                end
+            else
+                currentX = startX;
+                
+                for i = 1:pointNumber
+                    newPoint = [currentX currentY];
+                    pointArray = [pointArray;newPoint];
+                    currentX = startX + i;
+                    currentY = randi([obj.Y_MIN, obj.Y_MAX], 1, 1);               
+                end
+            end
+        end
+
+        function [nextStartX, xArray] = createRandomXArray(obj, startX, endX, pointNumber)
+            xArray = [];
+    
             for i = 1:pointNumber
-                newPoint = [currentX currentY];
-                pointArray = [pointArray;newPoint];
-                currentX = startX + i;
-                currentY = randi([obj.Y_MIN, obj.Y_MAX], 1, 1);               
+                possibleXArray = startX:0.1:endX; % define the possible x values
+                xArray = [xArray obj.getUniqueRandomNumber(xArray, possibleXArray)];
+            end
+    
+            xArray = sort(xArray);
+            nextStartX = xArray(pointNumber) + 0.1;
+        end
+
+        function uniqueValue = getUniqueRandomNumber(obj, xArray, possibleXArray)
+            % returns a value extracted from possibleXArray which is not already in the
+            % passed xArray
+            uniqueValue = possibleXArray(randi([1,numel(possibleXArray)]));
+    
+            while ismember(uniqueValue, xArray)
+                uniqueValue = possibleXArray(randi([1,numel(possibleXArray)]));
             end
         end
         

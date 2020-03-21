@@ -164,6 +164,23 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
     end
     
     methods (Test)
+        function createRandomXArray(testCase)
+            splineCollection = SplineCollection();
+            
+            startX = 0;
+            endX = 3;
+            pointNumber = 5;
+            
+            [actual_nextStartX, actual_xArray] = splineCollection.createRandomXArray(startX, endX, pointNumber);
+            
+            actual_nextStartX
+            actual_xArray
+            exp_xArray = unique(actual_xArray);
+            exp_nextStartX = actual_xArray(pointNumber) + 0.1;
+            testCase.verifyEqual(exp_xArray, actual_xArray);
+            testCase.verifyEqual(exp_nextStartX, actual_nextStartX);
+        end
+        
         function testCreateFilledSplineCollection_3_splines_4_points(testCase)
             exp_splineNumber = 3;
             exp_totalPointNumber = 12;
