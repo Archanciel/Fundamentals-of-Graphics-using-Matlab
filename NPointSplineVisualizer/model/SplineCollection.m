@@ -74,7 +74,7 @@ classdef SplineCollection < handle
                     lineStyle = cell2mat(obj.splinePossibleLineStyleCellArray(splineLineStyleIndex));
                     splinePointNumber = splinePointNumbersArray(i);
                     endX = obj.createAndStoreSplineModels(i, startX, splinePointNumber, lineStyle, isRandomX);
-                    startX = endX;
+                    startX = endX + 1;
                 end
             end
         end
