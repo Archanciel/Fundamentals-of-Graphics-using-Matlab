@@ -164,21 +164,32 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
     end
     
     methods (Test)
-        function createRandomXArray(testCase)
+        function testCreateAndStoreSplineModel_randomX(testCase)
+            splineCollection = SplineCollection();
+            splineModelIndex = 1;
+            startX = 0;
+            endX = 5;
+            splinePointNumber = 5;
+            lineStyle = '--';
+            isRandomX = 1;
+            endX = splineCollection.createAndStoreSplineModel(splineModelIndex, startX, splinePointNumber, lineStyle, isRandomX);
+            splineModel = splineCollection.getSplineModelForSplineIndex(1);
+        end
+        
+        function testCreateRandomXArray(testCase)
             splineCollection = SplineCollection();
             
             startX = 0;
             endX = 3;
             pointNumber = 5;
             
-            [actual_nextStartX, actual_xArray] = splineCollection.createRandomXArray(startX, endX, pointNumber);
+            [actual_xArray] = splineCollection.createRandomXArray(startX, endX, pointNumber);
             
-            actual_nextStartX
-            actual_xArray
+            % actual_xArray
             exp_xArray = unique(actual_xArray);
-            exp_nextStartX = actual_xArray(pointNumber) + 0.1;
             testCase.verifyEqual(exp_xArray, actual_xArray);
-            testCase.verifyEqual(exp_nextStartX, actual_nextStartX);
+            testCase.verifyEqual(actual_xArray(1), startX);
+            testCase.verifyEqual(actual_xArray(pointNumber), endX);
         end
         
         function testCreateFilledSplineCollection_3_splines_4_points(testCase)
@@ -360,25 +371,25 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
         function testFillPointArray_7_points_x_randomly_spaced(testCase)
             startX = 1;
             pointNumber = 7;
-            isRandomX = 0;
+            exp_endX = startX + pointNumber;
+            isRandomX = 1;
             splineCollection = SplineCollection();
             actual_pointArray = splineCollection.fillPointArray(startX, pointNumber, isRandomX);
-            exp_pointArray = [1 2 3 4 5 6 7];
-            testCase.verifyEqual(actual_pointArray(:,1), exp_pointArray');
-            
-%            actual_pointArray
+            % actual_pointArray
+            testCase.verifyEqual(actual_pointArray(1,1), startX);
+            testCase.verifyEqual(actual_pointArray(pointNumber,1), exp_endX);
         end
 
         function testFillPointArray_1_points_x_randomly_spaced(testCase)
             startX = 1;
             pointNumber = 1;
-            isRandomX = 0;
+            isRandomX = 1;
             splineCollection = SplineCollection();
             actual_pointArray = splineCollection.fillPointArray(startX, pointNumber, isRandomX);
+            % actual_pointArray
             exp_pointArray = [1];
             testCase.verifyEqual(actual_pointArray(:,1), exp_pointArray');
-            
-%            actual_pointArray
+
         end
 
         function testGetMinMaxX_3SameSizeSplineCollection_P1(testCase)

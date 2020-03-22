@@ -63,7 +63,7 @@ classdef SplineCollection < handle
                 
                 for i = 1:piecewiseSplineNumber
                     lineStyle = '';
-                    endX = obj.createAndStoreSplineModels(i, startX, splinePointNumber, lineStyle, isRandomX);
+                    endX = obj.createAndStoreSplineModel(i, startX, splinePointNumber, lineStyle, isRandomX);
                     startX = endX + 1;
                 end
             else
@@ -73,13 +73,13 @@ classdef SplineCollection < handle
                     splineLineStyleIndex = mod(i, possibleLineStyleNumber) + 1;
                     lineStyle = cell2mat(obj.splinePossibleLineStyleCellArray(splineLineStyleIndex));
                     splinePointNumber = splinePointNumbersArray(i);
-                    endX = obj.createAndStoreSplineModels(i, startX, splinePointNumber, lineStyle, isRandomX);
+                    endX = obj.createAndStoreSplineModel(i, startX, splinePointNumber, lineStyle, isRandomX);
                     startX = endX + 1;
                 end
             end
         end
 
-        function endX = createAndStoreSplineModels(obj, splineModelIndex, startX, splinePointNumber, lineStyle, isRandomX)
+        function endX = createAndStoreSplineModel(obj, splineModelIndex, startX, splinePointNumber, lineStyle, isRandomX)
             splinePointArray = obj.fillPointArray(startX, splinePointNumber, isRandomX);
             splineColorCellArray = obj.fillColorCellArray(splinePointNumber, lineStyle);
             splineModel = SplineModelNPoints(splinePointArray,...
@@ -97,7 +97,7 @@ classdef SplineCollection < handle
             
             if isRandomX
                 endX = startX + pointNumber;
-                [nextStartX, xArray] = obj.createRandomXArray(startX, endX, pointNumber);
+                xArray = obj.createRandomXArray(startX, endX, pointNumber);
                 
                 for i = 1:pointNumber
                     newPoint = [xArray(i) currentY];
@@ -116,21 +116,24 @@ classdef SplineCollection < handle
             end
         end
 
-        function [nextStartX, xArray] = createRandomXArray(obj, startX, endX, pointNumber)
-            xArray = [];
+        function xArray = createRandomXArray(obj, startX, endX, pointNumber)
+            % Creates a x unique values array with startX as first element and
+            % endX as last element. The other x values are randomly created
+            % spread between startX and endX.
+
+            xArray = [startX endX];
+            possibleXArray = startX + 0.1:0.1:endX - 0.1; % define the possible x values
     
-            for i = 1:pointNumber
-                possibleXArray = startX:0.1:endX; % define the possible x values
+            for i = 1:pointNumber - 2
                 xArray = [xArray obj.getUniqueRandomNumber(xArray, possibleXArray)];
             end
     
             xArray = sort(xArray);
-            nextStartX = xArray(pointNumber) + 0.1;
         end
 
         function uniqueValue = getUniqueRandomNumber(obj, xArray, possibleXArray)
-            % returns a value extracted from possibleXArray which is not already in the
-            % passed xArray
+            % returns a value extracted from possibleXArray which is not already
+            % in the passed xArray.
             uniqueValue = possibleXArray(randi([1,numel(possibleXArray)]));
     
             while ismember(uniqueValue, xArray)
