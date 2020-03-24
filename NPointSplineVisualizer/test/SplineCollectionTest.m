@@ -168,12 +168,24 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             splineCollection = SplineCollection();
             splineModelIndex = 1;
             startX = 0;
-            endX = 5;
+            endX = 6;
             splinePointNumber = 5;
             lineStyle = '--';
             isRandomX = 1;
+            splinePartNumber = splinePointNumber - 1;
+            exp_splinePartColorOellArray = {};
+            exp_splinePartColorOellArray{1} = 'r--';
+            exp_splinePartColorOellArray{2} = 'y--';
+            exp_splinePartColorOellArray{3} = 'm--';
+            exp_splinePartColorOellArray{4} = 'k--';
             endX = splineCollection.createAndStoreSplineModel(splineModelIndex, startX, splinePointNumber, lineStyle, isRandomX);
             splineModel = splineCollection.getSplineModelForSplineIndex(1);
+            testCase.verifyEqual(splineModel.getSplinePointNumber(), splinePointNumber);
+            testCase.verifyEqual(splineModel.getSplineColorCellArray(), exp_splinePartColorOellArray);
+            testCase.verifyEqual(splineModel.splineXpointCoordVector(1), startX);
+            testCase.verifyEqual(splineModel.splineXpointCoordVector(splinePointNumber), endX);
+            testCase.verifyEqual(splineModel.splineStartSlope, 0);
+            testCase.verifyEqual(splineModel.splineEndSlope, 0);
         end
         
         function testCreateRandomXArray(testCase)
@@ -303,10 +315,11 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             testCase.verifyEqual(actual_piecewiseSpline_4.splineXpointCoordVector, exp_splineXpointCoordVector_4);
         end
         
-        function testFillColorCellArray_7_points(testCase)
+        function testFillColorCellArray_7_splineParts(testCase)
             lineStyle = '-';
             splineCollection = SplineCollection();
-            actual_color_cellArray = splineCollection.fillColorCellArray(7, lineStyle);
+            splinePartNumber = 7;
+            actual_color_cellArray = splineCollection.fillColorCellArray(splinePartNumber, lineStyle);
             exp_color_cellArray{1} = 'r-';
             exp_color_cellArray{2} = 'y-';
             exp_color_cellArray{3} = 'm-';
@@ -319,10 +332,29 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
 %            celldisp(actual_color_cellArray);
         end
 
-        function testFillColorCellArray_1_points(testCase)
+        function testFillColorCellArray_8_splineParts(testCase)
             lineStyle = '-';
             splineCollection = SplineCollection();
-            actual_color_cellArray = splineCollection.fillColorCellArray(1, lineStyle);
+            splinePartNumber = 8;
+            actual_color_cellArray = splineCollection.fillColorCellArray(8, lineStyle);
+            exp_color_cellArray{1} = 'r-';
+            exp_color_cellArray{2} = 'y-';
+            exp_color_cellArray{3} = 'm-';
+            exp_color_cellArray{4} = 'k-';
+            exp_color_cellArray{5} = 'g-';
+            exp_color_cellArray{6} = 'c-';
+            exp_color_cellArray{7} = 'b-';
+            exp_color_cellArray{8} = 'r-';
+            testCase.verifyEqual(actual_color_cellArray, exp_color_cellArray);
+            
+%            celldisp(actual_color_cellArray);
+        end
+
+        function testFillColorCellArray_1_splinePart(testCase)
+            lineStyle = '-';
+            splineCollection = SplineCollection();
+            splinePartNumber = 1;
+            actual_color_cellArray = splineCollection.fillColorCellArray(splinePartNumber, lineStyle);
             exp_color_cellArray{1} = 'r-';
             testCase.verifyEqual(actual_color_cellArray, exp_color_cellArray);
             
