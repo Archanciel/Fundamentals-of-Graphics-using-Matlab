@@ -61,10 +61,14 @@ classdef SplineCollection < handle
             if splinePointNumbersArraySize == 1
                 splinePointNumber = splinePointNumbersArray(1);
                 
+                if splinePointNumber < 4
+                    error('createFilledSplineCollection:MinimumFourPointsNumberViolated','Creating a piecewise spline with less than 4 points is not possible')
+                end
+                
                 for i = 1:piecewiseSplineNumber
                     lineStyle = '';
                     endX = obj.createAndStoreSplineModel(i, startX, splinePointNumber, lineStyle, isRandomX);
-                    startX = endX + 1;
+                    startX = endX;
                 end
             else
                 possibleLineStyleNumber = length(obj.splinePossibleLineStyleCellArray);
@@ -73,8 +77,13 @@ classdef SplineCollection < handle
                     splineLineStyleIndex = mod(i, possibleLineStyleNumber) + 1;
                     lineStyle = cell2mat(obj.splinePossibleLineStyleCellArray(splineLineStyleIndex));
                     splinePointNumber = splinePointNumbersArray(i);
+                    
+                    if splinePointNumber < 4
+                        error('createFilledSplineCollection:MinimumFourPointsNumberViolated','Creating a piecewise spline with less than 4 points is not possible')
+                    end
+                    
                     endX = obj.createAndStoreSplineModel(i, startX, splinePointNumber, lineStyle, isRandomX);
-                    startX = endX + 1;
+                    startX = endX;
                 end
             end
         end
