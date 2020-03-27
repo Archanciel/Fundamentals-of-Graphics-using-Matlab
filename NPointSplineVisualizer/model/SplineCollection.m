@@ -29,10 +29,10 @@ classdef SplineCollection < handle
             obj.splinePossibleColorsCellArray{6} = 'g';
             obj.splinePossibleColorsCellArray{7} = 'c';
             
-            obj.splinePossibleLineStyleCellArray{1} = '-';
-            obj.splinePossibleLineStyleCellArray{2} = '--';
-            obj.splinePossibleLineStyleCellArray{3} = ':';
-            obj.splinePossibleLineStyleCellArray{4} = '-.';
+            obj.splinePossibleLineStyleCellArray{1} = '-.';
+            obj.splinePossibleLineStyleCellArray{3} = '--';
+            obj.splinePossibleLineStyleCellArray{2} = '-';
+            obj.splinePossibleLineStyleCellArray{4} = ':';
         end
         
         function createFilledSplineCollection(obj,...
@@ -57,6 +57,7 @@ classdef SplineCollection < handle
             %            randomly by a value between 0.1 and 1.
             splinePointNumbersArraySize = length(splinePointNumbersArray);
             startX = 0;
+            possibleLineStyleNumber = length(obj.splinePossibleLineStyleCellArray);
             
             if splinePointNumbersArraySize == 1
                 splinePointNumber = splinePointNumbersArray(1);
@@ -66,13 +67,12 @@ classdef SplineCollection < handle
                 end
                 
                 for i = 1:piecewiseSplineNumber
-                    lineStyle = '';
+                    splineLineStyleIndex = mod(i, possibleLineStyleNumber) + 1;
+                    lineStyle = cell2mat(obj.splinePossibleLineStyleCellArray(splineLineStyleIndex));
                     endX = obj.createAndStoreSplineModel(i, startX, splinePointNumber, lineStyle, isRandomX);
                     startX = endX;
                 end
             else
-                possibleLineStyleNumber = length(obj.splinePossibleLineStyleCellArray);
-                
                 for i = 1:piecewiseSplineNumber
                     splineLineStyleIndex = mod(i, possibleLineStyleNumber) + 1;
                     lineStyle = cell2mat(obj.splinePossibleLineStyleCellArray(splineLineStyleIndex));

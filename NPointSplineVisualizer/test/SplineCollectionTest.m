@@ -228,6 +228,10 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             testCase.verifyEqual(actual_piecewiseSpline_1.splineXpointCoordVector(1), 0);
             testCase.verifyEqual(actual_piecewiseSpline_1.splineXpointCoordVector(4), actual_piecewiseSpline_2.splineXpointCoordVector(1));
             testCase.verifyEqual(actual_piecewiseSpline_2.splineXpointCoordVector(4), actual_piecewiseSpline_3.splineXpointCoordVector(1));
+            
+            actual_piecewiseSpline_1.getSplineColorCellArray()
+            actual_piecewiseSpline_2.getSplineColorCellArray()
+            actual_piecewiseSpline_3.getSplineColorCellArray()
         end
         
         function testCreateFilledSplineCollection_3_splines_4_pts_x_reg_spaced(testCase)
@@ -255,6 +259,10 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             testCase.verifyEqual(actual_piecewiseSpline_1.splineXpointCoordVector, exp_splineXpointCoordVector_1);
             testCase.verifyEqual(actual_piecewiseSpline_2.splineXpointCoordVector, exp_splineXpointCoordVector_2);
             testCase.verifyEqual(actual_piecewiseSpline_3.splineXpointCoordVector, exp_splineXpointCoordVector_3);
+            
+            actual_piecewiseSpline_1.getSplineColorCellArray()
+            actual_piecewiseSpline_2.getSplineColorCellArray()
+            actual_piecewiseSpline_3.getSplineColorCellArray()
         end
         
         function testCreateFilledSplineCollection_3_splines_3_pts_x_reg_spaced(testCase)
