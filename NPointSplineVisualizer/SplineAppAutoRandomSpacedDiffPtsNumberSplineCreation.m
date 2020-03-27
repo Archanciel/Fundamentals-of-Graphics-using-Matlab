@@ -9,7 +9,7 @@ addpath("./controller");
 
 splineCollection = SplineCollection();
 
-splineNumber = 5;
+splineNumber = 4;
 
 splinePointNumbersArray = [4 5 6 4];
 isRandomX = 1;
