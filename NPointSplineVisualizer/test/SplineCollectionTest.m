@@ -228,10 +228,6 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             testCase.verifyEqual(actual_piecewiseSpline_1.splineXpointCoordVector(1), 0);
             testCase.verifyEqual(actual_piecewiseSpline_1.splineXpointCoordVector(4), actual_piecewiseSpline_2.splineXpointCoordVector(1));
             testCase.verifyEqual(actual_piecewiseSpline_2.splineXpointCoordVector(4), actual_piecewiseSpline_3.splineXpointCoordVector(1));
-            
-            actual_piecewiseSpline_1.getSplineColorCellArray()
-            actual_piecewiseSpline_2.getSplineColorCellArray()
-            actual_piecewiseSpline_3.getSplineColorCellArray()
         end
         
         function testCreateFilledSplineCollection_3_splines_4_pts_x_reg_spaced(testCase)
@@ -259,10 +255,6 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             testCase.verifyEqual(actual_piecewiseSpline_1.splineXpointCoordVector, exp_splineXpointCoordVector_1);
             testCase.verifyEqual(actual_piecewiseSpline_2.splineXpointCoordVector, exp_splineXpointCoordVector_2);
             testCase.verifyEqual(actual_piecewiseSpline_3.splineXpointCoordVector, exp_splineXpointCoordVector_3);
-            
-            actual_piecewiseSpline_1.getSplineColorCellArray()
-            actual_piecewiseSpline_2.getSplineColorCellArray()
-            actual_piecewiseSpline_3.getSplineColorCellArray()
         end
         
         function testCreateFilledSplineCollection_3_splines_3_pts_x_reg_spaced(testCase)
@@ -332,7 +324,18 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             testCase.verifyEqual(actual_piecewiseSpline_3.splineXpointCoordVector, exp_splineXpointCoordVector_3);
             testCase.verifyEqual(actual_piecewiseSpline_4.splineXpointCoordVector, exp_splineXpointCoordVector_4);
             testCase.verifyEqual(actual_piecewiseSpline_5.splineXpointCoordVector, exp_splineXpointCoordVector_5);
-        end
+            
+            exp_piecewiseSpline_1_color_cellArray = {'r-'    'y-'    'm-'    'k-'    'g-'};
+            exp_piecewiseSpline_2_color_cellArray = {'r--'    'y--'    'm--'    'k--'    'g--'};
+            exp_piecewiseSpline_3_color_cellArray = {'r:'    'y:'    'm:'    'k:'    'g:'};
+            exp_piecewiseSpline_4_color_cellArray = {'r-.'    'y-.'    'm-.'    'k-.'    'g-.'};
+            exp_piecewiseSpline_5_color_cellArray = {'r-'    'y-'    'm-'    'k-'    'g-'};
+            testCase.verifyEqual(actual_piecewiseSpline_1.getSplineColorCellArray(), exp_piecewiseSpline_1_color_cellArray);
+            testCase.verifyEqual(actual_piecewiseSpline_2.getSplineColorCellArray(), exp_piecewiseSpline_2_color_cellArray);
+            testCase.verifyEqual(actual_piecewiseSpline_3.getSplineColorCellArray(), exp_piecewiseSpline_3_color_cellArray);
+            testCase.verifyEqual(actual_piecewiseSpline_4.getSplineColorCellArray(), exp_piecewiseSpline_4_color_cellArray);
+            testCase.verifyEqual(actual_piecewiseSpline_5.getSplineColorCellArray(), exp_piecewiseSpline_5_color_cellArray);
+         end
         
         function testCreateFilledSplineCollection_5_splines_6_pts_x_randomX(testCase)
             exp_splineNumber = 5;
@@ -359,6 +362,17 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             testCase.verifyEqual(actual_piecewiseSpline_2.splineXpointCoordVector(6), actual_piecewiseSpline_3.splineXpointCoordVector(1));
             testCase.verifyEqual(actual_piecewiseSpline_3.splineXpointCoordVector(6), actual_piecewiseSpline_4.splineXpointCoordVector(1));
             testCase.verifyEqual(actual_piecewiseSpline_4.splineXpointCoordVector(6), actual_piecewiseSpline_5.splineXpointCoordVector(1));
+            
+            exp_piecewiseSpline_1_color_cellArray = {'r-'    'y-'    'm-'    'k-'    'g-'};
+            exp_piecewiseSpline_2_color_cellArray = {'r--'    'y--'    'm--'    'k--'    'g--'};
+            exp_piecewiseSpline_3_color_cellArray = {'r:'    'y:'    'm:'    'k:'    'g:'};
+            exp_piecewiseSpline_4_color_cellArray = {'r-.'    'y-.'    'm-.'    'k-.'    'g-.'};
+            exp_piecewiseSpline_5_color_cellArray = {'r-'    'y-'    'm-'    'k-'    'g-'};
+            testCase.verifyEqual(actual_piecewiseSpline_1.getSplineColorCellArray(), exp_piecewiseSpline_1_color_cellArray);
+            testCase.verifyEqual(actual_piecewiseSpline_2.getSplineColorCellArray(), exp_piecewiseSpline_2_color_cellArray);
+            testCase.verifyEqual(actual_piecewiseSpline_3.getSplineColorCellArray(), exp_piecewiseSpline_3_color_cellArray);
+            testCase.verifyEqual(actual_piecewiseSpline_4.getSplineColorCellArray(), exp_piecewiseSpline_4_color_cellArray);
+            testCase.verifyEqual(actual_piecewiseSpline_5.getSplineColorCellArray(), exp_piecewiseSpline_5_color_cellArray);
         end
         
         function testCreateFilledSplineCollection_4_splines_n_pts_x_reg_spaced(testCase)
