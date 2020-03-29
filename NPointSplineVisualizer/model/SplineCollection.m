@@ -5,8 +5,8 @@ classdef SplineCollection < handle
         POINT_NUMBER_PER_SPLINE = 4;
         MIN_SLOPE = -10;
         MAX_SLOPE = 10;
-        Y_MIN = -5
-        Y_MAX = 10
+        Y_MIN = -4;
+        Y_MAX = 9;
         SPLINE_START_SLOPE = 0;
         SPLINE_END_SLOPE = 0;
         
@@ -57,6 +57,7 @@ classdef SplineCollection < handle
             %            randomly by a value between 0.1 and 1.
             splinePointNumbersArraySize = length(splinePointNumbersArray);
             startX = 0;
+            startY = 0;
             possibleLineStyleNumber = length(obj.splinePossibleLineStyleCellArray);
             
             if splinePointNumbersArraySize == 1
@@ -69,8 +70,9 @@ classdef SplineCollection < handle
                 for i = 1:piecewiseSplineNumber
                     splineLineStyleIndex = mod(i, possibleLineStyleNumber) + 1;
                     lineStyle = cell2mat(obj.splinePossibleLineStyleCellArray(splineLineStyleIndex));
-                    endX = obj.createAndStoreSplineModel(i, startX, splinePointNumber, lineStyle, isRandomX);
+                    [endX, endY] = obj.createAndStoreSplineModel(i, startX, startY, splinePointNumber, lineStyle, isRandomX);
                     startX = endX;
+                    startY = endY;
                 end
             else
                 for i = 1:piecewiseSplineNumber
@@ -82,14 +84,15 @@ classdef SplineCollection < handle
                         error('createFilledSplineCollection:MinimumFourPointsNumberViolated','Creating a piecewise spline with less than 4 points is not possible')
                     end
                     
-                    endX = obj.createAndStoreSplineModel(i, startX, splinePointNumber, lineStyle, isRandomX);
+                    [endX endY] = obj.createAndStoreSplineModel(i, startX, startY, splinePointNumber, lineStyle, isRandomX);
                     startX = endX;
+                    startY = endY;
                 end
             end
         end
 
-        function endX = createAndStoreSplineModel(obj, splineModelIndex, startX, splinePointNumber, lineStyle, isRandomX)
-            splinePointArray = obj.fillPointArray(startX, splinePointNumber, isRandomX);
+        function [endX, endY] = createAndStoreSplineModel(obj, splineModelIndex, startX, startY, splinePointNumber, lineStyle, isRandomX)
+            splinePointArray = obj.fillPointArray(startX, startY, splinePointNumber, isRandomX);
             
             % spline parts number = point number - 1 !
             splineColorCellArray = obj.fillColorCellArray(splinePointNumber - 1, lineStyle);
@@ -101,11 +104,12 @@ classdef SplineCollection < handle
             obj.splineModelCellArray{splineModelIndex} = splineModel;
             splineModel.splineModelIndex = splineModelIndex;
             endX = splinePointArray(splinePointNumber, 1);
+            endY = splinePointArray(splinePointNumber, 2);
         end
         
-        function pointArray = fillPointArray(obj, startX, pointNumber, isRandomX)
+        function pointArray = fillPointArray(obj, startX, startY, pointNumber, isRandomX)
             pointArray = [];
-            currentY = randi([obj.Y_MIN, obj.Y_MAX],1,1);
+            currentY = startY;
             
             if isRandomX
                 endX = startX + pointNumber;

@@ -168,6 +168,7 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             splineCollection = SplineCollection();
             splineModelIndex = 1;
             startX = 0;
+            startY = 0;
             endX = 6;
             splinePointNumber = 5;
             lineStyle = '--';
@@ -180,12 +181,13 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             exp_splinePartColorOellArray{3} = 'm--';
             exp_splinePartColorOellArray{4} = 'k--';
             
-            endX = splineCollection.createAndStoreSplineModel(splineModelIndex, startX, splinePointNumber, lineStyle, isRandomX);
+            [endX, endY] = splineCollection.createAndStoreSplineModel(splineModelIndex, startX, startY, splinePointNumber, lineStyle, isRandomX);
             splineModel = splineCollection.getSplineModelForSplineIndex(1);
             
             testCase.verifyEqual(splineModel.getSplinePointNumber(), splinePointNumber);
             testCase.verifyEqual(splineModel.getSplineColorCellArray(), exp_splinePartColorOellArray);
             testCase.verifyEqual(splineModel.splineXpointCoordVector(1), startX);
+            testCase.verifyEqual(splineModel.splineYpointCoordVector(1), startY);
             testCase.verifyEqual(splineModel.splineXpointCoordVector(splinePointNumber), endX);
             testCase.verifyEqual(splineModel.splineStartSlope, 0);
             testCase.verifyEqual(splineModel.splineEndSlope, 0);
@@ -228,6 +230,10 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             testCase.verifyEqual(actual_piecewiseSpline_1.splineXpointCoordVector(1), 0);
             testCase.verifyEqual(actual_piecewiseSpline_1.splineXpointCoordVector(4), actual_piecewiseSpline_2.splineXpointCoordVector(1));
             testCase.verifyEqual(actual_piecewiseSpline_2.splineXpointCoordVector(4), actual_piecewiseSpline_3.splineXpointCoordVector(1));
+
+            testCase.verifyEqual(actual_piecewiseSpline_1.splineYpointCoordVector(1), 0);
+            testCase.verifyEqual(actual_piecewiseSpline_1.splineYpointCoordVector(4), actual_piecewiseSpline_2.splineYpointCoordVector(1));
+            testCase.verifyEqual(actual_piecewiseSpline_2.splineYpointCoordVector(4), actual_piecewiseSpline_3.splineYpointCoordVector(1));
         end
         
         function testCreateFilledSplineCollection_3_splines_4_pts_x_reg_spaced(testCase)
@@ -255,6 +261,10 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             testCase.verifyEqual(actual_piecewiseSpline_1.splineXpointCoordVector, exp_splineXpointCoordVector_1);
             testCase.verifyEqual(actual_piecewiseSpline_2.splineXpointCoordVector, exp_splineXpointCoordVector_2);
             testCase.verifyEqual(actual_piecewiseSpline_3.splineXpointCoordVector, exp_splineXpointCoordVector_3);
+
+            testCase.verifyEqual(actual_piecewiseSpline_1.splineYpointCoordVector(1), 0);
+            testCase.verifyEqual(actual_piecewiseSpline_1.splineYpointCoordVector(4), actual_piecewiseSpline_2.splineYpointCoordVector(1));
+            testCase.verifyEqual(actual_piecewiseSpline_2.splineYpointCoordVector(4), actual_piecewiseSpline_3.splineYpointCoordVector(1));
         end
         
         function testCreateFilledSplineCollection_3_splines_3_pts_x_reg_spaced(testCase)
@@ -324,6 +334,12 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             testCase.verifyEqual(actual_piecewiseSpline_3.splineXpointCoordVector, exp_splineXpointCoordVector_3);
             testCase.verifyEqual(actual_piecewiseSpline_4.splineXpointCoordVector, exp_splineXpointCoordVector_4);
             testCase.verifyEqual(actual_piecewiseSpline_5.splineXpointCoordVector, exp_splineXpointCoordVector_5);
+
+            testCase.verifyEqual(actual_piecewiseSpline_1.splineYpointCoordVector(1), 0);
+            testCase.verifyEqual(actual_piecewiseSpline_1.splineYpointCoordVector(6), actual_piecewiseSpline_2.splineYpointCoordVector(1));
+            testCase.verifyEqual(actual_piecewiseSpline_2.splineYpointCoordVector(6), actual_piecewiseSpline_3.splineYpointCoordVector(1));
+            testCase.verifyEqual(actual_piecewiseSpline_3.splineYpointCoordVector(6), actual_piecewiseSpline_4.splineYpointCoordVector(1));
+            testCase.verifyEqual(actual_piecewiseSpline_4.splineYpointCoordVector(6), actual_piecewiseSpline_5.splineYpointCoordVector(1));
             
             exp_piecewiseSpline_1_color_cellArray = {'r-'    'y-'    'm-'    'k-'    'g-'};
             exp_piecewiseSpline_2_color_cellArray = {'r--'    'y--'    'm--'    'k--'    'g--'};
@@ -362,6 +378,12 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             testCase.verifyEqual(actual_piecewiseSpline_2.splineXpointCoordVector(6), actual_piecewiseSpline_3.splineXpointCoordVector(1));
             testCase.verifyEqual(actual_piecewiseSpline_3.splineXpointCoordVector(6), actual_piecewiseSpline_4.splineXpointCoordVector(1));
             testCase.verifyEqual(actual_piecewiseSpline_4.splineXpointCoordVector(6), actual_piecewiseSpline_5.splineXpointCoordVector(1));
+
+            testCase.verifyEqual(actual_piecewiseSpline_1.splineYpointCoordVector(1), 0);
+            testCase.verifyEqual(actual_piecewiseSpline_1.splineYpointCoordVector(6), actual_piecewiseSpline_2.splineYpointCoordVector(1));
+            testCase.verifyEqual(actual_piecewiseSpline_2.splineYpointCoordVector(6), actual_piecewiseSpline_3.splineYpointCoordVector(1));
+            testCase.verifyEqual(actual_piecewiseSpline_3.splineYpointCoordVector(6), actual_piecewiseSpline_4.splineYpointCoordVector(1));
+            testCase.verifyEqual(actual_piecewiseSpline_4.splineYpointCoordVector(6), actual_piecewiseSpline_5.splineYpointCoordVector(1));
             
             exp_piecewiseSpline_1_color_cellArray = {'r-'    'y-'    'm-'    'k-'    'g-'};
             exp_piecewiseSpline_2_color_cellArray = {'r--'    'y--'    'm--'    'k--'    'g--'};
@@ -403,6 +425,11 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             testCase.verifyEqual(actual_piecewiseSpline_2.splineXpointCoordVector, exp_splineXpointCoordVector_2);
             testCase.verifyEqual(actual_piecewiseSpline_3.splineXpointCoordVector, exp_splineXpointCoordVector_3);
             testCase.verifyEqual(actual_piecewiseSpline_4.splineXpointCoordVector, exp_splineXpointCoordVector_4);
+
+            testCase.verifyEqual(actual_piecewiseSpline_1.splineYpointCoordVector(1), 0);
+            testCase.verifyEqual(actual_piecewiseSpline_1.splineYpointCoordVector(4), actual_piecewiseSpline_2.splineYpointCoordVector(1));
+            testCase.verifyEqual(actual_piecewiseSpline_2.splineYpointCoordVector(5), actual_piecewiseSpline_3.splineYpointCoordVector(1));
+            testCase.verifyEqual(actual_piecewiseSpline_3.splineYpointCoordVector(6), actual_piecewiseSpline_4.splineYpointCoordVector(1));
         end
         
         function testCreateFilledSplineCollection_4_splines_n_pts_x_randomX(testCase)
@@ -429,6 +456,11 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             testCase.verifyEqual(actual_piecewiseSpline_1.splineXpointCoordVector(4), actual_piecewiseSpline_2.splineXpointCoordVector(1));
             testCase.verifyEqual(actual_piecewiseSpline_2.splineXpointCoordVector(5), actual_piecewiseSpline_3.splineXpointCoordVector(1));
             testCase.verifyEqual(actual_piecewiseSpline_3.splineXpointCoordVector(6), actual_piecewiseSpline_4.splineXpointCoordVector(1));
+
+            testCase.verifyEqual(actual_piecewiseSpline_1.splineYpointCoordVector(1), 0);
+            testCase.verifyEqual(actual_piecewiseSpline_1.splineYpointCoordVector(4), actual_piecewiseSpline_2.splineYpointCoordVector(1));
+            testCase.verifyEqual(actual_piecewiseSpline_2.splineYpointCoordVector(5), actual_piecewiseSpline_3.splineYpointCoordVector(1));
+            testCase.verifyEqual(actual_piecewiseSpline_3.splineYpointCoordVector(6), actual_piecewiseSpline_4.splineYpointCoordVector(1));
         end
         
         function testFillColorCellArray_7_splineParts(testCase)
@@ -494,50 +526,57 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
 
         function testFillPointArray_7_points_x_regularly_spaced(testCase)
             startX = 1;
+            startY = 0;
             pointNumber = 7;
             isRandomX = 0;
             splineCollection = SplineCollection();
-            actual_pointArray = splineCollection.fillPointArray(startX, pointNumber, isRandomX);
-            exp_pointArray = [1 2 3 4 5 6 7];
-            testCase.verifyEqual(actual_pointArray(:,1), exp_pointArray');
+            actual_pointArray = splineCollection.fillPointArray(startX, startY, pointNumber, isRandomX);
+            exp_x_pointArray = [1 2 3 4 5 6 7];
+            testCase.verifyEqual(actual_pointArray(:,1), exp_x_pointArray');
+            testCase.verifyEqual(actual_pointArray(1, 2), startY);
             
 %            actual_pointArray
         end
 
         function testFillPointArray_1_points_x_regularly_spaced(testCase)
             startX = 1;
+            startY = 0;
             pointNumber = 1;
             isRandomX = 0;
             splineCollection = SplineCollection();
-            actual_pointArray = splineCollection.fillPointArray(startX, pointNumber, isRandomX);
+            actual_pointArray = splineCollection.fillPointArray(startX, startY, pointNumber, isRandomX);
             exp_pointArray = [1];
             testCase.verifyEqual(actual_pointArray(:,1), exp_pointArray');
+            testCase.verifyEqual(actual_pointArray(1, 2), startY);
             
 %            actual_pointArray
         end
 
         function testFillPointArray_7_points_x_randomly_spaced(testCase)
             startX = 1;
+            startY = 0;
             pointNumber = 7;
             exp_endX = startX + pointNumber;
             isRandomX = 1;
             splineCollection = SplineCollection();
-            actual_pointArray = splineCollection.fillPointArray(startX, pointNumber, isRandomX);
+            actual_pointArray = splineCollection.fillPointArray(startX, startY, pointNumber, isRandomX);
             % actual_pointArray
             testCase.verifyEqual(actual_pointArray(1,1), startX);
             testCase.verifyEqual(actual_pointArray(pointNumber,1), exp_endX);
+            testCase.verifyEqual(actual_pointArray(1, 2), startY);
         end
 
         function testFillPointArray_1_points_x_randomly_spaced(testCase)
             startX = 1;
+            startY = 0;
             pointNumber = 1;
             isRandomX = 1;
             splineCollection = SplineCollection();
-            actual_pointArray = splineCollection.fillPointArray(startX, pointNumber, isRandomX);
+            actual_pointArray = splineCollection.fillPointArray(startX, startY, pointNumber, isRandomX);
             % actual_pointArray
             exp_pointArray = [1];
             testCase.verifyEqual(actual_pointArray(:,1), exp_pointArray');
-
+            testCase.verifyEqual(actual_pointArray(1, 2), startY);
         end
 
         function testGetMinMaxX_3SameSizeSplineCollection_P1(testCase)
