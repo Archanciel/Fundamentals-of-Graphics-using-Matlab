@@ -13,8 +13,6 @@ classdef SplineView < matlab.apps.AppBase
         DISPLAY_XY_VALUE_FORMAT = '%2.1f'
         X_SLIDER_MAJOR_TICK_LABEL_NUMBER = 5
         Y_SLIDER_MAJOR_TICK_LABEL_NUMBER = 10
-        X_AXIS_MIN = -1
-        X_AXIS_MAX = 17
         Y_SLIDER_MIN = -5
         Y_SLIDER_MAX = 10
         POINT_MENU_INIT_VALUE = 1
@@ -39,6 +37,8 @@ classdef SplineView < matlab.apps.AppBase
                                                 % name containing as value
                                                 % the related SplineUIData
         splinePointAndSlopeMenuCorrespondingPointIndex
+        xAxisMin
+        xAxisMax
     end
 
     % Callbacks that handle component events
@@ -62,10 +62,10 @@ classdef SplineView < matlab.apps.AppBase
             sliderHandle = app.xCoordSlider;
 
             if pointIndex >= 1
-                [xSliderMin, xSliderMax] = app.splineCollection.getMinMaxX(pointIndex, pointIndex, app.X_AXIS_MIN, app.X_AXIS_MAX, app.XY_SLIDER_POINT_STEP);
+                [xSliderMin, xSliderMax] = app.splineCollection.getMinMaxX(pointIndex, pointIndex, app.xAxisMin, app.xAxisMax, app.XY_SLIDER_POINT_STEP);
             elseif pointIndex > 0
                 realPointIndex = pointIndex * 1000;
-                [xSliderMin, xSliderMax] = app.splineCollection.getMinMaxX(realPointIndex, realPointIndex + 1, app.X_AXIS_MIN, app.X_AXIS_MAX, app.XY_SLIDER_POINT_STEP);
+                [xSliderMin, xSliderMax] = app.splineCollection.getMinMaxX(realPointIndex, realPointIndex + 1, app.xAxisMin, app.xAxisMax, app.XY_SLIDER_POINT_STEP);
             else
                 [xSliderMin, xSliderMax] = app.splineCollection.getMinMaxSlope();
             end
@@ -729,6 +729,7 @@ classdef SplineView < matlab.apps.AppBase
         % Construct app
         function app = SplineView(splineCollection)
             app.splineCollection = splineCollection;
+            [app.xAxisMin, app.xAxisMax] = app.splineCollection.getAllPointsXLimits();
             app.initializeSplineUIDataDic();
             
             % Create UIFigure and components
@@ -771,7 +772,7 @@ classdef SplineView < matlab.apps.AppBase
             title(app.uiAxes, [sprintf("%d piecewise splines", maxSplineIndex) "in standard form"]);
 
             % Setting graph axis limits and ticks
-            set(app.uiAxes,'ylim',[app.Y_SLIDER_MIN app.Y_SLIDER_MAX],'xlim',[app.X_AXIS_MIN app.X_AXIS_MAX],'xtick',app.X_AXIS_MIN:app.X_AXIS_MAX,'ytick',-5:10)
+            set(app.uiAxes,'ylim',[app.Y_SLIDER_MIN app.Y_SLIDER_MAX],'xlim',[app.xAxisMin app.xAxisMax],'xtick',app.xAxisMin:app.xAxisMax,'ytick',-5:10)
 
             % Calling axis cerntering code (found on Matworks Community
             % https://ch.mathworks.com/matlabcentral/fileexchange/22333-centered-coordinate-axes-in-2d-plots)

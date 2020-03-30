@@ -215,8 +215,8 @@ classdef SplineCollection < handle
         function [xMin, xMax] = getAllPointsXLimits(obj)
             % Returns the minimum and maximum x values considering all
             % the points of the piecewise splines in the SplineCollection
-            startSplineModel = obj.getSplineModel(1);
-            endSplineModel = obj.getSplineModel(obj.getSplineNumber());
+            startSplineModel = obj.getSplineModelForSplineIndex(1);
+            endSplineModel = obj.getSplineModelForSplineIndex(obj.getSplineNumber());
             
             xMin = startSplineModel.splineXpointCoordVector(1, 1) - 1; 
             xMax = endSplineModel.splineXpointCoordVector(1, end) + 1;
