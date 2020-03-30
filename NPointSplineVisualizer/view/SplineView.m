@@ -297,7 +297,11 @@ classdef SplineView < matlab.apps.AppBase
                     yShift = -0.3;
                 end
                 
-                newPointLabelHandles{i} = text(app.uiAxes, Pn(i,1)+xShift, Pn(i,2)+yShift, pointsLabelStrings{i});
+                if i == 1
+                    newPointLabelHandles{i} = text(app.uiAxes, Pn(i,1)+xShift, Pn(i,2)+yShift, strcat(pointsLabelStrings{i}, ' New spline'));
+                else
+                    newPointLabelHandles{i} = text(app.uiAxes, Pn(i,1)+xShift, Pn(i,2)+yShift, pointsLabelStrings{i});
+                end
             end
         end
         
