@@ -271,6 +271,7 @@ classdef SplineView < matlab.apps.AppBase
         function [newPointLabelHandles, newScatteredPointHandle] = plotPointsAndLabels(app,...
                                                                                        Pn,...
                                                                                        pointsLabelStrings,...
+                                                                                       splineMatrixSizeArray,...
                                                                                        pointsLabelHandles,...
                                                                                        scatteredPointsHandle)
             % currentSplineIndex argument == 1 indicaten that the first point label of the
@@ -298,7 +299,9 @@ classdef SplineView < matlab.apps.AppBase
                 end
                 
                 if i == 1
-                    newPointLabelHandles{i} = text(app.uiAxes, Pn(i,1)+xShift, Pn(i,2)+yShift, strcat(pointsLabelStrings{i}, ' New spline'));
+                    li = splineMatrixSizeArray(1);
+                    co = splineMatrixSizeArray(2);
+                    newPointLabelHandles{i} = text(app.uiAxes, Pn(i,1)+xShift, Pn(i,2)+yShift, strcat(pointsLabelStrings{i}, sprintf(' %dx%d', li, co)));
                 else
                     newPointLabelHandles{i} = text(app.uiAxes, Pn(i,1)+xShift, Pn(i,2)+yShift, pointsLabelStrings{i});
                 end
@@ -715,9 +718,10 @@ classdef SplineView < matlab.apps.AppBase
             points_labels = splineUidata.splinePointLabelStrCellArray; 
             pointLabelHandlesToDelete = splineUIData.splinePointLabelHandleCellArray;
             scatteredPointHandleToDelete = splineUIData.splineScatteredPointHandleCellArray;
-
+            splineMatrixSizeArray = size(splineModel.C);
             [newPointLabelHandles, newScatteredPointHandle] = app.plotPointsAndLabels(Pn,... 
                                                                                       points_labels,...
+                                                                                      splineMatrixSizeArray,...
                                                                                       pointLabelHandlesToDelete,...
                                                                                       scatteredPointHandleToDelete);
 
