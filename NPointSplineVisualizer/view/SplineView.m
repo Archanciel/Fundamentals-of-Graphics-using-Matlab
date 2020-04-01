@@ -671,8 +671,9 @@ classdef SplineView < matlab.apps.AppBase
             spline_colors = app.splineUIDataDic(splineModel.splineModelIndex).splineColorCellArray; 
 
             % computing xCoordArray
+            piecewiseSplinePartNumber = length(splineModel.yFuncCellArray);
             
-            for i = 1:length(splineModel.yFuncCellArray)
+            for i = 1:piecewiseSplinePartNumber
                 y_func = splineModel.yFuncCellArray{i};
                 
                 if i == 1
@@ -684,8 +685,8 @@ classdef SplineView < matlab.apps.AppBase
                     else
                         xCoordArray = linspace(Pn(i,1), Pn(i + 1,1), app.PLOT_RESOLUTION);
                     end
-                elseif i == 3
-                    % handling last part of the 3 part piecewise spline
+                elseif i == piecewiseSplinePartNumber
+                    % handling last part of the n part piecewise spline
                     if currentSplineIndex == maxSplineIndex
                         % handling the last part of the the last piecewise spline of the
                         % piecewise spline collection. xCoordArray must exceed last x by one.
