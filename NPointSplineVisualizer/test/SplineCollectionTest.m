@@ -463,6 +463,15 @@ classdef SplineCollectionTest < matlab.unittest.TestCase
             testCase.verifyEqual(actual_piecewiseSpline_3.splineYpointCoordVector(6), actual_piecewiseSpline_4.splineYpointCoordVector(1));
         end
         
+        function testCreateFilledSplineCollection_3_splines_n_pts_exception(testCase)
+            exp_splineNumber = 3;
+
+            splinePointNumbersArray = [4 6];
+            isRandomX = 0;
+            splineCollection = SplineCollection();
+            testCase.assertError(@()splineCollection.createFilledSplineCollection(exp_splineNumber, splinePointNumbersArray, isRandomX), 'createFilledSplineCollection:invalidSplinePointNumbersArraySize');
+        end
+                
         function testFillColorCellArray_7_splineParts(testCase)
             lineStyle = '-';
             splineCollection = SplineCollection();
