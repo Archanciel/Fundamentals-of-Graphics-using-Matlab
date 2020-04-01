@@ -9,9 +9,9 @@ addpath("./controller");
 
 splineCollection = SplineCollection();
 
-splineNumber = 5;
+splineNumber = 3;
 
-splinePointNumbersArray = [6];
+splinePointNumbersArray = [5];
 isRandomX = 1;
 splineCollection = SplineCollection();
 splineCollection.createFilledSplineCollection(splineNumber,...
