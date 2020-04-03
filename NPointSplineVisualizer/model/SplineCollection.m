@@ -23,9 +23,9 @@ classdef SplineCollection < handle
         function obj = SplineCollection()
             obj.splinePossibleColorsCellArray{1} = 'b';
             obj.splinePossibleColorsCellArray{2} = 'r';
-            obj.splinePossibleColorsCellArray{3} = 'y';
-            obj.splinePossibleColorsCellArray{4} = 'm';
-            obj.splinePossibleColorsCellArray{5} = 'k';
+            obj.splinePossibleColorsCellArray{3} = 'm';
+            obj.splinePossibleColorsCellArray{4} = 'k';
+            obj.splinePossibleColorsCellArray{5} = [0.9290, 0.6940, 0.1250]; % more readable than 'y'
             obj.splinePossibleColorsCellArray{6} = 'g';
             obj.splinePossibleColorsCellArray{7} = 'c';
             
