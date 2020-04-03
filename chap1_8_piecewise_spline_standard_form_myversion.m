@@ -1,4 +1,4 @@
-DO_SUBPLOT = 2 % if set to 0, only plots the full curve graph
+DO_SUBPLOT = 1 % if set to 0, only plots the full curve graph
                % if set to 1, plots the full curve graph and the partial curve graph
                % if set to 2, only plots the partial curve graph
 ADDITIONAL_X_AXIS_SIZE = 0
@@ -56,9 +56,10 @@ if DO_SUBPLOT == 1
     subplot(121);
 end
 
+xx_lim = [p1(1,1) - 1 p4(1,1)]
+xx_all = linspace(xx_lim(1,1),xx_lim(1,2));    
+
 if DO_SUBPLOT ~= 2
-    xx_lim = [p1(1,1) - 1 p4(1,1)]
-    xx_all = linspace(xx_lim(1,1),xx_lim(1,2));
     yy_a = subs(y_a, x, xx_all);
     plot(xx_all, yy_a, 'b')
 
