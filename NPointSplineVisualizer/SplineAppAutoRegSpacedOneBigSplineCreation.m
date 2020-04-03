@@ -11,7 +11,7 @@ splineCollection = SplineCollection();
 
 splineNumber = 1;
 
-splinePointNumbersArray = [15];
+splinePointNumbersArray = [25];
 isRandomX = 0;
 splineCollection = SplineCollection();
 splineCollection.createFilledSplineCollection(splineNumber,...
