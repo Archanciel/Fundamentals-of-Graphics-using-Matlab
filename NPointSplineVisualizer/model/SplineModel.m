@@ -75,8 +75,8 @@ classdef SplineModel < handle
         end
         
         function computePiecewiseSplineFunctions(obj)
-            % Returns a 3 elements cell array containing the piecewise spline
-            % y_A, y_B and y_C functions
+            % Fills a 3 elements instance variable cell array containing the
+            % piecewise spline y_A, y_B and y_C functions
 
             Pn = [obj.splineXpointCoordVector(1,:)' obj.splineYpointCoordVector(1,:)'];
 
